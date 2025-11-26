@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tunes Therapeutics Pvt. Ltd. - Retuning Health, Redefining Lives</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+</head>
+
+ <style>
+    /* === Global Styles === */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        line-height: 1.6;
+        overflow-x: hidden;
+    }
+
+    /* === Header and Navigation === */
+    header {
+        position: sticky;
+        top: 20px;
+        z-index: 1000;
+        padding: 0 20px;
+        transition: all 0.3s ease;
+    }
+
+    header.scrolled {
+        top: 10px;
+    }
+
+    .header-container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 1400px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 50px;
+        padding: 15px 40px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .logo {
+        height: 75px;
+        transition: transform 0.3s ease;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    }
+
+    .logo:hover {
+        transform: scale(1.05);
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex: 1;
+        justify-content: center;
+    }
+
+    nav a {
+        color: #2c3e50;
+        text-decoration: none;
+        margin: 0 15px;
+        font-size: 15px;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+        position: relative;
+        padding: 8px 12px;
+        transition: all 0.3s ease;
+        border-radius: 20px;
+    }
+
+    nav a:hover {
+        color: #3498db;
+        background: rgba(52, 152, 219, 0.1);
+    }
+
+    .cta-header-button {
+        background: #2c3e50;
+        color: white;
+        padding: 12px 30px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-size: 15px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
+        white-space: nowrap;
+    }
+
+    .cta-header-button:hover {
+        background: #34495e;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4);
+    }
+
+    .language-switcher {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-right: 15px;
+    }
+
+    .language-switcher a {
+        padding: 8px 15px;
+        border-radius: 20px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        color: #2c3e50;
+        background: rgba(44, 62, 80, 0.1);
+    }
+
+    .language-switcher a.active {
+        background: #3498db;
+        color: white;
+    }
+
+    .language-switcher a:hover {
+        background: #3498db;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* === Hero Section === */
+    .hero {
+        position: relative;
+        min-height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #34495e;
+        overflow: hidden;
+        padding: 100px 20px;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('{{ url_for('static', filename='images/x.jpg') }}') center/cover;
+        opacity: 0.2;
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+        text-align: center;
+        color: white;
+        max-width: 900px;
+        animation: slideIn 1s ease-out;
+    }
+
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    .hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2.5rem, 5vw, 4.5rem);
+        font-weight: 700;
+        margin-bottom: 25px;
+        text-shadow: 2px 4px 10px rgba(0, 0, 0, 0.3);
+        line-height: 1.2;
+    }
+
+    .hero p {
+        font-size: clamp(1.1rem, 2vw, 1.4rem);
+        margin-bottom: 40px;
+        opacity: 0.95;
+        font-weight: 300;
+        line-height: 1.8;
+    }
+
+    .cta-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .cta-button {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        color: white;
+        padding: 16px 40px;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .cta-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .cta-button.primary {
+        background: white;
+        color: #34495e;
+        border-color: white;
+    }
+
+    .cta-button.primary:hover {
+        background: #f8f9fa;
+        transform: translateY(-3px) scale(1.05);
+    }
+
+    /* === Digital Experience Section === */
+    .experience-section {
+        padding: 100px 20px 60px;
+        background: #f2f4f7;
+    }
+
+    .experience-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .experience-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .experience-tag {
+        display: inline-block;
+        padding: 6px 18px;
+        border-radius: 20px;
+        background: rgba(52, 152, 219, 0.12);
+        color: #3498db;
+        font-weight: 600;
+        font-size: 0.9rem;
+        letter-spacing: 0.5px;
+        margin-bottom: 20px;
+    }
+
+    .experience-header h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2rem, 3vw, 2.8rem);
+        color: #2c3e50;
+        margin-bottom: 15px;
+    }
+
+    .experience-header p {
+        color: #7f8c8d;
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.8;
+    }
+
+    .experience-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 25px;
+    }
+
+    .experience-card {
+        background: white;
+        border-radius: 25px;
+        padding: 30px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .experience-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 25px;
+        border: 2px solid rgba(52, 152, 219, 0.15);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .experience-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 25px 45px rgba(44, 62, 80, 0.2);
+    }
+
+    .experience-card:hover::after {
+        opacity: 1;
+    }
+
+    .experience-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 18px;
+        background: rgba(44, 62, 80, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    .experience-card h3 {
+        font-size: 1.4rem;
+        color: #2c3e50;
+        margin-bottom: 12px;
+    }
+
+    .experience-card p {
+        color: #7f8c8d;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        margin-bottom: 20px;
+    }
+
+    .experience-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #3498db;
+        font-weight: 600;
+        text-decoration: none;
+        transition: gap 0.3s ease;
+    }
+
+    .experience-link span {
+        font-size: 1.2rem;
+    }
+
+    .experience-card:hover .experience-link {
+        gap: 14px;
+    }
+
+    /* === Floating Particles Animation === */
+    .particles {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    .particle {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 50%;
+        animation: drift 25s infinite;
+    }
+
+    @keyframes drift {
+        0% {
+            transform: translateY(100vh) translateX(0) rotate(0deg);
+            opacity: 0;
+        }
+        10% {
+            opacity: 1;
+        }
+        90% {
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-100vh) translateX(200px) rotate(360deg);
+            opacity: 0;
+        }
+    }
+
+    /* === Features Section === */
+    .features-section {
+        padding: 100px 20px;
+        background: #ffffff;
+    }
+
+    .features-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .section-title {
+        text-align: center;
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2rem, 4vw, 3.5rem);
+        color: #2c3e50;
+        margin-bottom: 20px;
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: #3498db;
+        border-radius: 2px;
+    }
+
+    .section-subtitle {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #7f8c8d;
+        margin-bottom: 60px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-top: 60px;
+    }
+
+    .feature-card {
+        background: white;
+        padding: 40px 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 5px;
+        background: #3498db;
+        transform: scaleX(0);
+        transition: transform 0.4s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .feature-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .feature-icon {
+        width: 70px;
+        height: 70px;
+        background: #3498db;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 20px;
+        font-size: 30px;
+        color: white;
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon {
+        transform: rotate(5deg) scale(1.1);
+    }
+
+    .feature-card h3 {
+        font-size: 1.5rem;
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .feature-card p {
+        color: #7f8c8d;
+        line-height: 1.8;
+    }
+
+    /* === Products Showcase === */
+    .products-section {
+        padding: 100px 20px;
+        background: #2c3e50;
+        color: white;
+    }
+
+    .products-container {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .products-section .section-title {
+        color: white;
+    }
+
+    .products-section .section-title::after {
+        background: white;
+    }
+
+    .products-section .section-subtitle {
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .product-slider {
+        display: flex;
+        gap: 30px;
+        overflow-x: auto;
+        padding: 30px 0;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    }
+
+    .product-slider::-webkit-scrollbar {
+        height: 8px;
+    }
+
+    .product-slider::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    .product-slider::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+    }
+
+    .product-card {
+        flex: 0 0 350px;
+        scroll-snap-align: center;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        padding: 30px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: all 0.4s ease;
+        cursor: pointer;
+    }
+
+    .product-card:hover {
+        transform: translateY(-10px) scale(1.02);
+        background: rgba(255, 255, 255, 0.15);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .product-card img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .product-card h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: white;
+    }
+
+    .product-card p {
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.6;
+    }
+
+    /* === Mission Section === */
+    .mission-section {
+        padding: 100px 20px;
+        background: white;
+    }
+
+    .mission-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+    }
+
+    .mission-content h2 {
+        font-family: 'Playfair Display', serif;
+        font-size: clamp(2rem, 4vw, 3rem);
+        color: #2c3e50;
+        margin-bottom: 25px;
+    }
+
+    .mission-content p {
+        font-size: 1.1rem;
+        color: #7f8c8d;
+        line-height: 1.8;
+        margin-bottom: 30px;
+    }
+
+    .mission-image {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .mission-image img {
+        width: 100%;
+        height: auto;
+        display: block;
+        transition: transform 0.5s ease;
+    }
+
+    .mission-image:hover img {
+        transform: scale(1.05);
+    }
+
+    /* === Responsive Design === */
+    @media (max-width: 1024px) {
+        .footer-upper-content {
+            grid-template-columns: auto repeat(3, 1fr);
+            gap: 30px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        header {
+            padding: 10px 20px;
+        }
+
+        nav {
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        nav a {
+            font-size: 12px;
+            margin: 0 5px;
+        }
+
+        .logo {
+            height: 70px;
+        }
+
+        .mission-container {
+            grid-template-columns: 1fr;
+        }
+
+        .cta-buttons {
+            flex-direction: column;
+        }
+
+        .product-card {
+            flex: 0 0 280px;
+        }
+
+        .footer-upper-content {
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .footer-logo-section {
+            grid-column: 1 / -1;
+        }
+
+        .footer-lower-content {
+            flex-direction: column;
+        text-align: center;
+        }
+
+        .footer-copyright {
+            justify-content: center;
+        }
+
+        .scroll-to-top {
+            bottom: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            font-size: 18px;
+        }
+    }
+
+    /* === Scroll Animations === */
+    .fade-in {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+        transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .fade-in.visible {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+</style>
+
+<body>
+    {% include 'partials/loading.html' %}
+
+    <header id="header">
+        <div class="header-container">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo" class="logo">
+        <nav>
+                <a href="/">{{ t.home }}</a>
+                <a href="/about">{{ t.about }}</a>
+                <a href="/products">{{ t.products }}</a>
+                <a href="/services">{{ t.services }}</a>
+                <a href="/research">{{ t.research }}</a>
+                <a href="/contact">{{ t.contact }}</a>
+                <a href="/Gallery">{{ t.gallery }}</a>
+        </nav>
+            <div style="display: flex; align-items: center;">
+                <div class="language-switcher">
+                    <a href="/set-language/en" class="{% if lang == 'en' %}active{% endif %}">EN</a>
+                    <a href="/set-language/hi" class="{% if lang == 'hi' %}active{% endif %}">हिं</a>
+                </div>
+                <a href="/Pharmaintel_ai" class="cta-header-button">{{ t.pharmaintel_ai }}</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="particles" id="particles"></div>
+        <div class="hero-content">
+      <h1>Retuning Health, Redefining Lives</h1>
+            <p>At Tunes Therapeutics, we are committed to improving lives with innovative healthcare solutions that transform patient outcomes and enhance quality of life.</p>
+            <div class="cta-buttons">
+                <a href="/products" class="cta-button primary">Explore Products</a>
+                <a href="/about" class="cta-button">Learn More</a>
+            </div>
+    </div>
+    </section>
+
+    <!-- Digital Experience Section -->
+    <section class="experience-section">
+        <div class="experience-container">
+            <div class="experience-header fade-in">
+                <span class="experience-tag">Digital Experience</span>
+                <h2>Access Every Tool From One Place</h2>
+                <p>Jump straight into our advanced catalog, B2B ordering, doctor resources, compliance portal, and stockist locator directly from the home page.</p>
+            </div>
+            <div class="experience-grid">
+                <div class="experience-card fade-in" onclick="window.location.href='/product-catalog'">
+                    <div class="experience-icon">📚</div>
+                    <h3>Product Catalog</h3>
+                    <p>Search by composition, indication, or therapeutic category and explore detailed product intel instantly.</p>
+                    <a class="experience-link" href="/product-catalog">Browse Catalog <span>→</span></a>
+                </div>
+                <div class="experience-card fade-in" onclick="window.location.href='/stockist-locator'">
+                    <div class="experience-icon">📍</div>
+                    <h3>Stockist Locator</h3>
+                    <p>Find the nearest authorized distributor or dealer filtered by state and city with click-to-call options.</p>
+                    <a class="experience-link" href="/stockist-locator">Find Dealers <span>→</span></a>
+                </div>
+                <div class="experience-card fade-in" onclick="window.location.href='/doctor-portal'">
+                    <div class="experience-icon">🩺</div>
+                    <h3>Doctor Portal</h3>
+                    <p>Secure access for medical professionals to download studies, request samples, and reach our MR team.</p>
+                    <a class="experience-link" href="/doctor-portal">Enter Portal <span>→</span></a>
+                </div>
+                <div class="experience-card fade-in" onclick="window.location.href='/regulatory-compliance'">
+                    <div class="experience-icon">📑</div>
+                    <h3>Compliance Hub</h3>
+                    <p>Review certifications, DCGI approvals, and global quality standards that power our manufacturing.</p>
+                    <a class="experience-link" href="/regulatory-compliance">View Compliance <span>→</span></a>
+                </div>
+                <div class="experience-card fade-in" onclick="window.location.href='/online-ordering'">
+                    <div class="experience-icon">🛒</div>
+                    <h3>Online Ordering</h3>
+                    <p>Place wholesale purchase requests, share schedules, and collaborate with our sales desk digitally.</p>
+                    <a class="experience-link" href="/online-ordering">Place Order <span>→</span></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="features-container">
+            <h2 class="section-title fade-in">Why Choose Us</h2>
+            <p class="section-subtitle fade-in">Excellence in pharmaceutical innovation and patient care</p>
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🔬</div>
+                    <h3>Research Excellence</h3>
+                    <p>Cutting-edge research and development to bring innovative healthcare solutions to market.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">💊</div>
+                    <h3>Quality Products</h3>
+                    <p>Rigorous quality control ensuring safe and effective pharmaceutical products for all patients.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🌍</div>
+                    <h3>Global Reach</h3>
+                    <p>Serving communities worldwide with trusted healthcare solutions and dedicated support.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">🤝</div>
+                    <h3>Patient-Centered</h3>
+                    <p>Our commitment to improving patient outcomes drives everything we do.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Innovation</h3>
+                    <p>Continuously advancing pharmaceutical science through innovation and technology.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">✅</div>
+                    <h3>Trusted Partner</h3>
+                    <p>Reliable partner for healthcare professionals and patients worldwide.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Showcase -->
+    <section class="products-section">
+        <div class="products-container">
+            <h2 class="section-title fade-in">Featured Products</h2>
+            <p class="section-subtitle fade-in">Discover our innovative pharmaceutical solutions</p>
+            <div class="product-slider">
+                <div class="product-card fade-in" onclick="window.location.href='/products'">
+                    <img src="{{ url_for('static', filename='images/p1.jpg') }}" alt="Product 1" onerror="this.src='https://via.placeholder.com/350x250?text=Product+1'">
+                    <h3>Ecoglim MV1</h3>
+                    <p>Advanced diabetes management solution with multi-vitamin complex for enhanced patient care.</p>
+                </div>
+                <div class="product-card fade-in" onclick="window.location.href='/products'">
+                    <img src="{{ url_for('static', filename='images/p2.jpg') }}" alt="Product 2" onerror="this.src='https://via.placeholder.com/350x250?text=Product+2'">
+                    <h3>NACTAID</h3>
+                    <p>Comprehensive therapeutic solution designed for optimal patient outcomes and wellness.</p>
+          </div>
+                <div class="product-card fade-in" onclick="window.location.href='/products'">
+                    <img src="{{ url_for('static', filename='images/product_images.jpg') }}" alt="Product 3" onerror="this.src='https://via.placeholder.com/350x250?text=Product+3'">
+                    <h3>RESGABA Series</h3>
+                    <p>Innovative pharmaceutical products engineered for precision and effectiveness.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="mission-section">
+        <div class="mission-container">
+            <div class="mission-content fade-in">
+                <h2>Our Mission</h2>
+                <p>We deliver trusted and affordable healthcare solutions, driven by continuous research and innovation. Our commitment to excellence ensures that every product meets the highest standards of quality and efficacy.</p>
+                <p>At Tunes Therapeutics, we believe in transforming healthcare through science, compassion, and dedication to improving lives around the world.</p>
+                <a href="/about" class="cta-button primary" style="display: inline-block; margin-top: 20px;">Learn More About Us</a>
+            </div>
+            <div class="mission-image fade-in">
+                <img src="{{ url_for('static', filename='images/y.jpg') }}" alt="Our Quality Standards" onerror="this.src='https://via.placeholder.com/600x400?text=Quality+Standards'">
+            </div>
+  </div>
+</section>
+
+    {% include 'partials/footer.html' %}
+
+    <script>
+        // Header Scroll Effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Floating Particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 5 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Scroll Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Animated Counter
+        function animateCounter(element) {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    element.textContent = Math.floor(current);
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = target.toLocaleString();
+                }
+            };
+
+            updateCounter();
+        }
+
+        const statsObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statNumber = entry.target.querySelector('.stat-number');
+                    if (statNumber && !statNumber.classList.contains('animated')) {
+                        statNumber.classList.add('animated');
+                        animateCounter(statNumber);
+                    }
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stat-item').forEach(stat => {
+            statsObserver.observe(stat);
+        });
+
+    </script>
+</body>
+</html>

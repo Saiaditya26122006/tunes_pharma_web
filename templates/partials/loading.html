@@ -1,0 +1,135 @@
+<style>
+    .loading-overlay {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(circle at top, rgba(52, 152, 219, 0.15), rgba(44, 62, 80, 0.95));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        backdrop-filter: blur(10px);
+        z-index: 9999;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .loading-overlay.fade-out {
+        opacity: 0;
+        visibility: hidden;
+    }
+
+    .loading-orb {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+        animation: orbPulse 2.5s ease-in-out infinite;
+    }
+
+    .loading-ring {
+        position: absolute;
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        border: 3px solid transparent;
+        border-top-color: #ffffff;
+        border-right-color: rgba(255, 255, 255, 0.4);
+        animation: rotateRing 1.8s linear infinite;
+    }
+
+    .loading-ring.secondary {
+        width: 190px;
+        height: 190px;
+        border-top-color: rgba(255, 255, 255, 0.25);
+        border-right-color: transparent;
+        animation-duration: 2.6s;
+    }
+
+    .loading-logo {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.9);
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .loading-logo img {
+        width: 70px;
+        height: auto;
+        animation: gentleFloat 2.5s ease-in-out infinite;
+    }
+
+    .loading-overlay p {
+        margin-top: 25px;
+        color: rgba(255, 255, 255, 0.85);
+        font-weight: 500;
+        letter-spacing: 0.08em;
+    }
+
+    @keyframes rotateRing {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes orbPulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+        }
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
+        }
+    }
+
+    @keyframes gentleFloat {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-6px);
+        }
+    }
+</style>
+
+<div class="loading-overlay" id="globalLoading">
+    <div class="loading-orb">
+        <div class="loading-ring"></div>
+        <div class="loading-ring secondary"></div>
+        <div class="loading-logo">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo">
+        </div>
+    </div>
+    <p>Retuning health for you...</p>
+</div>
+
+<script>
+    // Faster loading - trigger on DOM ready instead of full page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', hideLoader);
+    } else {
+        hideLoader();
+    }
+    
+    function hideLoader() {
+        const loader = document.getElementById('globalLoading');
+        if (!loader) return;
+        // Minimum display time for smooth animation (800ms)
+        setTimeout(() => {
+            loader.classList.add('fade-out');
+            setTimeout(() => loader.remove(), 500);
+        }, 800);
+    }
+</script>
+
