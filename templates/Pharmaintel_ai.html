@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>"PHARMAINTEL_AI" - Strategy Maker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sitka Small', serif;
+            background: linear-gradient(120deg, #2d89ff, #87E0E0, #120e43);
+            background-size: 300% 300%;
+            animation: gradientMove 10s ease infinite;
+            color: #000000;
+            line-height: 1.6;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Header Styling */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #E6F7FF; /* Vibrant teal */
+            padding: 15px 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            height: 150px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        nav a {
+            color: #000;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        nav a:hover {
+            color: #222;
+            border-bottom: 2px solid #000;
+            padding-bottom: 5px;
+        }
+
+        /* Main Content */
+        h1 {
+            background-color: #001f3f;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin: 0;
+            font-size: 28px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+       /* Expanded Form Container */
+.form-container {
+    background-color: 1d1d1d; /* Maintains the black background */
+    color: white; /* Ensures text is visible on a black background */
+    border: 1px solid #444; /* Slightly darker border for consistency */
+    margin: 0 auto;
+    width: 100%;
+    max-width: 1500px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.1); /* Lighter shadow for contrast */
+    padding: 50px;
+    height: calc(100vh - 200px); /* Fill available space below header */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+        }
+
+        label {
+            font-weight: bold;
+            color: #001f3f;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        input[type="text"], input[type="file"], input[type="images"] {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            background-color: #1d1d1d;
+            color: white;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        button:hover {
+            background-color: #5ababa;
+        }
+
+        .footer-message {
+            background-color: #1d1d1d; /* Light blue background */
+            color: #ffffff; /* Dark blue text */
+            padding: 15px;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-top: 20px;
+            border: 1px solid #a4c8f0; /* Subtle border for better contrast */
+        }
+
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #001f3f;
+            color: white;
+        }
+
+        footer a {
+            color:#5ababa ;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    {% include 'partials/loading.html' %}
+
+<header>
+    <a href="/" class="logo-link">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo" class="logo">
+    </a>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About Us</a>
+        <a href="/products">Our Products</a>
+        <a href="/services">Services</a>
+        <a href="/research">Research</a>
+        <a href="/contact">Contact Us</a>
+        <a href="/Pharmaintel_ai">Pharmaintel_ai</a>
+    </nav>
+</header>
+
+
+<h1> "PHARMAINTEL_AI" - Strategy Maker</h1>
+
+<!-- Expanded Form Container -->
+<div class="form-container">
+
+    <!-- PDF Upload Form -->
+    <form method="post" enctype="multipart/form-data">
+        <label for="pdf_upload">Upload a PDF for Analysis:</label>
+        <input type="file" name="pdf_file" id="pdf_upload" accept=".pdf">
+        <button type="submit" name="upload_pdf">Analyze PDF</button>
+    </form>
+
+    <!-- New form to ask OpenAI a question -->
+    <form method="post">
+        <label for="openai_query">Ask OpenAI:</label>
+        <input type="text" name="openai_query" id="openai_query">
+        <button type="submit" name="ask_openai">Ask OpenAI</button>
+    </form>
+
+    <!-- Display message -->
+    {% if message %}
+        <div class="footer-message">
+            {{ message|safe }}
+        </div>
+    {% endif %}
+
+</div>
+
+<footer>
+    <div class="footer-content">
+            <div class="footer-logo">
+                <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo"></a>
+            </div>
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/products">Our Products</a>
+            <a href="/research">Research</a>
+            <a href="/contact">Contact Us</a>
+            <a href="/Pharmaintel_ai">Pharmaintel_ai</a>
+         </div>
+            <div class="footer-social">
+                <a href="https://www.instagram.com/tunes_therapeutics_pvt_ltd" class="social-link" target="_blank"><img src="{{ url_for('static', filename='images/instagram-icon.png') }}" alt="Instagram"></a>
+                <a href="https://www.facebook.com/tunes_therapeutics_pvt_ltd" class="social-link" target="_blank"><img src="{{ url_for('static', filename='images/facebook-icon.png') }}" alt="Facebook"></a>
+                <a href="https://twitter.com/tunes_therapeutics_pvt_ltd" class="social-link" target="_blank"><img src="{{ url_for('static', filename='images/twitter-icon.png') }}" alt="Twitter"></a>
+                <a href="https://linkedin.com/tunes_therapeutics_pvt_ltd" class="social-link" target="_blank"><img src="{{ url_for('static', filename='images/linkedin-icon.png') }}" alt="Linkedin"></a>
+                <a href="https://wa.me/919295006066" class="social-link" target="_blank"><img src="{{ url_for('static', filename='images/whatsapp-icon.png') }}" alt="WhatsApp"></a>
+            </div>
+        <div class="footer-info">
+            <p>&copy; 2024 Tunes Therapeutics Pvt. Ltd. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<style>
+    footer {
+        background-color: #78e3fe;
+        color: #000;
+        text-align: center;
+        padding: 30px 0;
+    }
+
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .footer-logo img {
+        max-width: 200px;
+    }
+
+    .footer-links {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .footer-links a {
+        color: #000;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 600;
+        margin: 0 15px;
+        letter-spacing: 1px;
+    }
+
+    .footer-links a:hover {
+        color: #006e77;
+    }
+
+    .footer-social {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .social-link img {
+        width: 30px;
+        height: 30px;
+    }
+
+    .footer-info p {
+        font-size: 14px;
+        color: #001f3f;
+    }
+</style>
+
+<!-- Add Chatbot CSS -->
+<style>
+    .chatbot-container {
+        margin-top: 40px;
+        padding: 20px;
+        background-color: #000000;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .chatbox {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .chatbox-messages {
+        width: 100%;
+        max-height: 300px;
+        overflow-y: auto;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 10px;
+        background-color: #000;
+    }
+
+    #chat-input {
+        width: 80%;
+        padding: 10px;
+        margin-top: 10px;
+        border: 1px solid #000;
+        border-radius: 4px;
+    }
+
+    #chat-send {
+        width: 18%;
+        padding: 10px;
+        margin-top: 10px;
+        background-color: #000000;
+        color: black;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    #chat-send:hover {
+        background-color: #000000;
+    }
+</style>
+
+    {% include 'partials/footer.html' %}
+</body>
+</html>

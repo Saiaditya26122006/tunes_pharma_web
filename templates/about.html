@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Tunes Therapeutics Pvt. Ltd.</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* === Global Styles === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* === Header and Navigation === */
+        header {
+            position: sticky;
+            top: 20px;
+            z-index: 1000;
+            padding: 0 20px;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            top: 10px;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 50px;
+            padding: 15px 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .logo {
+            height: 60px;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            justify-content: center;
+        }
+
+        nav a {
+            color: #2c3e50;
+            text-decoration: none;
+            margin: 0 15px;
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            position: relative;
+            padding: 8px 12px;
+            transition: all 0.3s ease;
+            border-radius: 20px;
+        }
+
+        nav a:hover {
+            color: #3498db;
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .cta-header-button {
+            background: #2c3e50;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
+            white-space: nowrap;
+        }
+
+        .cta-header-button:hover {
+            background: #34495e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4);
+        }
+
+        /* === Hero Section === */
+        .hero {
+            position: relative;
+            min-height: 70vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #34495e;
+            overflow: hidden;
+            padding: 120px 20px 80px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('{{ url_for("static", filename="images/z.jpg") }}') center/cover;
+            opacity: 0.15;
+            z-index: 1;
+        }
+
+        .hero-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: floatParticle 20s infinite;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(100vh) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(200px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: white;
+            max-width: 1000px;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 700;
+            margin-bottom: 25px;
+            text-shadow: 2px 4px 15px rgba(0, 0, 0, 0.3);
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            opacity: 0.95;
+            font-weight: 300;
+            line-height: 1.8;
+            margin-bottom: 40px;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #3498db;
+            font-family: 'Playfair Display', serif;
+            display: block;
+        }
+
+        .hero-stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        /* === Mission & Vision Cards === */
+        .mission-vision-section {
+            padding: 100px 20px;
+            background: #ffffff;
+        }
+
+        .mission-vision-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 40px;
+        }
+
+        .mission-card, .vision-card {
+            background: white;
+            padding: 50px 40px;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mission-card::before, .vision-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: #3498db;
+        }
+
+        .mission-card:hover, .vision-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .mission-card {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .mission-card h2, .vision-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            color: white;
+        }
+
+        .vision-card h2 {
+            color: #2c3e50;
+        }
+
+        .mission-card p, .vision-card p {
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .vision-card p {
+            color: #555;
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(52, 152, 219, 0.2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin-bottom: 25px;
+        }
+
+        .mission-card .card-icon {
+            background: rgba(52, 152, 219, 0.3);
+        }
+
+        /* === Values Section === */
+        .values-section {
+            padding: 100px 20px;
+            background: #f8f9fa;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            color: #2c3e50;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-header h2::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: #3498db;
+            border-radius: 2px;
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            max-width: 700px;
+            margin: 30px auto 0;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .value-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .value-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: #3498db;
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .value-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .value-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .value-icon {
+            width: 70px;
+            height: 70px;
+            background: #3498db;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 35px;
+            margin: 0 auto 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .value-card:hover .value-icon {
+            transform: rotate(5deg) scale(1.1);
+        }
+
+        .value-card h3 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .value-card p {
+            color: #7f8c8d;
+            line-height: 1.8;
+        }
+
+        /* === Company Info Section === */
+        .company-info-section {
+            padding: 100px 20px;
+            background: #2c3e50;
+            color: white;
+        }
+
+        .company-info-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .company-info-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 30px;
+            color: white;
+        }
+
+        .company-info-content p {
+            font-size: 1.1rem;
+            line-height: 1.9;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 25px;
+        }
+
+        .company-image {
+            position: relative;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .company-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .company-image:hover img {
+            transform: scale(1.05);
+        }
+
+        /* === Stats Section === */
+        .stats-section {
+            padding: 80px 20px;
+            background: #34495e;
+            color: white;
+        }
+
+        .stats-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #3498db;
+            margin-bottom: 10px;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* === Scroll Animations === */
+        .fade-in {
+            opacity: 0;
+            transform: scale(0.9) translateY(30px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* === Footer === */
+        footer {
+            background: rgba(44, 62, 80, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: white;
+            padding: 60px 20px 30px;
+            margin-top: 80px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 40px;
+        }
+
+        .footer-logo img {
+            max-width: 180px;
+            margin-bottom: 20px;
+            filter: brightness(0) invert(1);
+        }
+
+        .footer-column h4 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #3498db;
+            font-weight: 600;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            padding: 5px 0;
+        }
+
+        .footer-links a:hover {
+            color: #3498db;
+            padding-left: 10px;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .social-link:hover {
+            background: #3498db;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        .social-link img {
+            width: 24px;
+            height: 24px;
+            filter: brightness(0) invert(1);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* === Responsive Design === */
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 20px;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                gap: 5px;
+            }
+
+            nav a {
+                font-size: 12px;
+                margin: 0 5px;
+            }
+
+            .logo {
+                height: 60px;
+            }
+
+            .mission-vision-container {
+                grid-template-columns: 1fr;
+            }
+
+            .company-info-container {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-stats {
+                gap: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'partials/loading.html' %}
+
+    <header id="header">
+        <div class="header-container">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo" class="logo">
+            <nav>
+                <a href="/">Home</a>
+                <a href="/about">About Us</a>
+                <a href="/products">Products</a>
+                <a href="/services">Services</a>
+                <a href="/research">Research</a>
+                <a href="/contact">Contact</a>
+                <a href="/Gallery">Gallery</a>
+            </nav>
+            <a href="/Pharmaintel_ai" class="cta-header-button">Pharmaintel AI</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-particles" id="heroParticles"></div>
+        <div class="hero-content">
+            <h1>About Tunes Therapeutics</h1>
+            <p>Pioneering pharmaceutical excellence with innovation, quality, and unwavering commitment to improving global healthcare</p>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <span class="hero-stat-number" data-target="100">0</span>
+                    <span class="hero-stat-label">Products</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number" data-target="50">0</span>
+                    <span class="hero-stat-label">Countries</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number" data-target="1000">0</span>
+                    <span class="hero-stat-label">Research Projects</span>
+                </div>
+                <div class="hero-stat">
+                    <span class="hero-stat-number" data-target="50000">0</span>
+                    <span class="hero-stat-label">Patients Served</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission & Vision Section -->
+    <section class="mission-vision-section">
+        <div class="mission-vision-container">
+            <div class="mission-card fade-in">
+                <div class="card-icon">🎯</div>
+                <h2>Our Mission</h2>
+                <p>Our mission is to provide quality, efficacious and affordable medicines to patients and caregivers, backed by a team of experts committed to meeting global healthcare needs. We strive to make healthcare accessible to all through innovation and excellence.</p>
+            </div>
+            <div class="vision-card fade-in">
+                <div class="card-icon">👁️</div>
+                <h2>Our Vision</h2>
+                <p>Enhancing life through connecting people. We strive to create continuous value through a strong customer focus, which drives market gains and long-term growth consistently. Our vision is to be a global leader in pharmaceutical innovation.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values Section -->
+    <section class="values-section">
+        <div class="section-header fade-in">
+            <h2>Our Core Values</h2>
+            <p>The principles that guide everything we do at Tunes Therapeutics</p>
+        </div>
+        <div class="values-grid">
+            <div class="value-card fade-in">
+                <div class="value-icon">🔬</div>
+                <h3>Innovation</h3>
+                <p>Continuously advancing pharmaceutical science through cutting-edge research and development to bring breakthrough solutions to market.</p>
+            </div>
+            <div class="value-card fade-in">
+                <div class="value-icon">✅</div>
+                <h3>Quality</h3>
+                <p>Rigorous quality control and adherence to international standards ensuring every product meets the highest levels of safety and efficacy.</p>
+            </div>
+            <div class="value-card fade-in">
+                <div class="value-icon">🤝</div>
+                <h3>Integrity</h3>
+                <p>Building trust through transparency, ethical practices, and unwavering commitment to doing what's right for patients and partners.</p>
+            </div>
+            <div class="value-card fade-in">
+                <div class="value-icon">🌍</div>
+                <h3>Global Reach</h3>
+                <p>Serving communities worldwide with accessible healthcare solutions that improve lives across borders and cultures.</p>
+            </div>
+            <div class="value-card fade-in">
+                <div class="value-icon">💚</div>
+                <h3>Patient-Centered</h3>
+                <p>Putting patients at the heart of everything we do, ensuring our solutions address real-world healthcare challenges.</p>
+            </div>
+            <div class="value-card fade-in">
+                <div class="value-icon">⚡</div>
+                <h3>Excellence</h3>
+                <p>Pursuing excellence in every aspect of our operations, from research to manufacturing to customer service.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Company Info Section -->
+    <section class="company-info-section">
+        <div class="company-info-container">
+            <div class="company-info-content fade-in">
+                <h2>Who We Are</h2>
+                <p>Tunes Therapeutics Pvt. Ltd. is a leading pharmaceutical company dedicated to transforming healthcare through innovative solutions. With a strong foundation in research and development, we bring life-changing medicines to patients worldwide.</p>
+                <p>Our team of experienced professionals, scientists, and healthcare experts work tirelessly to ensure that every product we develop meets the highest standards of quality, safety, and effectiveness.</p>
+                <p>We believe in the power of science to improve lives and are committed to making a positive impact on global health outcomes through our pharmaceutical innovations.</p>
+            </div>
+            <div class="company-image fade-in">
+                <img src="{{ url_for('static', filename='images/y.jpg') }}" alt="Tunes Therapeutics" onerror="this.src='https://via.placeholder.com/600x400?text=Company+Image'">
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-item fade-in">
+                <div class="stat-number" data-target="100">0</div>
+                <div class="stat-label">Products</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number" data-target="50">0</div>
+                <div class="stat-label">Countries</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number" data-target="1000">0</div>
+                <div class="stat-label">Research Projects</div>
+            </div>
+            <div class="stat-item fade-in">
+                <div class="stat-number" data-target="50000">0</div>
+                <div class="stat-label">Patients Served</div>
+            </div>
+        </div>
+    </section>
+
+    {% include 'partials/footer.html' %}
+
+    <script>
+        // Header Scroll Effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Floating Particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('heroParticles');
+            const particleCount = 30;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 4 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 15 + 15) + 's';
+                particle.style.animationDelay = Math.random() * 5 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Scroll Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Animated Counter
+        function animateCounter(element) {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    element.textContent = Math.floor(current);
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = target.toLocaleString();
+                }
+            };
+
+            updateCounter();
+        }
+
+        const statsObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const statNumbers = entry.target.querySelectorAll('.stat-number, .hero-stat-number');
+                    statNumbers.forEach(statNumber => {
+                        if (statNumber && !statNumber.classList.contains('animated')) {
+                            statNumber.classList.add('animated');
+                            animateCounter(statNumber);
+                        }
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('.stats-section, .hero-stats').forEach(stat => {
+            statsObserver.observe(stat);
+        });
+    </script>
+</body>
+</html>
