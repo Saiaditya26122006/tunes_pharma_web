@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, session
-from openai import OpenAI
-import markdown, PyPDF2, os
+import os
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -17,7 +16,6 @@ translations = {
         'research': 'Research',
         'contact': 'Contact',
         'gallery': 'Gallery',
-        'pharmaintel_ai': 'Pharmaintel AI',
         'welcome': 'Welcome to Tunes Therapeutics',
         'tagline': 'Retuning Health, Redefining Lives'
     },
@@ -29,22 +27,10 @@ translations = {
         'research': 'अनुसंधान',
         'contact': 'संपर्क करें',
         'gallery': 'गैलरी',
-        'pharmaintel_ai': 'फार्माइंटेल AI',
         'welcome': 'ट्यून्स थेराप्यूटिक्स में आपका स्वागत है',
         'tagline': 'स्वास्थ्य को पुनः ट्यून करना, जीवन को पुनः परिभाषित करना'
     }
 }
-
-# Initialize OpenAI client
-# Get API key from environment variable or use default (for development only)
-api_key = os.getenv('OPENAI_API_KEY', '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')
-
-try:
-    client = OpenAI(api_key=api_key)
-except Exception as e:
-    print(f"Warning: Could not initialize OpenAI client: {e}")
-    print("The app will run but AI features will not be available.")
-    client = None
 
 products_data = {
     "ecoglim-mv1": {
@@ -223,48 +209,6 @@ def Gallery():
     lang = session.get('language', 'en')
     return render_template('Gallery.html', lang=lang, t=translations.get(lang, translations['en']))
 
-@app.route('/Pharmaintel_ai', methods=['GET', 'POST'])
-def pharmaintel_ai():
-    message, pdf_text = '', ''
-    if request.method == 'POST':
-        if client is None:
-            message = "Error: OpenAI client is not properly initialized. Please check your API key and package versions."
-        elif 'pdf_file' in request.files and request.files['pdf_file']:
-            pdf_file = request.files['pdf_file']
-            if pdf_file.filename.endswith('.pdf'):
-                try:
-                    path = os.path.join(app.config['UPLOAD_FOLDER'], pdf_file.filename)
-                    pdf_file.save(path)
-                    with open(path, 'rb') as f:
-                        reader = PyPDF2.PdfReader(f)
-                        pdf_text = ''.join(page.extract_text() or '' for page in reader.pages)
-                    os.remove(path)
-                    completion = client.chat.completions.create(
-                        model="gpt-4",
-                        messages=[
-                            {"role": "system", "content": "You are an assistant that helps with analyzing documents and creating strategies for pharmaceutical companies."},
-                            {"role": "user", "content": f"Analyze this document and create a strategy: {pdf_text}"}
-                        ]
-                    )
-                    message = markdown.markdown(f"AI Strategy:<br>{completion.choices[0].message.content}")
-                except Exception as e:
-                    message = f"Error processing the PDF file: {e}"
-            else:
-                message = "Please upload a valid PDF file."
-        elif 'openai_query' in request.form and request.form['openai_query']:
-            try:
-                completion = client.chat.completions.create(
-                    model="gpt-4",
-                    messages=[
-                        {"role": "system", "content": "You are an assistant helping with pharmaceutical strategies."},
-                        {"role": "user", "content": request.form['openai_query']}
-                    ]
-                )
-                message = markdown.markdown(f"OpenAI's Response:<br>{completion.choices[0].message.content}")
-            except Exception as e:
-                message = f"Error occurred while calling OpenAI: {e}"
-    return render_template('Pharmaintel_ai.html', message=message, pdf_text=pdf_text)
-
 # New Routes for Additional Features
 @app.route('/product-catalog')
 def product_catalog():
@@ -366,3 +310,4 @@ def online_ordering():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
