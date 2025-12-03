@@ -91,6 +91,38 @@
             background: rgba(52, 152, 219, 0.1);
         }
 
+        /* Mobile Menu Toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            z-index: 1001;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .mobile-menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: #2c3e50;
+            border-radius: 3px;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .mobile-menu-toggle.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .mobile-menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -7px);
+        }
+
         .cta-header-button {
             background: #2c3e50;
             color: white;
@@ -301,27 +333,126 @@
         }
 
         /* === Responsive Design === */
-        @media (max-width: 768px) {
-            header {
-                padding: 10px 20px;
-            }
-
-            nav {
-                flex-wrap: wrap;
-                gap: 5px;
+        @media (max-width: 1024px) {
+            .header-container {
+                padding: 12px 30px;
             }
 
             nav a {
-                font-size: 12px;
-                margin: 0 5px;
+                font-size: 14px;
+                margin: 0 10px;
+            }
+
+            main {
+                padding: 60px 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 15px;
+                top: 10px;
+            }
+
+            .header-container {
+                padding: 12px 20px;
+                border-radius: 30px;
+            }
+
+            .mobile-menu-toggle {
+                display: flex;
+            }
+
+            nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: rgba(255, 255, 255, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                padding-top: 100px;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+                z-index: 1000;
+                gap: 0;
+            }
+
+            nav.active {
+                transform: translateX(0);
+            }
+
+            nav a {
+                font-size: 18px;
+                margin: 15px 0;
+                padding: 15px 30px;
+                width: 80%;
+                text-align: center;
+                border-radius: 15px;
+                background: rgba(52, 152, 219, 0.05);
+            }
+
+            nav a:hover {
+                background: rgba(52, 152, 219, 0.15);
             }
 
             .logo {
-                height: 60px;
+                height: 50px;
+            }
+
+            main {
+                padding: 40px 15px;
+            }
+
+            h2 {
+                font-size: 1.8rem;
+            }
+
+            p {
+                font-size: 1rem;
             }
 
             .contact-details {
-                padding: 30px 20px;
+                padding: 25px 20px;
+                margin: 20px 0;
+            }
+
+            .contact-details h3 {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                padding: 8px 10px;
+            }
+
+            .header-container {
+                padding: 10px 15px;
+            }
+
+            .logo {
+                height: 40px;
+            }
+
+            main {
+                padding: 30px 10px;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            .contact-details {
+                padding: 20px 15px;
+            }
+
+            nav a {
+                font-size: 16px;
+                padding: 12px 25px;
             }
         }
     </style>
@@ -332,7 +463,12 @@
     <header id="header">
         <div class="header-container">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo" class="logo">
-            <nav>
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav id="mainNav">
                 <a href="/">Home</a>
                 <a href="/about">About Us</a>
                 <a href="/products">Products</a>
@@ -341,7 +477,6 @@
                 <a href="/contact">Contact</a>
                 <a href="/Gallery">Gallery</a>
             </nav>
-            <a href="/Pharmaintel_ai" class="cta-header-button">Pharmaintel AI</a>
         </div>
     </header>
 
@@ -360,6 +495,35 @@
     {% include 'partials/footer.html' %}
 
     <script>
+        // Mobile Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const mainNav = document.getElementById('mainNav');
+
+        if (mobileMenuToggle && mainNav) {
+            mobileMenuToggle.addEventListener('click', function() {
+                mainNav.classList.toggle('active');
+                mobileMenuToggle.classList.toggle('active');
+            });
+
+            const navLinks = mainNav.querySelectorAll('a');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mainNav.classList.remove('active');
+                    mobileMenuToggle.classList.remove('active');
+                });
+            });
+
+            document.addEventListener('click', function(event) {
+                const isClickInsideNav = mainNav.contains(event.target);
+                const isClickOnToggle = mobileMenuToggle.contains(event.target);
+                
+                if (!isClickInsideNav && !isClickOnToggle && mainNav.classList.contains('active')) {
+                    mainNav.classList.remove('active');
+                    mobileMenuToggle.classList.remove('active');
+                }
+            });
+        }
+
         // Header Scroll Effect
         window.addEventListener('scroll', function() {
             const header = document.getElementById('header');
