@@ -90,6 +90,71 @@
             background: rgba(52, 152, 219, 0.1);
         }
 
+        nav a.nav-active {
+            color: #3498db;
+        }
+
+        /* Dropdown Menu Styles */
+        .nav-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-trigger {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dropdown-arrow {
+            font-size: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-dropdown:hover .dropdown-arrow {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            min-width: 180px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 10px 0;
+            margin-top: 10px;
+            z-index: 1000;
+        }
+
+        .nav-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            margin-top: 5px;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            color: #2c3e50;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            margin: 0;
+            border-radius: 0;
+        }
+
+        .dropdown-menu a:hover {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+            padding-left: 25px;
+        }
+
         .cta-header-button {
             background: #2c3e50;
             color: white;
@@ -278,11 +343,17 @@
             <nav>
                 <a href="/">Home</a>
                 <a href="/about">About Us</a>
-                <a href="/products">Products</a>
-                <a href="/services">Services</a>
-                <a href="/research">Research</a>
-                <a href="/contact">Contact</a>
-                <a href="/Gallery">Gallery</a>
+                <div class="nav-dropdown">
+                    <a href="/products" class="dropdown-trigger nav-active">Our Products <span class="dropdown-arrow">▼</span></a>
+                    <div class="dropdown-menu">
+                        <a href="/products">All Products</a>
+                        <a href="/product-catalog">Product Catalog</a>
+                        <a href="/online-ordering">Online Ordering</a>
+                    </div>
+                </div>
+                <a href="/research">Initiatives</a>
+                <a href="/careers">Careers</a>
+                <a href="/contact">Contact Us</a>
             </nav>
         </div>
     </header>
