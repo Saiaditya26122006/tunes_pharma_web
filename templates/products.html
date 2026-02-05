@@ -7,709 +7,553 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* === Loading Screen Styles === */
-        /* === Global Styles === */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --primary: #0ea5e9;
+            --primary-dark: #0284c7;
+            --primary-light: #38bdf8;
+            --secondary: #1e3a5f;
+            --accent: #38bdf8;
+            --bg-light: #f0f9ff;
+            --bg-cream: #e0f2fe;
+            --text-dark: #1e3a5f;
+            --text-muted: #64748b;
+            --white: #ffffff;
+            --gradient-hero: linear-gradient(135deg, #0369a1 0%, #0284c7 50%, #0ea5e9 100%);
+            --gradient-accent: linear-gradient(135deg, #0ea5e9, #38bdf8);
         }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
+            background: var(--bg-light);
+            color: var(--text-dark);
             line-height: 1.6;
             overflow-x: hidden;
         }
 
-        /* === Header and Navigation === */
         header {
             position: sticky;
             top: 20px;
             z-index: 1000;
             padding: 0 20px;
-            transition: all 0.3s ease;
+            margin-bottom: 24px;
         }
-
-        header.scrolled {
-            top: 10px;
-        }
-
         .header-container {
             display: flex;
             align-items: center;
             justify-content: space-between;
             max-width: 1400px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.7);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border-radius: 50px;
-            padding: 15px 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 14px 36px;
+            box-shadow: 0 8px 32px rgba(14, 165, 233, 0.08);
+            border: 1px solid rgba(14, 165, 233, 0.1);
         }
-
-        .logo {
-            height: 60px;
-            transition: transform 0.3s ease;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        .logo { height: 70px; }
+        nav { display: flex; gap: 6px; flex: 1; justify-content: center; }
+        nav a {
+            color: var(--secondary);
+            text-decoration: none;
+            margin: 0 12px;
+            font-size: 15px;
+            font-weight: 500;
+            padding: 8px 14px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
         }
-
-        .logo:hover {
-            transform: scale(1.05);
+        nav a:hover { color: var(--primary); background: rgba(14, 165, 233, 0.1); }
+        nav a.nav-active { color: var(--primary); }
+        .nav-dropdown { position: relative; display: inline-block; }
+        .dropdown-trigger { display: flex; align-items: center; gap: 5px; }
+        .dropdown-arrow { font-size: 10px; transition: transform 0.3s ease; }
+        .nav-dropdown:hover .dropdown-arrow { transform: rotate(180deg); }
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--white);
+            min-width: 180px;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(14, 165, 233, 0.12);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 10px 0;
+            margin-top: 8px;
+            z-index: 1000;
+            border: 1px solid rgba(14, 165, 233, 0.08);
         }
+        .nav-dropdown:hover .dropdown-menu { opacity: 1; visibility: visible; margin-top: 4px; }
+        .dropdown-menu a {
+            display: block;
+            padding: 10px 20px;
+            color: var(--secondary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .dropdown-menu a:hover { background: rgba(14, 165, 233, 0.08); color: var(--primary); padding-left: 24px; }
 
-        nav {
+        .products-hero {
+            background: var(--gradient-hero);
+            color: white;
+            padding: 64px 24px 56px;
+            position: relative;
+            overflow: hidden;
+        }
+        .products-hero::before {
+            content: '';
+            position: absolute;
+            bottom: -40%;
+            right: -15%;
+            width: 60%;
+            height: 120%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .hero-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            margin-bottom: 18px;
+        }
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+        .hero-subtitle {
+            font-size: 1.05rem;
+            opacity: 0.95;
+            margin-bottom: 24px;
+        }
+        .breadcrumb {
             display: flex;
             align-items: center;
             gap: 8px;
-            flex: 1;
-            justify-content: center;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.85);
         }
-
-        nav a {
-            color: #2c3e50;
+        .breadcrumb a {
+            color: rgba(255,255,255,0.9);
             text-decoration: none;
-            margin: 0 15px;
-            font-size: 15px;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            position: relative;
-            padding: 8px 12px;
-            transition: all 0.3s ease;
-            border-radius: 20px;
+            transition: color 0.25s ease;
         }
+        .breadcrumb a:hover { color: white; }
+        .breadcrumb span { color: rgba(255,255,255,0.5); }
 
-        nav a:hover {
-            color: #3498db;
-            background: rgba(52, 152, 219, 0.1);
-        }
-
-        /* Mobile Menu Toggle */
-        .mobile-menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 8px;
-            z-index: 1001;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .mobile-menu-toggle span {
-            width: 25px;
-            height: 3px;
-            background: #2c3e50;
-            border-radius: 3px;
-            transition: all 0.3s ease;
-        }
-
-        .mobile-menu-toggle.active span:nth-child(1) {
-            transform: rotate(45deg) translate(8px, 8px);
-        }
-
-        .mobile-menu-toggle.active span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .mobile-menu-toggle.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -7px);
-        }
-
-        .cta-header-button {
-            background: #2c3e50;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
-            white-space: nowrap;
-        }
-
-        .cta-header-button:hover {
-            background: #34495e;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4);
-        }
-
-        /* === Hero Section === */
-        .products-hero {
-            background: #34495e;
-            color: white;
-            padding: 80px 20px;
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .products-hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            margin-bottom: 20px;
-            font-weight: 700;
-        }
-
-        .products-hero p {
-            font-size: clamp(1rem, 2vw, 1.3rem);
-            opacity: 0.9;
-            max-width: 700px;
+        .products-wrap {
+            max-width: 1200px;
             margin: 0 auto;
+            padding: 56px 24px 80px;
         }
 
-        /* === Main Content === */
-        main {
-            padding: 0 20px 80px;
-            max-width: 1400px;
-            margin: 0 auto;
+        .section-header {
+            text-align: center;
+            margin-bottom: 44px;
         }
-
-        .section-title {
+        .section-header h2 {
             font-family: 'Playfair Display', serif;
-            font-size: clamp(2rem, 4vw, 3rem);
-            text-align: center;
-            margin-bottom: 50px;
-            color: #2c3e50;
-            position: relative;
-            display: inline-block;
-            width: 100%;
+            font-size: clamp(1.8rem, 4vw, 2.4rem);
+            color: var(--secondary);
+            margin-bottom: 12px;
         }
-
-        .section-title::after {
+        .section-header h2::after {
             content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: #3498db;
-            border-radius: 2px;
-        }
-
-        .sub-boxes {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 35px;
-            margin-top: 50px;
-        }
-
-        .sub-box {
-            background: white;
-            padding: 45px 35px;
-            border-radius: 25px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-            border: 2px solid transparent;
-        }
-
-        .sub-box::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: linear-gradient(90deg, #3498db, #2980b9);
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
-        }
-
-        .sub-box::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(52, 152, 219, 0.1) 0%, transparent 70%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-        }
-
-        .sub-box:hover {
-            transform: translateY(-12px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-            border-color: #3498db;
-        }
-
-        .sub-box:hover::before {
-            transform: scaleX(1);
-        }
-
-        .sub-box:hover::after {
-            opacity: 1;
-        }
-
-        .sub-box h3 {
-            font-size: 1.9rem;
-            color: #2c3e50;
-            margin-bottom: 25px;
-            font-weight: 700;
-            position: relative;
-            z-index: 1;
-        }
-
-        .sub-box-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
             display: block;
-            position: relative;
-            z-index: 1;
+            width: 60px;
+            height: 4px;
+            background: var(--gradient-accent);
+            border-radius: 2px;
+            margin: 14px auto 0;
+        }
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.8;
+            max-width: 720px;
+            margin: 0 auto;
         }
 
-        .product-list {
-            display: none;
-            margin-top: 25px;
-            text-align: left;
-            position: relative;
-            z-index: 1;
-            animation: slideDown 0.3s ease;
+        .therapy-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            margin-bottom: 48px;
         }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .therapy-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.35s ease;
+            border: 2px solid transparent;
+            box-shadow: 0 10px 40px rgba(14, 165, 233, 0.08);
         }
-
-        .product-list a {
-            display: flex;
-            align-items: center;
-            text-decoration: none;
-            color: #2c3e50;
-            font-weight: 500;
-            margin-top: 12px;
-            padding: 12px 15px;
-            border-radius: 10px;
-            transition: all 0.3s ease;
-            background: #f8f9fa;
-            border-left: 3px solid transparent;
+        .therapy-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 50px rgba(14, 165, 233, 0.12);
         }
-
-        .product-list a::before {
-            content: '→';
-            margin-right: 10px;
-            color: #3498db;
-            font-weight: bold;
+        .therapy-card.active {
+            border-color: var(--primary);
+            box-shadow: 0 16px 48px rgba(14, 165, 233, 0.18);
+        }
+        .therapy-image {
+            width: 100%;
+            max-width: 160px;
+            height: 160px;
+            margin: 0 auto 16px;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--bg-cream);
+        }
+        .therapy-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 12px;
             transition: transform 0.3s ease;
         }
-
-        .product-list a:hover {
-            background: #e8f4f8;
-            color: #3498db;
-            border-left-color: #3498db;
-            transform: translateX(5px);
+        .therapy-card:hover .therapy-image img { transform: scale(1.05); }
+        .therapy-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--secondary);
+            transition: color 0.25s ease;
         }
+        .therapy-card.active .therapy-label { color: var(--primary); }
 
-        .product-list a:hover::before {
-            transform: translateX(5px);
-        }
-
-        /* === Scroll Animations === */
-        .fade-in {
-            opacity: 0;
-            transform: scale(0.9) translateY(20px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
-
-        /* === Footer === */
-        footer {
-            background: rgba(44, 62, 80, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            color: white;
-            padding: 60px 20px 30px;
-            margin-top: 80px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
+        .category-content {
             margin-bottom: 40px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 40px;
         }
-
-        .footer-logo img {
-            max-width: 180px;
-            margin-bottom: 20px;
-            filter: brightness(0) invert(1);
+        .category-card {
+            background: var(--white);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 16px 48px rgba(14, 165, 233, 0.08);
+            border: 1px solid rgba(14, 165, 233, 0.08);
         }
-
-        .footer-column h4 {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: #3498db;
+        .category-header {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary-dark) 100%);
+            padding: 24px 32px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+        .category-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: white;
             font-weight: 600;
         }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            display: block;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-            padding: 5px 0;
-        }
-
-        .footer-links a:hover {
-            color: #3498db;
-            padding-left: 10px;
-        }
-
-        .footer-social {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .social-link {
-            width: 45px;
-            height: 45px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 50%;
+        .search-box {
             display: flex;
             align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 12px;
+            padding: 12px 18px;
+            min-width: 240px;
         }
-
-        .social-link:hover {
-            background: #3498db;
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        .search-box input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 0.95rem;
+            width: 100%;
+            margin-left: 10px;
         }
+        .search-box input::placeholder { color: rgba(255,255,255,0.7); }
 
-        .social-link img {
-            width: 24px;
-            height: 24px;
-            filter: brightness(0) invert(1);
+        .product-tables {
+            padding: 32px;
         }
-
-        .footer-bottom {
+        .sub-category {
+            margin-bottom: 36px;
+        }
+        .sub-category:last-child { margin-bottom: 0; }
+        .sub-category-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 16px;
+            padding-left: 14px;
+            border-left: 4px solid var(--primary);
+        }
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 14px;
+            border: 1px solid rgba(14, 165, 233, 0.1);
+        }
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 560px;
+        }
+        .product-table thead {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.12), rgba(56, 189, 248, 0.08));
+        }
+        .product-table th {
+            padding: 16px 20px;
+            text-align: left;
+            color: var(--secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+        .product-table th:last-child { text-align: center; }
+        .product-table tbody tr {
+            border-bottom: 1px solid rgba(14, 165, 233, 0.08);
+            transition: background 0.25s ease;
+        }
+        .product-table tbody tr:hover {
+            background: rgba(14, 165, 233, 0.04);
+        }
+        .product-table td {
+            padding: 16px 20px;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+        }
+        .product-table td:first-child {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+        .product-table td:last-child {
             text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.7);
-            max-width: 1400px;
-            margin: 0 auto;
+            color: var(--text-muted);
         }
 
-        /* === Responsive Design === */
-        @media (max-width: 1024px) {
-            .header-container {
-                padding: 12px 30px;
-            }
-
-            nav a {
-                font-size: 14px;
-                margin: 0 10px;
-            }
-
-            .sub-boxes {
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            }
+        .catalog-cta {
+            text-align: center;
+            margin-top: 48px;
+        }
+        .catalog-cta a {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--gradient-accent);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 14px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(14, 165, 233, 0.35);
+        }
+        .catalog-cta a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(14, 165, 233, 0.4);
         }
 
+        @media (max-width: 900px) {
+            .therapy-grid { grid-template-columns: 1fr; }
+        }
         @media (max-width: 768px) {
-            header {
-                padding: 10px 15px;
-                top: 10px;
-            }
-
-            .header-container {
-                padding: 12px 20px;
-                border-radius: 30px;
-            }
-
-            .mobile-menu-toggle {
-                display: flex;
-            }
-
-            nav {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100vh;
-                background: rgba(255, 255, 255, 0.98);
-                backdrop-filter: blur(20px);
-                flex-direction: column;
-                justify-content: flex-start;
-                align-items: center;
-                padding-top: 100px;
-                transform: translateX(-100%);
-                transition: transform 0.3s ease;
-                z-index: 1000;
-                gap: 0;
-            }
-
-            nav.active {
-                transform: translateX(0);
-            }
-
-            nav a {
-                font-size: 18px;
-                margin: 15px 0;
-                padding: 15px 30px;
-                width: 80%;
-                text-align: center;
-                border-radius: 15px;
-                background: rgba(52, 152, 219, 0.05);
-            }
-
-            nav a:hover {
-                background: rgba(52, 152, 219, 0.15);
-            }
-
-            .logo {
-                height: 50px;
-            }
-
-            .products-hero {
-                padding: 60px 15px;
-            }
-
-            .products-hero h1 {
-                font-size: 2rem;
-            }
-
-            .products-hero p {
-                font-size: 1rem;
-            }
-
-            main {
-                padding: 0 15px 60px;
-            }
-
-            .section-title {
-                font-size: 1.8rem;
-                margin-bottom: 30px;
-            }
-
-            .sub-boxes {
-                grid-template-columns: 1fr;
-                gap: 25px;
-            }
-
-            .sub-box {
-                padding: 30px 25px;
-            }
-
-            .sub-box h3 {
-                font-size: 1.5rem;
-            }
-
-            .sub-box-icon {
-                font-size: 2.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            header {
-                padding: 8px 10px;
-            }
-
-            .header-container {
-                padding: 10px 15px;
-            }
-
-            .logo {
-                height: 40px;
-            }
-
-            .products-hero {
-                padding: 40px 10px;
-            }
-
-            .products-hero h1 {
-                font-size: 1.75rem;
-            }
-
-            .sub-box {
-                padding: 25px 20px;
-            }
-
-            .sub-box h3 {
-                font-size: 1.3rem;
-            }
-
-            nav a {
-                font-size: 16px;
-                padding: 12px 25px;
-            }
+            .category-header { flex-direction: column; align-items: stretch; }
+            .search-box { min-width: 100%; }
+            .product-tables { padding: 20px; }
         }
     </style>
-    <script>
-        function toggleProducts(id) {
-            let element = document.getElementById(id);
-            if (element.style.display === "none" || element.style.display === "") {
-                element.style.display = "block";
-            } else {
-                element.style.display = "none";
-            }
-        }
-    </script>
 </head>
 <body>
     {% include 'partials/loading.html' %}
 
     <header id="header">
         <div class="header-container">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo" class="logo">
-            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics" class="logo">
             <nav id="mainNav">
                 <a href="/">Home</a>
                 <a href="/about">About Us</a>
-                <a href="/products">Products</a>
-                <a href="/services">Services</a>
-                <a href="/research">Research</a>
-                <a href="/contact">Contact</a>
-                <a href="/Gallery">Gallery</a>
+                <div class="nav-dropdown">
+                    <a href="/products" class="dropdown-trigger nav-active">Our Products <span class="dropdown-arrow">▼</span></a>
+                    <div class="dropdown-menu">
+                        <a href="/products">All Products</a>
+                        <a href="/product-catalog">Product Catalog</a>
+                        <a href="/online-ordering">Online Ordering</a>
+                    </div>
+                </div>
+                <a href="/research">Initiatives</a>
+                <a href="/careers">Careers</a>
+                <a href="/contact">Contact Us</a>
             </nav>
         </div>
     </header>
 
     <section class="products-hero">
-        <h1>Our Pharmaceutical Products</h1>
-        <p>Discover our comprehensive range of innovative healthcare solutions designed to improve patient outcomes</p>
+        <div class="hero-inner">
+            <span class="hero-badge">Therapeutic portfolio</span>
+            <h1 class="hero-title">Our Products</h1>
+            <p class="hero-subtitle">Extensive presence across chronic care and key therapy areas.</p>
+            <div class="breadcrumb">
+                <a href="/">Home</a>
+                <span>/</span>
+                <span>Our Products</span>
+            </div>
+        </div>
     </section>
 
-    <main>
-        <h2 class="section-title fade-in">Product Categories</h2>
-        <div class="sub-boxes">
-            <div class="sub-box fade-in" onclick="toggleProducts('cardio-products')">
-                <span class="sub-box-icon">❤️</span>
-                <h3>CARDIO RANGE</h3>
-                <p style="color: #7f8c8d; margin-bottom: 15px;">Cardiovascular health solutions</p>
-                <div id="cardio-products" class="product-list">
-                    <a href="/products/ecoglim-mv1">Ecoglim MV1</a>
-                    <a href="/products/ecoglim-mv2">Ecoglim MV2</a>
+    <div class="products-wrap">
+        <div class="section-header">
+            <h2>Therapeutic Areas</h2>
+            <p>We focus on dedication, integrity, and robust R&D. Our brands span Cardiovascular, CNS, Gastro-Intestinal, Diabetology, Anti-Infective, VMN and Pain Management, with a strong presence in Cardiology, Diabetology, and Pain Management.</p>
+        </div>
+
+        <div class="therapy-grid">
+            <div class="therapy-card" data-category="diabetic" onclick="showCategory('diabetic')">
+                <div class="therapy-image">
+                    <img src="{{ url_for('static', filename='images/Diabetes.png') }}" alt="Anti-Diabetic">
                 </div>
+                <p class="therapy-label">Anti-Diabetic</p>
             </div>
-            <div class="sub-box fade-in" onclick="toggleProducts('diabetic-products')">
-                <span class="sub-box-icon">💊</span>
-                <h3>DIABETIC RANGE</h3>
-                <p style="color: #7f8c8d; margin-bottom: 15px;">Advanced diabetes management</p>
-                <div id="diabetic-products" class="product-list">
-                    <a href="/products/ecoglim-mp1">Ecoglim MP1</a>
-                    <a href="/products/ecoglim-mp2">Ecoglim MP2</a>
-                    <a href="/products/nactaid">NACTAID</a>
+            <div class="therapy-card active" data-category="pain" onclick="showCategory('pain')">
+                <div class="therapy-image">
+                    <img src="{{ url_for('static', filename='images/pain management .png') }}" alt="Pain Management">
                 </div>
+                <p class="therapy-label">Pain Management</p>
             </div>
-            <div class="sub-box fade-in" onclick="toggleProducts('ortho-products')">
-                <span class="sub-box-icon">🦴</span>
-                <h3>ORTHO RANGE</h3>
-                <p style="color: #7f8c8d; margin-bottom: 15px;">Orthopedic and pain management</p>
-                <div id="ortho-products" class="product-list">
-                    <a href="/products/resgaba-nt">RESGABA-NT</a>
-                    <a href="/products/resgaba-dlx">RESGABA-DLX</a>
-                    <a href="/products/rabishir-dsr">RABISHIR-DSR</a>
+            <div class="therapy-card" data-category="gastro" onclick="showCategory('gastro')">
+                <div class="therapy-image">
+                    <img src="{{ url_for('static', filename='images/Gastro.png') }}" alt="Gastro Intestinal">
+                </div>
+                <p class="therapy-label">Gastro Intestinal</p>
+            </div>
+        </div>
+
+        <!-- Diabetic -->
+        <div id="category-diabetic" class="category-content" style="display: none;">
+            <div class="category-card">
+                <div class="category-header">
+                    <h2 class="category-title">Anti-Diabetic</h2>
+                    <div class="search-box">
+                        <span>🔍</span>
+                        <input type="text" placeholder="Search brand, drug, dosage">
+                    </div>
+                </div>
+                <div class="product-tables">
+                    <div class="sub-category">
+                        <h3 class="sub-category-title">Oral Hypoglycemics</h3>
+                        <div class="table-wrap">
+                            <table class="product-table">
+                                <thead>
+                                    <tr>
+                                        <th>Brand</th>
+                                        <th>Drug & Strength</th>
+                                        <th>Dosage Form</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Ecoglim MP1 & MP2</td><td>MP1: Glimepiride 1mg + Metformin 500mg | MP2: Glimepiride 2mg + Metformin 500mg</td><td>Tablets</td></tr>
+                                    <tr><td>Ecoglim MV1 & MV2</td><td>MV1: Glimepiride 1mg + Metformin 500mg + Methylcobalamin 0.2mg | MV2: Glimepiride 2mg + Metformin 500mg + Methylcobalamin 0.2mg</td><td>Tablets</td></tr>
+                                    <tr><td>NACTAID</td><td>N-Acetylcysteine 600mg</td><td>Tablets</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </main>
+
+        <!-- Pain Management -->
+        <div id="category-pain" class="category-content">
+            <div class="category-card">
+                <div class="category-header">
+                    <h2 class="category-title">Pain Management</h2>
+                    <div class="search-box">
+                        <span>🔍</span>
+                        <input type="text" placeholder="Search brand, drug, dosage">
+                    </div>
+                </div>
+                <div class="product-tables">
+                    <div class="sub-category">
+                        <h3 class="sub-category-title">Neuropathic Pain</h3>
+                        <div class="table-wrap">
+                            <table class="product-table">
+                                <thead>
+                                    <tr>
+                                        <th>Brand</th>
+                                        <th>Drug & Strength</th>
+                                        <th>Dosage Form</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>RESGABA-NT</td><td>Pregabalin 75mg + Nortriptyline 10mg</td><td>Tablets</td></tr>
+                                    <tr><td>RESGABA-DLX</td><td>Pregabalin 75mg + Duloxetine 20mg</td><td>Capsules</td></tr>
+                                    <tr><td>RESGABA-M</td><td>Pregabalin 75mg + Methylcobalamin 750mcg</td><td>Tablets</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gastro -->
+        <div id="category-gastro" class="category-content" style="display: none;">
+            <div class="category-card">
+                <div class="category-header">
+                    <h2 class="category-title">Gastro Intestinal</h2>
+                    <div class="search-box">
+                        <span>🔍</span>
+                        <input type="text" placeholder="Search brand, drug, dosage">
+                    </div>
+                </div>
+                <div class="product-tables">
+                    <div class="sub-category">
+                        <h3 class="sub-category-title">Proton Pump Inhibitors</h3>
+                        <div class="table-wrap">
+                            <table class="product-table">
+                                <thead>
+                                    <tr>
+                                        <th>Brand</th>
+                                        <th>Drug & Strength</th>
+                                        <th>Dosage Form</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>RABISHIR-DSR</td><td>Rabeprazole 20mg + Domperidone 30mg SR</td><td>Capsules</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="catalog-cta">
+            <a href="/product-catalog">Browse full catalog →</a>
+        </div>
+    </div>
 
     {% include 'partials/footer.html' %}
 
     <script>
-        // Mobile Menu Toggle
-        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
-        const mainNav = document.getElementById('mainNav');
-
-        if (mobileMenuToggle && mainNav) {
-            mobileMenuToggle.addEventListener('click', function() {
-                mainNav.classList.toggle('active');
-                mobileMenuToggle.classList.toggle('active');
-            });
-
-            // Close menu when clicking on a link
-            const navLinks = mainNav.querySelectorAll('a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    mainNav.classList.remove('active');
-                    mobileMenuToggle.classList.remove('active');
-                });
-            });
-
-            // Close menu when clicking outside
-            document.addEventListener('click', function(event) {
-                const isClickInsideNav = mainNav.contains(event.target);
-                const isClickOnToggle = mobileMenuToggle.contains(event.target);
-                
-                if (!isClickInsideNav && !isClickOnToggle && mainNav.classList.contains('active')) {
-                    mainNav.classList.remove('active');
-                    mobileMenuToggle.classList.remove('active');
-                }
+        function showCategory(category) {
+            document.querySelectorAll('.category-content').forEach(el => { el.style.display = 'none'; });
+            var el = document.getElementById('category-' + category);
+            if (el) el.style.display = 'block';
+            document.querySelectorAll('.therapy-card').forEach(function(card) {
+                card.classList.toggle('active', card.dataset.category === category);
             });
         }
-
-        // Header Scroll Effect
-        window.addEventListener('scroll', function() {
-            const header = document.getElementById('header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-
-        // Scroll Animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
+        showCategory('pain');
     </script>
 </body>
 </html>
