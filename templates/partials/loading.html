@@ -1,135 +1,149 @@
 <style>
-    .loading-overlay {
+    /* === Fullscreen Loader Overlay === */
+    .loader-overlay {
         position: fixed;
-        inset: 0;
-        background: radial-gradient(circle at top, rgba(52, 152, 219, 0.15), rgba(44, 62, 80, 0.95));
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(15px);
+        -webkit-backdrop-filter: blur(15px);
         display: flex;
         align-items: center;
         justify-content: center;
-        flex-direction: column;
-        backdrop-filter: blur(10px);
-        z-index: 9999;
+        z-index: 999999;
+        opacity: 0;
+        visibility: hidden;
         transition: opacity 0.5s ease, visibility 0.5s ease;
     }
 
-    .loading-overlay.fade-out {
+    .loader-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .loader-overlay.fade-out {
         opacity: 0;
         visibility: hidden;
     }
 
-    .loading-orb {
-        width: 140px;
-        height: 140px;
-        border-radius: 50%;
+    .loader-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+
+    .logo-animation-container {
         position: relative;
+        width: 180px;
+        height: 180px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(255, 255, 255, 0.08);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-        animation: orbPulse 2.5s ease-in-out infinite;
     }
 
-    .loading-ring {
-        position: absolute;
-        width: 160px;
-        height: 160px;
-        border-radius: 50%;
-        border: 3px solid transparent;
-        border-top-color: #ffffff;
-        border-right-color: rgba(255, 255, 255, 0.4);
-        animation: rotateRing 1.8s linear infinite;
+    .logo-video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 12px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
     }
 
-    .loading-ring.secondary {
-        width: 190px;
-        height: 190px;
-        border-top-color: rgba(255, 255, 255, 0.25);
-        border-right-color: transparent;
-        animation-duration: 2.6s;
-    }
-
-    .loading-logo {
-        width: 90px;
-        height: 90px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.9);
-        display: grid;
-        place-items: center;
-        overflow: hidden;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    }
-
-    .loading-logo img {
-        width: 70px;
-        height: auto;
-        animation: gentleFloat 2.5s ease-in-out infinite;
-    }
-
-    .loading-overlay p {
-        margin-top: 25px;
-        color: rgba(255, 255, 255, 0.85);
+    .loader-text {
+        text-align: center;
+        color: #1e3a5f;
+        font-family: 'Poppins', sans-serif;
         font-weight: 500;
-        letter-spacing: 0.08em;
+        font-size: 1.1rem;
+        letter-spacing: 0.5px;
     }
 
-    @keyframes rotateRing {
-        from {
-            transform: rotate(0deg);
-        }
-        to {
-            transform: rotate(360deg);
-        }
+    /* Blur effect on body content */
+    body.loader-active {
+        overflow: hidden;
     }
 
-    @keyframes orbPulse {
-        0%, 100% {
-            transform: scale(1);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-        }
-        50% {
-            transform: scale(1.05);
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
-        }
+    body.loader-active > *:not(.loader-overlay) {
+        filter: blur(8px);
+        transition: filter 0.3s ease;
     }
 
-    @keyframes gentleFloat {
-        0%, 100% {
-            transform: translateY(0);
-        }
-        50% {
-            transform: translateY(-6px);
-        }
+    /* Prevent white flash */
+    html {
+        background: #f0f9ff;
+    }
+
+    body {
+        background: #f0f9ff;
     }
 </style>
 
-<div class="loading-overlay" id="globalLoading">
-    <div class="loading-orb">
-        <div class="loading-ring"></div>
-        <div class="loading-ring secondary"></div>
-        <div class="loading-logo">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo">
+<!-- Fullscreen Loader Overlay -->
+<div class="loader-overlay" id="fullscreenLoader">
+    <div class="loader-content">
+        <div class="logo-animation-container">
+            <video class="logo-video" id="logoVideo" muted playsinline loop>
+                <source src="{{ url_for('static', filename='videos/Untitled (1).mp4') }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
         </div>
+        <div class="loader-text">Loading...</div>
     </div>
-    <p>Retuning health for you...</p>
 </div>
 
 <script>
-    // Faster loading - trigger on DOM ready instead of full page load
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', hideLoader);
-    } else {
-        hideLoader();
-    }
-    
-    function hideLoader() {
-        const loader = document.getElementById('globalLoading');
-        if (!loader) return;
-        // Minimum display time for smooth animation (800ms)
-        setTimeout(() => {
+    // Fullscreen Loader Logic
+    (function() {
+        const loader = document.getElementById('fullscreenLoader');
+        const video = document.getElementById('logoVideo');
+        const body = document.body;
+        
+        if (!loader || !video) return;
+        
+        // Show loader immediately
+        function showLoader() {
+            loader.classList.add('active');
+            body.classList.add('loader-active');
+            
+            // Try to play video
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log('Auto-play prevented:', error);
+                });
+            }
+        }
+        
+        // Hide loader after 2.5 seconds
+        function hideLoader() {
             loader.classList.add('fade-out');
-            setTimeout(() => loader.remove(), 500);
-        }, 800);
-    }
+            body.classList.remove('loader-active');
+            video.pause();
+            
+            setTimeout(() => {
+                loader.classList.remove('active', 'fade-out');
+                loader.style.display = 'none';
+            }, 500);
+        }
+        
+        // Show loader on page load
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', showLoader);
+        } else {
+            showLoader();
+        }
+        
+        // Hide loader after 2.5 seconds
+        setTimeout(hideLoader, 2500);
+        
+        // Also hide if video ends early
+        video.addEventListener('ended', hideLoader);
+        
+        // Handle navigation
+        window.addEventListener('beforeunload', showLoader);
+    })();
 </script>
 
