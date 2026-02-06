@@ -1,64 +1,91 @@
 <style>
+    /* === Footer - Professional & Classic === */
     footer {
         position: relative;
         margin-top: 100px;
         overflow: hidden;
     }
 
+    .footer-accent-bar {
+        height: 4px;
+        background: linear-gradient(90deg, #0ea5e9 0%, #38bdf8 50%, #0ea5e9 100%);
+    }
+
     .footer-upper {
-        background: #34495e;
+        background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
         color: white;
-        padding: 60px 20px;
+        padding: 64px 24px 48px;
         position: relative;
     }
 
+    .footer-upper::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.3), transparent);
+        opacity: 0.6;
+    }
+
     .footer-upper-content {
-        max-width: 1400px;
+        max-width: 1200px;
         margin: 0 auto;
         display: grid;
-        grid-template-columns: auto repeat(5, 1fr);
-        gap: 40px;
+        grid-template-columns: 1.1fr 1fr 1fr 1fr;
+        gap: 48px 32px;
         align-items: start;
     }
 
-    .footer-logo-section {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
+    .footer-brand {
+        padding-right: 32px;
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     .footer-logo {
-        margin-bottom: 20px;
+        margin-bottom: 16px;
     }
 
     .footer-logo img {
-        max-width: 120px;
+        max-width: 140px;
         height: auto;
         filter: brightness(0) invert(1);
-        transition: transform 0.3s ease;
+        transition: opacity 0.3s ease;
     }
 
     .footer-logo img:hover {
-        transform: scale(1.05);
+        opacity: 0.9;
     }
 
     .footer-tagline {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         font-weight: 600;
-        margin-bottom: 10px;
+        letter-spacing: 0.02em;
+        margin-bottom: 12px;
+        color: #fff;
+    }
+
+    .footer-brand-desc {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        line-height: 1.7;
+        max-width: 260px;
     }
 
     .footer-column h4 {
-        font-size: 1rem;
+        font-size: 0.7rem;
         margin-bottom: 20px;
-        color: #3498db;
-        font-weight: 700;
+        color: #38bdf8;
+        font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.15em;
     }
 
     .footer-links {
         list-style: none;
+        padding: 0;
+        margin: 0;
     }
 
     .footer-links li {
@@ -66,115 +93,93 @@
     }
 
     .footer-links a {
-        color: rgba(255, 255, 255, 0.9);
+        color: rgba(255, 255, 255, 0.85);
         text-decoration: none;
-        font-size: 0.95rem;
-        transition: all 0.3s ease;
-        display: block;
-        padding: 4px 0;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        display: inline-block;
     }
 
     .footer-links a:hover {
-        color: #3498db;
-        padding-left: 5px;
-    }
-
-    .scroll-to-top {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 50px;
-        height: 50px;
-        background: #2c3e50;
-        border: none;
-        border-radius: 4px;
-        color: white;
-        font-size: 22px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-        z-index: 999;
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    .scroll-to-top:hover {
-        background: #3498db;
-        transform: translateY(-5px);
-        box-shadow: 0 8px 20px rgba(52, 152, 219, 0.5);
+        color: #38bdf8;
+        transform: translateX(4px);
     }
 
     .footer-lower {
-        background: #2c3e50;
-        color: white;
-        padding: 25px 20px;
+        background: #0f172a;
+        padding: 20px 24px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     .footer-lower-content {
-        max-width: 1400px;
+        max-width: 1200px;
         margin: 0 auto;
         display: flex;
         justify-content: space-between;
         align-items: center;
         flex-wrap: wrap;
-        gap: 20px;
+        gap: 16px;
     }
 
     .footer-copyright {
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 12px;
         flex-wrap: wrap;
     }
 
     .footer-copyright p {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.85rem;
         margin: 0;
+        letter-spacing: 0.02em;
     }
 
     .footer-copyright-links {
         display: flex;
-        gap: 15px;
+        align-items: center;
+        gap: 12px;
         flex-wrap: wrap;
     }
 
+    .footer-copyright-links span {
+        color: rgba(255, 255, 255, 0.25);
+        font-size: 0.75rem;
+    }
+
     .footer-copyright-links a {
-        color: rgba(255, 255, 255, 0.9);
+        color: rgba(255, 255, 255, 0.6);
         text-decoration: none;
-        font-size: 0.9rem;
-        transition: color 0.3s ease;
+        font-size: 0.85rem;
+        transition: color 0.2s ease;
     }
 
     .footer-copyright-links a:hover {
-        color: #3498db;
+        color: #38bdf8;
     }
 
     .footer-social-lower {
         display: flex;
-        gap: 12px;
+        gap: 10px;
         align-items: center;
     }
 
     .social-link-lower {
-        width: 35px;
-        height: 35px;
-        background: transparent;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s ease;
+        transition: all 0.25s ease;
     }
 
     .social-link-lower:hover {
-        background: #3498db;
-        border-color: #3498db;
-        transform: translateY(-3px);
+        background: #38bdf8;
+        border-color: #38bdf8;
+        transform: translateY(-2px);
     }
 
     .social-link-lower img {
@@ -183,56 +188,105 @@
         filter: brightness(0) invert(1);
     }
 
+    .scroll-to-top {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        width: 48px;
+        height: 48px;
+        background: #1e293b;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .scroll-to-top:hover {
+        background: #0ea5e9;
+        border-color: #0ea5e9;
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(14, 165, 233, 0.35);
+    }
+
     @media (max-width: 1024px) {
         .footer-upper-content {
-            grid-template-columns: auto repeat(2, 1fr);
-            gap: 30px;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px 24px;
+        }
+        .footer-brand {
+            border-right: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-right: 0;
+            padding-bottom: 32px;
+            grid-column: 1 / -1;
+        }
+        .footer-brand-desc {
+            max-width: none;
         }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 600px) {
+        .footer-upper {
+            padding: 48px 20px 40px;
+        }
         .footer-upper-content {
             grid-template-columns: 1fr;
+            gap: 32px;
         }
-
+        .footer-brand {
+            padding-bottom: 28px;
+        }
         .scroll-to-top {
             bottom: 20px;
             right: 20px;
-            width: 45px;
-            height: 45px;
+            width: 44px;
+            height: 44px;
             font-size: 18px;
         }
-
         .footer-lower-content {
             flex-direction: column;
             text-align: center;
+        }
+        .footer-copyright {
+            justify-content: center;
+        }
+        .footer-social-lower {
+            justify-content: center;
         }
     }
 </style>
 
 <footer>
+    <div class="footer-accent-bar"></div>
     <div class="footer-upper">
         <div class="footer-upper-content">
-            <div class="footer-logo-section">
+            <div class="footer-brand footer-logo-section">
                 <div class="footer-logo">
                     <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo">
                 </div>
                 <p class="footer-tagline">Retuning Health, Redefining Lives</p>
-                <p style="color: rgba(255,255,255,0.8); line-height: 1.8; font-size: 0.9rem;">
-                    Committed to excellence in pharmaceutical innovation and patient care.
-                </p>
+                <p class="footer-brand-desc">Committed to excellence in pharmaceutical innovation and patient care.</p>
             </div>
             <div class="footer-column">
-                <h4>About Tunes</h4>
+                <h4>Company</h4>
                 <ul class="footer-links">
                     <li><a href="/about">About Us</a></li>
-                    <li><a href="/about#mission">Vision & Values</a></li>
+                    <li><a href="/about#journey">Vision & Values</a></li>
                     <li><a href="/research">Research</a></li>
                     <li><a href="/Gallery">Gallery</a></li>
                 </ul>
             </div>
             <div class="footer-column">
-                <h4>Operations</h4>
+                <h4>Products & Services</h4>
                 <ul class="footer-links">
                     <li><a href="/products">Our Products</a></li>
                     <li><a href="/product-catalog">Product Catalog</a></li>
@@ -241,61 +295,42 @@
                 </ul>
             </div>
             <div class="footer-column">
-                <h4>Resources</h4>
-                <ul class="footer-links">
-                    <li><a href="/research">Research & Dev</a></li>
-                    <li><a href="/Pharmaintel_ai">Pharmaintel AI</a></li>
-                    <li><a href="/contact">Customer Support</a></li>
-                    <li><a href="/contact">Partner with Us</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Work With Us</h4>
+                <h4>Connect</h4>
                 <ul class="footer-links">
                     <li><a href="/careers">Careers</a></li>
                     <li><a href="/contact">Contact Us</a></li>
-                    <li><a href="/about">Join Our Team</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Quick Links</h4>
-                <ul class="footer-links">
                     <li><a href="/">Home</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/products">Products</a></li>
                     <li><a href="/services">Services</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                    <li><a href="/Gallery">Gallery</a></li>
                 </ul>
             </div>
         </div>
     </div>
-    <button class="scroll-to-top" id="scrollToTop" title="Scroll to top">↑</button>
+    <button class="scroll-to-top" id="scrollToTop" title="Scroll to top" aria-label="Scroll to top">↑</button>
     <div class="footer-lower">
         <div class="footer-lower-content">
             <div class="footer-copyright">
-                <p>&copy; 2024 Tunes Therapeutics Pvt. Ltd. | All Rights Reserved</p>
+                <p>&copy; 2024 Tunes Therapeutics Pvt. Ltd. All Rights Reserved</p>
                 <div class="footer-copyright-links">
                     <a href="/privacy">Privacy Policy</a>
-                    <span>|</span>
+                    <span>·</span>
                     <a href="/disclaimer">Disclaimer</a>
                 </div>
             </div>
             <div class="footer-social-lower">
-                <a href="https://www.facebook.com/tunes_therapeutics_pvt_ltd" class="social-link-lower" target="_blank">
-                    <img src="{{ url_for('static', filename='images/facebook-icon.png') }}" alt="Facebook">
+                <a href="https://www.facebook.com/tunes_therapeutics_pvt_ltd" class="social-link-lower" target="_blank" rel="noopener" aria-label="Facebook">
+                    <img src="{{ url_for('static', filename='images/facebook-icon.png') }}" alt="">
                 </a>
-                <a href="https://twitter.com/tunes_pvt_ltd" class="social-link-lower" target="_blank">
-                    <img src="{{ url_for('static', filename='images/twitter-icon.png') }}" alt="Twitter">
+                <a href="https://twitter.com/tunes_pvt_ltd" class="social-link-lower" target="_blank" rel="noopener" aria-label="Twitter">
+                    <img src="{{ url_for('static', filename='images/twitter-icon.png') }}" alt="">
                 </a>
-                <a href="https://www.instagram.com/tunes_therapeutics_pvt_ltd" class="social-link-lower" target="_blank">
-                    <img src="{{ url_for('static', filename='images/instagram-icon.png') }}" alt="Instagram">
+                <a href="https://www.instagram.com/tunes_therapeutics_pvt_ltd" class="social-link-lower" target="_blank" rel="noopener" aria-label="Instagram">
+                    <img src="{{ url_for('static', filename='images/instagram-icon.png') }}" alt="">
                 </a>
-                <a href="https://linkedin.com/tunes_therapeutics_pvt_ltd" class="social-link-lower" target="_blank">
-                    <img src="{{ url_for('static', filename='images/linkedin-icon.png') }}" alt="LinkedIn">
+                <a href="https://linkedin.com/tunes_therapeutics_pvt_ltd" class="social-link-lower" target="_blank" rel="noopener" aria-label="LinkedIn">
+                    <img src="{{ url_for('static', filename='images/linkedin-icon.png') }}" alt="">
                 </a>
-                <a href="https://wa.me/919295006066" class="social-link-lower" target="_blank">
-                    <img src="{{ url_for('static', filename='images/whatsapp-icon.png') }}" alt="WhatsApp">
+                <a href="https://wa.me/919295006066" class="social-link-lower" target="_blank" rel="noopener" aria-label="WhatsApp">
+                    <img src="{{ url_for('static', filename='images/whatsapp-icon.png') }}" alt="">
                 </a>
             </div>
         </div>
@@ -321,4 +356,3 @@
         toggleScrollButton();
     })();
 </script>
-
