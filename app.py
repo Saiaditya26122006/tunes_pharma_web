@@ -1,10 +1,10 @@
-from flask import Flask, render_template, request, session
-from openai import OpenAI
-import markdown, PyPDF2, os
+from flask import Flask, render_template, request, session, redirect
+import os
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = 'uploads'
-app.config['SECRET_KEY'] = 'your-secret-key-here'  # Change in production
+# Use /tmp for uploads — works both locally and on Vercel serverless
+app.config['UPLOAD_FOLDER'] = '/tmp/uploads'
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'tunes-therapeutics-secret-2024')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Language translations
@@ -35,16 +35,16 @@ translations = {
     }
 }
 
-# Initialize OpenAI client
-# Get API key from environment variable or use default (for development only)
-api_key = os.getenv('OPENAI_API_KEY', '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')
-
-try:
-    client = OpenAI(api_key=api_key)
-except Exception as e:
-    print(f"Warning: Could not initialize OpenAI client: {e}")
-    print("The app will run but AI features will not be available.")
-    client = None
+# Initialize OpenAI client (optional — only if API key is set)
+client = None
+api_key = os.getenv('OPENAI_API_KEY')
+if api_key:
+    try:
+        from openai import OpenAI
+        import markdown, PyPDF2
+        client = OpenAI(api_key=api_key)
+    except Exception as e:
+        print(f"Warning: Could not initialize OpenAI client: {e}")
 
 products_data = {
     "ecoglim-mv1": {
@@ -185,7 +185,7 @@ def home():
 def set_language(lang):
     if lang in ['en', 'hi']:
         session['language'] = lang
-    return request.referrer or '/'
+    return redirect(request.referrer or '/')
 
 @app.route('/about')
 def about():
