@@ -1,164 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Dashboard | Tunes Therapeutics</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Doctor Dashboard | Tunes Therapeutics Pvt. Ltd.</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
+  <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
+  <style>
+    .dash-hero {
+      background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 55%, var(--navy-700) 100%);
+      padding: 100px 24px 50px; position: relative; overflow: hidden;
+    }
+    .dash-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 40%, rgba(30,111,241,0.14) 0%, transparent 55%);
+    }
+    .dash-hero-inner {
+      position: relative; z-index: 2; max-width: 1400px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;
+    }
+    .dash-greet h1 {
+      font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: white; font-weight: 700; letter-spacing: -.01em; margin-bottom: 6px;
+    }
+    .dash-greet p { color: rgba(255,255,255,.55); font-size: .92rem; }
+    .dash-logout {
+      padding: 10px 22px; border-radius: var(--radius-full);
+      border: 1.5px solid rgba(255,255,255,.2); color: rgba(255,255,255,.7);
+      text-decoration: none; font-size: .85rem; font-weight: 500;
+      transition: all .25s; background: rgba(255,255,255,.05);
+    }
+    .dash-logout:hover { border-color: rgba(255,255,255,.5); color: white; background: rgba(255,255,255,.1); }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-        }
+    /* Quick stat strip */
+    .dash-stats {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+      background: white; border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md); border: 1px solid rgba(15,30,45,.07);
+      overflow: hidden; margin-bottom: 32px;
+    }
+    @media (max-width: 640px) { .dash-stats { grid-template-columns: 1fr 1fr; } }
+    .dash-stat { padding: 24px 20px; text-align: center; }
+    .dash-stat + .dash-stat { border-left: 1px solid rgba(15,30,45,.06); }
+    .dash-stat .num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--blue-500); }
+    .dash-stat .lbl { font-size: .78rem; color: var(--gray-500); margin-top: 4px; }
 
-        header {
-            position: sticky;
-            top: 20px;
-            z-index: 1000;
-            padding: 0 20px;
-            margin-bottom: 30px;
-        }
+    /* Resource card */
+    .res-card { padding: 28px 26px; cursor: pointer; text-decoration: none; display: block; }
+    .res-card:hover .res-arrow { transform: translateX(4px); }
+    .res-card h3 { font-size: 1rem; font-weight: 600; color: var(--navy-800); margin: 12px 0 8px; }
+    .res-card p  { font-size: .85rem; color: var(--gray-500); line-height: 1.65; margin-bottom: 14px; }
+    .res-arrow { display: inline-flex; align-items: center; gap: 6px; color: var(--blue-500); font-size: .85rem; font-weight: 600; transition: transform .25s; }
 
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: 50px;
-            padding: 15px 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo {
-            height: 75px;
-        }
-
-        .dashboard-hero {
-            background: #34495e;
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-        }
-
-        .dashboard-hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2rem, 5vw, 3rem);
-        }
-
-        .dashboard-content {
-            max-width: 1400px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .dashboard-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s ease;
-        }
-
-        .dashboard-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .dashboard-card h3 {
-            font-size: 1.5rem;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .dashboard-card p {
-            color: #7f8c8d;
-            margin-bottom: 20px;
-        }
-
-        .dashboard-card a {
-            color: #3498db;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .dashboard-card a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    /* Welcome banner */
+    .welcome-banner {
+      background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
+      border-radius: var(--radius-lg); padding: 32px 36px; margin-bottom: 32px;
+      display: flex; align-items: center; justify-content: space-between; gap: 20px;
+      flex-wrap: wrap; position: relative; overflow: hidden;
+    }
+    .welcome-banner::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 80% 50%, rgba(30,111,241,.25), transparent 55%);
+    }
+    .welcome-banner h3 {
+      font-family: 'Playfair Display', serif; font-size: 1.4rem; color: white;
+      margin-bottom: 6px; position: relative; z-index: 1;
+    }
+    .welcome-banner p { color: rgba(255,255,255,.55); font-size: .88rem; position: relative; z-index: 1; }
+  </style>
 </head>
 <body>
-    {% include 'partials/loading.html' %}
-    <header>
-        <div class="header-container">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
-            <nav>
-                <a href="/">Home</a>
-                <a href="/doctor-portal">Dashboard</a>
-                <a href="/product-catalog">Products</a>
-                <a href="/services">Services</a>
-            </nav>
-            <a href="/doctor-portal" class="cta-header-button">Logout</a>
-        </div>
-    </header>
+{% include 'partials/loading.html' %}
 
-    <section class="dashboard-hero">
-        <h1>Welcome, Doctor</h1>
-        <p>Access exclusive medical resources and product information</p>
-    </section>
+<!-- Dashboard header -->
+<header class="p-header" id="p-header">
+  <div class="p-header-inner">
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics" class="p-logo"></a>
+    <nav class="p-nav">
+      <a href="/">Home</a>
+      <a href="/doctor-dashboard" class="active">Dashboard</a>
+      <a href="/product-catalog">Products</a>
+      <a href="/research">Research</a>
+      <a href="/contact">Contact MR</a>
+    </nav>
+    <div class="p-header-actions">
+      <a href="/doctor-portal" class="p-ai-btn" style="background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.3);color:#dc2626">Logout</a>
+    </div>
+  </div>
+</header>
 
-    <section class="dashboard-content">
-        <div class="dashboard-grid">
-            <div class="dashboard-card">
-                <h3>📋 Product Information</h3>
-                <p>Access detailed product sheets, composition, indications, and dosage guidelines.</p>
-                <a href="/product-catalog">View Products →</a>
-            </div>
-            <div class="dashboard-card">
-                <h3>📄 Clinical Studies</h3>
-                <p>Download research papers, clinical trial data, and scientific publications.</p>
-                <a href="/research">View Research →</a>
-            </div>
-            <div class="dashboard-card">
-                <h3>💊 Sample Requests</h3>
-                <p>Request product samples for evaluation and patient trials.</p>
-                <a href="/contact">Request Samples →</a>
-            </div>
-            <div class="dashboard-card">
-                <h3>📚 CME Resources</h3>
-                <p>Access Continuing Medical Education materials and training resources.</p>
-                <a href="/research">View Resources →</a>
-            </div>
-            <div class="dashboard-card">
-                <h3>📞 Medical Representative</h3>
-                <p>Connect with our medical representatives for product inquiries.</p>
-                <a href="/contact">Contact MR →</a>
-            </div>
-            <div class="dashboard-card">
-                <h3>📥 Download Materials</h3>
-                <p>Download brochures, product leaflets, and promotional materials.</p>
-                <a href="/products">Download →</a>
-            </div>
-        </div>
-    </section>
-    {% include 'partials/footer.html' %}
+<!-- ── HERO ── -->
+<section class="dash-hero">
+  <div class="dash-hero-inner">
+    <div class="dash-greet">
+      <div class="p-hero-badge" style="margin-bottom:14px;display:inline-flex"><span class="dot"></span>Healthcare Professional Portal</div>
+      <h1>Welcome, Doctor 👋</h1>
+      <p>Access clinical resources, samples, and Tunes Therapeutics product intelligence</p>
+    </div>
+    <a href="/doctor-portal" class="dash-logout">← Logout</a>
+  </div>
+</section>
+
+<section class="p-section p-section-light">
+  <div class="p-container">
+
+    <!-- Stats strip -->
+    <div class="dash-stats p-reveal">
+      <div class="dash-stat">
+        <div class="num">8+</div>
+        <div class="lbl">Products Available</div>
+      </div>
+      <div class="dash-stat">
+        <div class="num">12</div>
+        <div class="lbl">Published Studies</div>
+      </div>
+      <div class="dash-stat">
+        <div class="num">5</div>
+        <div class="lbl">CME Resources</div>
+      </div>
+      <div class="dash-stat">
+        <div class="num">24h</div>
+        <div class="lbl">MR Response Time</div>
+      </div>
+    </div>
+
+    <!-- Welcome banner -->
+    <div class="welcome-banner p-reveal">
+      <div>
+        <h3>New: RESGABA-DLX Clinical Data Available</h3>
+        <p>Phase-3 clinical study results for RESGABA-DLX in diabetic neuropathy now published. Download the full report.</p>
+      </div>
+      <a href="/research" class="p-btn p-btn-primary" style="position:relative;z-index:1;white-space:nowrap">Read Study →</a>
+    </div>
+
+    <!-- Resource cards -->
+    <div class="p-grid-3">
+      <a href="/product-catalog" class="res-card p-card p-reveal p-delay-1" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">📋</div>
+        <h3>Product Information</h3>
+        <p>Detailed product sheets, composition, indications, dosage guidelines and full clinical metadata for every SKU.</p>
+        <span class="res-arrow">View Products <span>→</span></span>
+      </a>
+      <a href="/research" class="res-card p-card p-reveal p-delay-2" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">📄</div>
+        <h3>Clinical Studies</h3>
+        <p>Download peer-reviewed research papers, Phase-2/3 trial data, and scientific publications from our R&D team.</p>
+        <span class="res-arrow">View Research <span>→</span></span>
+      </a>
+      <a href="/contact" class="res-card p-card p-reveal p-delay-3" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">💊</div>
+        <h3>Sample Requests</h3>
+        <p>Request product samples for patient evaluation trials. Our team processes sample requests within 48 hours.</p>
+        <span class="res-arrow">Request Samples <span>→</span></span>
+      </a>
+      <a href="/research" class="res-card p-card p-reveal p-delay-4" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">📚</div>
+        <h3>CME Resources</h3>
+        <p>Access Continuing Medical Education materials, therapy-area training modules, and clinical decision tools.</p>
+        <span class="res-arrow">View CMEs <span>→</span></span>
+      </a>
+      <a href="/contact" class="res-card p-card p-reveal p-delay-5" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">📞</div>
+        <h3>Medical Representative</h3>
+        <p>Connect directly with your assigned Tunes MR for product inquiries, detailing visits, and in-clinic demos.</p>
+        <span class="res-arrow">Contact MR <span>→</span></span>
+      </a>
+      <a href="/products" class="res-card p-card p-reveal p-delay-6" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">📥</div>
+        <h3>Download Materials</h3>
+        <p>Download product brochures, prescribing information leaflets, and promotional materials for clinic use.</p>
+        <span class="res-arrow">Browse Materials <span>→</span></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+{% include 'partials/footer.html' %}
 </body>
 </html>
-

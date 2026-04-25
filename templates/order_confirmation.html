@@ -1,122 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Confirmation | Tunes Therapeutics</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Order Confirmed | Tunes Therapeutics Pvt. Ltd.</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
+  <style>
+    body {
+      background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 60%, var(--navy-700) 100%);
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 60% 40%, rgba(30,111,241,0.15) 0%, transparent 55%);
+      pointer-events: none;
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
+    .conf-wrap { max-width: 580px; width: 100%; position: relative; z-index: 1; }
 
-        .confirmation-container {
-            background: white;
-            border-radius: 30px;
-            padding: 50px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-            max-width: 600px;
-            width: 100%;
-            text-align: center;
-        }
+    .conf-card {
+      background: white; border-radius: var(--radius-xl);
+      padding: 52px 44px; box-shadow: 0 32px 80px rgba(0,0,0,.35);
+      text-align: center; animation: confSlideIn .6s var(--ease-smooth);
+    }
+    @keyframes confSlideIn {
+      from { opacity: 0; transform: translateY(24px) scale(.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
 
-        .success-icon {
-            width: 80px;
-            height: 80px;
-            background: #3498db;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 30px;
-            font-size: 40px;
-            color: white;
-        }
+    /* Success ring */
+    .conf-ring {
+      width: 90px; height: 90px; border-radius: 50%;
+      background: linear-gradient(135deg, #16a34a, #15803d);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px; font-size: 2.5rem;
+      box-shadow: 0 8px 32px rgba(22,163,74,.35);
+      animation: popIn .4s .3s var(--ease-smooth) both;
+    }
+    @keyframes popIn {
+      from { transform: scale(0); opacity: 0; }
+      to   { transform: scale(1); opacity: 1; }
+    }
 
-        .confirmation-container h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
+    .conf-card h1 {
+      font-family: 'Playfair Display', serif; font-size: 2.2rem;
+      color: var(--navy-900); margin-bottom: 10px; letter-spacing: -.01em;
+    }
+    .conf-card > p { color: var(--gray-500); font-size: .92rem; line-height: 1.75; margin-bottom: 28px; }
 
-        .confirmation-container p {
-            color: #7f8c8d;
-            margin-bottom: 30px;
-            line-height: 1.8;
-        }
+    /* Order summary box */
+    .conf-details {
+      background: #f8fafc; border-radius: var(--radius-md); padding: 24px 26px;
+      text-align: left; margin-bottom: 28px;
+      border: 1px solid rgba(15,30,45,.07);
+    }
+    .conf-details h3 { font-size: .82rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--gray-400); margin-bottom: 14px; }
+    .conf-detail-row { display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; border-bottom: 1px solid rgba(15,30,45,.06); font-size: .87rem; }
+    .conf-detail-row:last-child { border-bottom: none; }
+    .conf-detail-row span { color: var(--gray-500); }
+    .conf-detail-row strong { color: var(--navy-800); }
 
-        .order-details {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            margin: 30px 0;
-            text-align: left;
-        }
+    /* Timeline steps */
+    .conf-steps { display: flex; gap: 0; margin-bottom: 28px; }
+    .conf-step {
+      flex: 1; text-align: center; position: relative; padding: 0 8px;
+    }
+    .conf-step::before {
+      content: ''; position: absolute; top: 16px; left: 50%; right: -50%;
+      height: 2px; background: rgba(30,111,241,.2);
+      z-index: 0;
+    }
+    .conf-step:last-child::before { display: none; }
+    .conf-step .step-dot {
+      width: 32px; height: 32px; border-radius: 50%; margin: 0 auto 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .8rem; font-weight: 700; position: relative; z-index: 1;
+    }
+    .step-done { background: linear-gradient(135deg, #16a34a, #15803d); color: white; }
+    .step-pending { background: rgba(30,111,241,.1); color: var(--blue-500); border: 1.5px solid rgba(30,111,241,.2); }
+    .conf-step p { font-size: .72rem; color: var(--gray-500); line-height: 1.4; }
 
-        .order-details h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-        }
+    .conf-actions { display: flex; gap: 12px; }
+    .conf-actions a { flex: 1; text-align: center; }
 
-        .order-details p {
-            color: #555;
-            margin: 8px 0;
-        }
-
-        .btn {
-            display: inline-block;
-            padding: 15px 40px;
-            background: #3498db;
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: 600;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-        }
-    </style>
+    /* Back link */
+    .conf-back { margin-top: 20px; text-align: center; }
+    .conf-back a { color: rgba(255,255,255,.4); font-size: .82rem; text-decoration: none; }
+    .conf-back a:hover { color: rgba(255,255,255,.7); }
+  </style>
 </head>
 <body>
-    {% include 'partials/loading.html' %}
-    <div class="confirmation-container">
-        <div class="success-icon">✓</div>
-        <h1>Order Received!</h1>
-        <p>Thank you for your order. We have received your request and will contact you shortly to confirm the details.</p>
-        
-        <div class="order-details">
-            <h3>Order Details</h3>
-            <p><strong>Company:</strong> {{ order.company }}</p>
-            <p><strong>Contact:</strong> {{ order.name }}</p>
-            <p><strong>Email:</strong> {{ order.email }}</p>
-            <p><strong>Phone:</strong> {{ order.phone }}</p>
-            <p><strong>Products:</strong> {{ order.products|length }} item(s) selected</p>
-        </div>
+{% include 'partials/loading.html' %}
 
-        <p style="font-size: 0.9rem; color: #7f8c8d;">
-            Our sales team will contact you within 24 hours to process your order.
-        </p>
+<div class="conf-wrap">
+  <div class="conf-card">
+    <div class="conf-ring">✓</div>
+    <h1>Order Received!</h1>
+    <p>Thank you for your order. We've received your request and our sales team will reach out within <strong>24 hours</strong> to confirm details and process your order.</p>
 
-        <a href="/" class="btn">Return to Home</a>
+    <div class="conf-details">
+      <h3>Order Details</h3>
+      <div class="conf-detail-row">
+        <span>Company</span>
+        <strong>{{ order.company }}</strong>
+      </div>
+      <div class="conf-detail-row">
+        <span>Contact Person</span>
+        <strong>{{ order.name }}</strong>
+      </div>
+      <div class="conf-detail-row">
+        <span>Email</span>
+        <strong>{{ order.email }}</strong>
+      </div>
+      <div class="conf-detail-row">
+        <span>Phone</span>
+        <strong>{{ order.phone }}</strong>
+      </div>
+      <div class="conf-detail-row">
+        <span>Items Selected</span>
+        <strong>{{ order.products|length }} product(s)</strong>
+      </div>
     </div>
-    {% include 'partials/footer.html' %}
+
+    <!-- Steps -->
+    <div class="conf-steps">
+      <div class="conf-step">
+        <div class="step-dot step-done">✓</div>
+        <p>Order<br>Placed</p>
+      </div>
+      <div class="conf-step">
+        <div class="step-dot step-pending">2</div>
+        <p>Sales<br>Review</p>
+      </div>
+      <div class="conf-step">
+        <div class="step-dot step-pending">3</div>
+        <p>Confirmation<br>Call</p>
+      </div>
+      <div class="conf-step">
+        <div class="step-dot step-pending">4</div>
+        <p>Dispatch &amp;<br>Delivery</p>
+      </div>
+    </div>
+
+    <div class="conf-actions">
+      <a href="/" class="p-btn p-btn-primary">Return to Home</a>
+      <a href="/contact" class="p-btn p-btn-navy">Contact Sales</a>
+    </div>
+  </div>
+
+  <div class="conf-back">
+    <a href="/online-ordering">← Place another order</a>
+    &nbsp;·&nbsp;
+    <a href="/product-catalog">Browse Catalog</a>
+  </div>
+</div>
+
+{% include 'partials/footer.html' %}
 </body>
 </html>
-

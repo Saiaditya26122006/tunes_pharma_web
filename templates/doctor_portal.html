@@ -1,164 +1,159 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doctor Portal | Tunes Therapeutics</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Doctor Portal | Tunes Therapeutics Pvt. Ltd.</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
+  <style>
+    body {
+      background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 60%, var(--navy-700) 100%);
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 60% 40%, rgba(30,111,241,0.18) 0%, transparent 55%),
+                  radial-gradient(ellipse at 20% 80%, rgba(0,180,255,0.08) 0%, transparent 45%);
+      pointer-events: none;
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
+    .portal-wrap {
+      width: 100%; max-width: 480px; position: relative; z-index: 1;
+    }
 
-        .login-container {
-            background: white;
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 450px;
-            width: 100%;
-            padding: 50px 40px;
-        }
+    /* Logo header */
+    .portal-brand {
+      text-align: center; margin-bottom: 32px;
+    }
+    .portal-brand img { height: 60px; filter: brightness(0) invert(1); margin-bottom: 12px; }
+    .portal-brand p { color: rgba(255,255,255,.5); font-size: .82rem; }
 
-        .login-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
+    /* Card */
+    .portal-card {
+      background: white; border-radius: var(--radius-xl);
+      padding: 48px 40px; box-shadow: 0 32px 80px rgba(0,0,0,.35);
+    }
+    .portal-card h2 {
+      font-family: 'Playfair Display', serif; font-size: 1.9rem;
+      color: var(--navy-900); margin-bottom: 6px; text-align: center;
+    }
+    .portal-card > p { color: var(--gray-500); font-size: .88rem; text-align: center; margin-bottom: 32px; }
 
-        .login-header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
+    /* Flash messages */
+    .flash-error {
+      background: rgba(220,38,38,.08); border: 1px solid rgba(220,38,38,.25);
+      border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 20px;
+      color: #dc2626; font-size: .85rem;
+    }
 
-        .login-header p {
-            color: #7f8c8d;
-            font-size: 1rem;
-        }
+    .portal-submit {
+      width: 100%; padding: 15px; border: none; cursor: pointer;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
+      color: white; font-size: 15px; font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      transition: all .3s var(--ease-smooth);
+      box-shadow: 0 4px 20px rgba(15,30,45,0.25);
+      margin-top: 8px;
+    }
+    .portal-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(15,30,45,0.35);
+      background: linear-gradient(135deg, var(--blue-500), var(--navy-700));
+    }
 
-        .form-group {
-            margin-bottom: 25px;
-        }
+    .portal-divider {
+      text-align: center; margin: 24px 0; color: var(--gray-400);
+      font-size: .82rem; position: relative;
+    }
+    .portal-divider::before {
+      content: ''; position: absolute; top: 50%; left: 0; right: 0;
+      height: 1px; background: rgba(15,30,45,.08);
+    }
+    .portal-divider span { background: white; padding: 0 14px; position: relative; }
 
-        .form-group label {
-            display: block;
-            color: #2c3e50;
-            font-weight: 500;
-            margin-bottom: 8px;
-            font-size: 0.95rem;
-        }
+    .portal-footer-link {
+      text-align: center; font-size: .85rem; color: var(--gray-500);
+    }
+    .portal-footer-link a { color: var(--blue-500); font-weight: 600; text-decoration: none; }
+    .portal-footer-link a:hover { text-decoration: underline; }
 
-        .form-group input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 15px;
-            background: #3498db;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .login-btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-        }
-
-        .divider {
-            text-align: center;
-            margin: 30px 0;
-            color: #7f8c8d;
-            position: relative;
-        }
-
-        .divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: #e0e0e0;
-        }
-
-        .divider span {
-            background: white;
-            padding: 0 15px;
-            position: relative;
-        }
-
-        .register-link {
-            text-align: center;
-            margin-top: 25px;
-        }
-
-        .register-link a {
-            color: #3498db;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .register-link a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    /* Benefits strip */
+    .portal-benefits {
+      display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 28px;
+    }
+    .portal-benefit {
+      text-align: center; padding: 14px 10px;
+      background: rgba(30,111,241,0.05); border-radius: 12px;
+      border: 1px solid rgba(30,111,241,0.1);
+    }
+    .portal-benefit .icon { font-size: 1.5rem; margin-bottom: 6px; }
+    .portal-benefit p { font-size: .72rem; color: var(--gray-500); font-weight: 500; line-height: 1.4; }
+  </style>
 </head>
 <body>
-    {% include 'partials/loading.html' %}
-    <div class="login-container">
-        <div class="login-header">
-            <h1>Doctor Portal</h1>
-            <p>Access exclusive resources and product information</p>
-        </div>
-        <form method="POST">
-            <div class="form-group">
-                <label>Email Address</label>
-                <input type="email" name="email" placeholder="doctor@example.com" required>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="password" placeholder="Enter your password" required>
-            </div>
-            <button type="submit" class="login-btn">Login</button>
-        </form>
-        <div class="divider">
-            <span>New Doctor?</span>
-        </div>
-        <div class="register-link">
-            <p>Don't have an account? <a href="/contact">Contact us to register</a></p>
-        </div>
+{% include 'partials/loading.html' %}
+
+<div class="portal-wrap">
+  <div class="portal-brand">
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics"></a>
+    <p>Healthcare Professional Exclusive Access</p>
+  </div>
+
+  <div class="portal-card">
+    <h2>Doctor Portal</h2>
+    <p>Sign in to access clinical resources, samples, and product information</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+        <div class="flash-error">{{ msg }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="POST">
+      <div class="p-form-group">
+        <label>Email Address</label>
+        <input type="email" name="email" placeholder="doctor@hospital.com" required>
+      </div>
+      <div class="p-form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Enter your password" required>
+      </div>
+      <button type="submit" class="portal-submit">Sign In to Portal →</button>
+    </form>
+
+    <div class="portal-divider"><span>New to the portal?</span></div>
+
+    <div class="portal-footer-link">
+      <p>Don't have an account? <a href="/contact">Contact us to register</a></p>
     </div>
-    {% include 'partials/footer.html' %}
+
+    <div class="portal-benefits">
+      <div class="portal-benefit">
+        <div class="icon">📄</div>
+        <p>Clinical Studies & CMEs</p>
+      </div>
+      <div class="portal-benefit">
+        <div class="icon">💊</div>
+        <p>Sample Requests</p>
+      </div>
+      <div class="portal-benefit">
+        <div class="icon">👤</div>
+        <p>MR Connect</p>
+      </div>
+    </div>
+  </div>
+
+  <p style="text-align:center;margin-top:20px;color:rgba(255,255,255,.35);font-size:.78rem">
+    <a href="/" style="color:rgba(255,255,255,.45);text-decoration:none">← Back to website</a>
+    &nbsp;·&nbsp;
+    <a href="/contact" style="color:rgba(255,255,255,.45);text-decoration:none">Need help?</a>
+  </p>
+</div>
+
+{% include 'partials/footer.html' %}
 </body>
 </html>
-

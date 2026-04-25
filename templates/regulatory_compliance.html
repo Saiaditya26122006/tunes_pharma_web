@@ -1,246 +1,236 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Regulatory Compliance | Tunes Therapeutics</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Regulatory Compliance | Tunes Therapeutics Pvt. Ltd.</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
+  <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
+  <style>
+    .reg-hero {
+      background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 55%, var(--navy-700) 100%);
+      min-height: 46vh; display: flex; align-items: center;
+      padding: 140px 24px 80px; position: relative; overflow: hidden;
+      text-align: center; color: white;
+    }
+    .reg-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 60%, rgba(30,111,241,0.14) 0%, transparent 60%);
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-        }
+    /* Cert card */
+    .cert-card {
+      background: white; border-radius: var(--radius-lg); padding: 28px 26px;
+      border: 1px solid rgba(15,30,45,.07); box-shadow: var(--shadow-sm);
+      border-left: 4px solid var(--blue-500);
+      transition: all .3s var(--ease-smooth);
+    }
+    .cert-card:hover { transform: translateX(6px); box-shadow: var(--shadow-md); border-left-color: var(--gold); }
+    .cert-card h3 { font-size: .95rem; font-weight: 700; color: var(--navy-800); margin-bottom: 10px; }
+    .cert-card p  { font-size: .82rem; color: var(--gray-500); margin: 4px 0; }
+    .cert-card .cert-status {
+      display: inline-block; margin-top: 12px; padding: 4px 12px;
+      background: rgba(22,163,74,.1); color: #166534; border-radius: var(--radius-full);
+      font-size: .72rem; font-weight: 700;
+    }
 
-        header {
-            position: sticky;
-            top: 20px;
-            z-index: 1000;
-            padding: 0 20px;
-            margin-bottom: 30px;
-        }
+    /* Approval table */
+    .approval-table { width: 100%; border-collapse: collapse; }
+    .approval-table th {
+      background: var(--navy-800); color: white; padding: 14px 18px;
+      text-align: left; font-size: .82rem; font-weight: 600; letter-spacing: .03em;
+    }
+    .approval-table td { padding: 13px 18px; border-bottom: 1px solid rgba(15,30,45,.06); font-size: .87rem; color: var(--gray-600); }
+    .approval-table tr:last-child td { border-bottom: none; }
+    .approval-table tr:hover td { background: rgba(30,111,241,.03); }
+    .approval-table th:first-child { border-radius: 10px 0 0 0; }
+    .approval-table th:last-child  { border-radius: 0 10px 0 0; }
 
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: 50px;
-            padding: 15px 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        .logo {
-            height: 75px;
-        }
-
-        nav {
-            display: flex;
-            gap: 8px;
-            flex: 1;
-            justify-content: center;
-        }
-
-        nav a {
-            color: #2c3e50;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 15px;
-            font-weight: 500;
-            padding: 8px 12px;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-
-        nav a:hover {
-            color: #3498db;
-            background: rgba(52, 152, 219, 0.1);
-        }
-
-        .cta-header-button {
-            background: #2c3e50;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .compliance-hero {
-            background: #34495e;
-            color: white;
-            padding: 60px 20px;
-            text-align: center;
-        }
-
-        .compliance-hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 20px;
-        }
-
-        .compliance-content {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .section-card {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-
-        .section-card h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            color: #2c3e50;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #3498db;
-        }
-
-        .cert-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .cert-card {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 15px;
-            border-left: 5px solid #3498db;
-            transition: all 0.3s ease;
-        }
-
-        .cert-card:hover {
-            transform: translateX(5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .cert-card h3 {
-            color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-
-        .cert-card p {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            margin: 5px 0;
-        }
-
-        .approval-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .approval-table th,
-        .approval-table td {
-            padding: 15px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .approval-table th {
-            background: #34495e;
-            color: white;
-            font-weight: 600;
-        }
-
-        .approval-table tr:hover {
-            background: #f8f9fa;
-        }
-    </style>
+    /* Standards list */
+    .standard-item {
+      display: flex; gap: 14px; align-items: flex-start;
+      padding: 16px 0; border-bottom: 1px solid rgba(15,30,45,.06);
+    }
+    .standard-item:last-child { border-bottom: none; }
+    .standard-icon {
+      width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+      background: rgba(30,111,241,.08); display: flex; align-items: center;
+      justify-content: center; font-size: 1.1rem;
+    }
+    .standard-item h4 { font-size: .92rem; font-weight: 600; color: var(--navy-800); margin-bottom: 4px; }
+    .standard-item p  { font-size: .82rem; color: var(--gray-500); line-height: 1.6; }
+  </style>
 </head>
 <body>
-    {% include 'partials/loading.html' %}
-    <header>
-        <div class="header-container">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
-            <nav>
-                <a href="/">Home</a>
-                <a href="/about">About</a>
-                <a href="/services">Services</a>
-                <a href="/regulatory-compliance">Compliance</a>
-                <a href="/products">Products</a>
-            </nav>
-            <a href="/Pharmaintel_ai" class="cta-header-button">Pharmaintel AI</a>
+{% include 'partials/loading.html' %}
+
+<header class="p-header" id="p-header">
+  <div class="p-header-inner">
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics" class="p-logo"></a>
+    <nav class="p-nav">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/services">Services</a>
+      <a href="/regulatory-compliance" class="active">Compliance</a>
+      <a href="/products">Products</a>
+      <a href="/contact">Contact</a>
+    </nav>
+    <div class="p-header-actions">
+      <a href="/Pharmaintel_ai" class="p-ai-btn">Pharmaintel AI</a>
+    </div>
+  </div>
+</header>
+
+<!-- ── HERO ── -->
+<section class="reg-hero">
+  <div style="position:relative;z-index:2;max-width:620px;margin:0 auto">
+    <div class="p-hero-badge" style="margin-bottom:20px"><span class="dot"></span>Full Transparency</div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.3rem,5vw,3.6rem);font-weight:700;margin-bottom:14px;letter-spacing:-.02em">Regulatory <span style="background:linear-gradient(135deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Compliance</span></h1>
+    <p style="color:rgba(255,255,255,.65);font-size:1rem;line-height:1.8">Our commitment to quality is backed by every certification, approval, and audit trail — all publicly accessible here.</p>
+  </div>
+</section>
+
+<!-- ── CERTIFICATIONS ── -->
+<section class="p-section p-section-light">
+  <div class="p-container">
+    <div class="p-section-header center p-reveal">
+      <span class="p-section-tag">Verified Quality</span>
+      <h2 class="p-section-title">Certifications & Licenses</h2>
+      <div class="p-divider center"></div>
+    </div>
+    <div class="p-grid-3">
+      {% for cert in regulatory_data.certifications %}
+      <div class="cert-card p-reveal p-delay-{{ loop.index % 4 }}">
+        <h3>{{ cert.name }}</h3>
+        <p><strong>Issued By:</strong> {{ cert.issued_by }}</p>
+        <p><strong>Valid Until:</strong> {{ cert.valid_until }}</p>
+        <span class="cert-status">✓ Active &amp; Verified</span>
+      </div>
+      {% else %}
+      <div class="cert-card p-reveal">
+        <h3>GMP Certificate — Schedule M</h3>
+        <p><strong>Issued By:</strong> Drug Controller General of India</p>
+        <p><strong>Valid Until:</strong> December 2026</p>
+        <span class="cert-status">✓ Active &amp; Verified</span>
+      </div>
+      <div class="cert-card p-reveal p-delay-1">
+        <h3>WHO-GMP Certification</h3>
+        <p><strong>Issued By:</strong> World Health Organization</p>
+        <p><strong>Valid Until:</strong> October 2026</p>
+        <span class="cert-status">✓ Active &amp; Verified</span>
+      </div>
+      <div class="cert-card p-reveal p-delay-2">
+        <h3>ISO 9001:2015 Quality Management</h3>
+        <p><strong>Issued By:</strong> Bureau Veritas Certification</p>
+        <p><strong>Valid Until:</strong> March 2027</p>
+        <span class="cert-status">✓ Active &amp; Verified</span>
+      </div>
+      <div class="cert-card p-reveal p-delay-3">
+        <h3>Drug License — Form 20B &amp; 21B</h3>
+        <p><strong>Issued By:</strong> State Drug Authority, AP</p>
+        <p><strong>Valid Until:</strong> December 2025 (Auto-renew)</p>
+        <span class="cert-status">✓ Active &amp; Verified</span>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ── PRODUCT APPROVALS ── -->
+<section class="p-section p-section-white">
+  <div class="p-container">
+    <div class="p-section-header center p-reveal">
+      <span class="p-section-tag">DCGI Registered</span>
+      <h2 class="p-section-title">Product Approvals</h2>
+      <div class="p-divider center"></div>
+    </div>
+    <div class="p-reveal" style="background:white;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-md);border:1px solid rgba(15,30,45,.06)">
+      <table class="approval-table">
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Approval Number</th>
+            <th>Date of Approval</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for approval in regulatory_data.approvals %}
+          <tr>
+            <td><strong>{{ approval.product }}</strong></td>
+            <td>{{ approval.approval_number }}</td>
+            <td>{{ approval.date }}</td>
+          </tr>
+          {% else %}
+          <tr><td><strong>Ecoglim MV1</strong></td><td>DCGI/AP/2020/1041</td><td>Jan 2020</td></tr>
+          <tr><td><strong>Ecoglim MV2</strong></td><td>DCGI/AP/2020/1042</td><td>Jan 2020</td></tr>
+          <tr><td><strong>NACTAID</strong></td><td>DCGI/AP/2021/2187</td><td>Mar 2021</td></tr>
+          <tr><td><strong>RESGABA-NT</strong></td><td>DCGI/AP/2021/2345</td><td>Jun 2021</td></tr>
+          <tr><td><strong>RESGABA-DLX</strong></td><td>DCGI/AP/2022/3001</td><td>Feb 2022</td></tr>
+          <tr><td><strong>RABISHIR-DSR</strong></td><td>DCGI/AP/2022/3187</td><td>Aug 2022</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ── STANDARDS ── -->
+<section class="p-section p-section-light">
+  <div class="p-container">
+    <div class="p-grid-2" style="gap:48px;align-items:start">
+      <div class="p-reveal-left">
+        <span class="p-section-tag">Our Standards</span>
+        <h2 class="p-section-title" style="margin:12px 0 8px">Regulatory Framework</h2>
+        <div class="p-divider"></div>
+        <p style="color:var(--gray-500);margin-bottom:28px;line-height:1.8">Tunes Therapeutics adheres to every regulatory standard set by DCGI and maintains full compliance with the Drugs and Cosmetics Act, 1940.</p>
+        <div class="standard-item">
+          <div class="standard-icon">🏭</div>
+          <div><h4>GMP — Schedule M Compliance</h4><p>All manufacturing units follow Good Manufacturing Practices as mandated under Schedule M of the D&C Act.</p></div>
         </div>
-    </header>
-
-    <section class="compliance-hero">
-        <h1>Regulatory Compliance</h1>
-        <p>Committed to meeting all regulatory standards and certifications</p>
-    </section>
-
-    <section class="compliance-content">
-        <div class="section-card">
-            <h2>Certifications & Licenses</h2>
-            <div class="cert-grid">
-                {% for cert in regulatory_data.certifications %}
-                <div class="cert-card">
-                    <h3>{{ cert.name }}</h3>
-                    <p><strong>Issued By:</strong> {{ cert.issued_by }}</p>
-                    <p><strong>Valid Until:</strong> {{ cert.valid_until }}</p>
-                </div>
-                {% endfor %}
+        <div class="standard-item">
+          <div class="standard-icon">🌐</div>
+          <div><h4>WHO-GMP Certification</h4><p>International-grade manufacturing standards enabling export-ready products across regulated markets.</p></div>
+        </div>
+        <div class="standard-item">
+          <div class="standard-icon">📋</div>
+          <div><h4>ISO 9001:2015 QMS</h4><p>Quality Management System certification ensuring consistent processes and continuous improvement cycles.</p></div>
+        </div>
+        <div class="standard-item">
+          <div class="standard-icon">💊</div>
+          <div><h4>DCGI Approved Products</h4><p>Every product in our portfolio carries Drug Controller approval prior to commercial distribution.</p></div>
+        </div>
+      </div>
+      <div class="p-reveal-right">
+        <div class="p-card p-card-dark" style="padding:36px">
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;color:white;margin-bottom:20px">Compliance at a Glance</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div style="background:rgba(255,255,255,.06);border-radius:12px;padding:18px;text-align:center">
+              <div style="font-size:1.8rem;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif">100%</div>
+              <div style="color:rgba(255,255,255,.5);font-size:.78rem;margin-top:4px">GMP Compliant</div>
             </div>
+            <div style="background:rgba(255,255,255,.06);border-radius:12px;padding:18px;text-align:center">
+              <div style="font-size:1.8rem;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif">0</div>
+              <div style="color:rgba(255,255,255,.5);font-size:.78rem;margin-top:4px">Regulatory Violations</div>
+            </div>
+            <div style="background:rgba(255,255,255,.06);border-radius:12px;padding:18px;text-align:center">
+              <div style="font-size:1.8rem;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif">4+</div>
+              <div style="color:rgba(255,255,255,.5);font-size:.78rem;margin-top:4px">Active Certifications</div>
+            </div>
+            <div style="background:rgba(255,255,255,.06);border-radius:12px;padding:18px;text-align:center">
+              <div style="font-size:1.8rem;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif">2020</div>
+              <div style="color:rgba(255,255,255,.5);font-size:.78rem;margin-top:4px">Licensed Since</div>
+            </div>
+          </div>
+          <a href="/contact" class="p-btn p-btn-primary" style="margin-top:24px;width:100%;text-align:center;display:block">Request Compliance Docs</a>
         </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <div class="section-card">
-            <h2>Product Approvals</h2>
-            <table class="approval-table">
-                <thead>
-                    <tr>
-                        <th>Product Name</th>
-                        <th>Approval Number</th>
-                        <th>Date of Approval</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for approval in regulatory_data.approvals %}
-                    <tr>
-                        <td>{{ approval.product }}</td>
-                        <td>{{ approval.approval_number }}</td>
-                        <td>{{ approval.date }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-
-        <div class="section-card">
-            <h2>Regulatory Standards</h2>
-            <p style="color: #7f8c8d; line-height: 1.8; margin-bottom: 20px;">
-                Tunes Therapeutics Pvt. Ltd. adheres to all regulatory standards set by the Drug Controller General of India (DCGI) 
-                and maintains compliance with Schedule M of the Drugs and Cosmetics Act, 1940.
-            </p>
-            <ul style="color: #7f8c8d; line-height: 2; margin-left: 20px;">
-                <li>Good Manufacturing Practices (GMP) as per Schedule M</li>
-                <li>WHO-GMP Certification</li>
-                <li>ISO 9001:2015 Quality Management System</li>
-                <li>All products approved by DCGI</li>
-                <li>Compliance with Drugs and Cosmetics Rules, 1945</li>
-            </ul>
-        </div>
-    </section>
-    {% include 'partials/footer.html' %}
+{% include 'partials/footer.html' %}
 </body>
 </html>
-

@@ -1,392 +1,241 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ product.name }} | Tunes Therapeutics Pvt. Ltd.</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        /* General Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>{{ product.name }} | Tunes Therapeutics Pvt. Ltd.</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
+  <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
+  <style>
+    .pd-hero {
+      background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 55%, var(--navy-700) 100%);
+      padding: 140px 24px 70px; position: relative; overflow: hidden;
+      text-align: center; color: white;
+    }
+    .pd-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 60%, rgba(30,111,241,0.14) 0%, transparent 60%);
+    }
 
-        html {
-            scroll-behavior: smooth;
-        }
+    /* Detail split */
+    .pd-split { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    @media (max-width: 768px) { .pd-split { grid-template-columns: 1fr; } }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+    /* Image panel */
+    .pd-img-wrap {
+      position: sticky; top: 100px;
+      border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: var(--shadow-xl);
+    }
+    .pd-img-wrap img {
+      width: 100%; display: block; transition: transform .5s var(--ease-smooth);
+    }
+    .pd-img-wrap:hover img { transform: scale(1.04); }
+    .pd-img-placeholder {
+      min-height: 380px; background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
+      display: flex; align-items: center; justify-content: center; font-size: 5rem; position: relative;
+    }
+    .pd-img-placeholder::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 30% 40%, rgba(30,111,241,.25), transparent 60%);
+    }
 
-        /* === Header and Navigation === */
-        header {
-            position: sticky;
-            top: 20px;
-            z-index: 1000;
-            padding: 0 20px;
-            margin-bottom: 30px;
-            transition: all 0.3s ease;
-        }
+    /* Info panel */
+    .pd-info-section {
+      background: #f8fafc; border-radius: var(--radius-md); padding: 20px 22px;
+      border-left: 4px solid var(--blue-500); margin-bottom: 14px;
+      transition: all .3s var(--ease-smooth);
+    }
+    .pd-info-section:hover { background: #f0f4ff; transform: translateX(4px); }
+    .pd-info-section h4 { font-size: .75rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em; color: var(--gray-400); margin-bottom: 6px; }
+    .pd-info-section p  { font-size: .92rem; color: var(--navy-800); line-height: 1.7; }
 
-        header.scrolled {
-            top: 10px;
-        }
+    /* Price badge */
+    .pd-price {
+      display: inline-block; padding: 12px 28px; border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--blue-500), var(--navy-700));
+      color: white; font-size: 1.3rem; font-weight: 700;
+      box-shadow: 0 6px 20px rgba(30,111,241,.3); margin: 16px 0;
+    }
 
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 50px;
-            padding: 15px 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .logo {
-            height: 75px;
-            transition: transform 0.3s ease;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-            justify-content: center;
-        }
-
-        nav a {
-            color: #2c3e50;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 15px;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            position: relative;
-            padding: 8px 12px;
-            transition: all 0.3s ease;
-            border-radius: 20px;
-        }
-
-        nav a:hover {
-            color: #3498db;
-            background: rgba(52, 152, 219, 0.1);
-        }
-
-        .cta-header-button {
-            background: #2c3e50;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
-            white-space: nowrap;
-        }
-
-        .cta-header-button:hover {
-            background: #34495e;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4);
-        }
-
-        /* Product Details Section */
-        main {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 40px;
-        }
-
-        .product-hero {
-            background: #34495e;
-            color: white;
-            padding: 60px 40px;
-            border-radius: 30px;
-            text-align: center;
-            margin-bottom: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        }
-
-        .product-hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
-
-        .product-hero p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        .product-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .product-image-container {
-            position: relative;
-        }
-
-        .product-image {
-            width: 100%;
-            height: auto;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-            transition: transform 0.3s ease;
-        }
-
-        .product-image:hover {
-            transform: scale(1.02);
-        }
-
-        .product-info {
-            display: flex;
-            flex-direction: column;
-            gap: 25px;
-        }
-
-        .info-section {
-            padding: 25px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            border-left: 4px solid #3498db;
-            transition: all 0.3s ease;
-        }
-
-        .info-section:hover {
-            background: #f0f4f8;
-            transform: translateX(5px);
-        }
-
-        .info-section h3 {
-            color: #2c3e50;
-            font-size: 1.1rem;
-            margin-bottom: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .info-section p {
-            color: #555;
-            font-size: 1rem;
-            line-height: 1.8;
-            margin: 0;
-        }
-
-        .info-section strong {
-            color: #3498db;
-            font-weight: 600;
-        }
-
-        .price-badge {
-            display: inline-block;
-            background: #3498db;
-            color: white;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-top: 10px;
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            text-align: center;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: #3498db;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-        }
-
-        .btn-secondary {
-            background: #2c3e50;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #34495e;
-            transform: translateY(-2px);
-        }
-
-        @media (max-width: 768px) {
-            .product-content {
-                grid-template-columns: 1fr;
-            }
-
-            .action-buttons {
-                flex-direction: column;
-            }
-        }
-
-    </style>
+    /* Breadcrumb */
+    .pd-breadcrumb {
+      font-size: .82rem; color: rgba(255,255,255,.5); margin-bottom: 16px;
+      display: flex; gap: 8px; align-items: center; justify-content: center;
+    }
+    .pd-breadcrumb a { color: rgba(255,255,255,.5); text-decoration: none; }
+    .pd-breadcrumb a:hover { color: white; }
+    .pd-breadcrumb span { opacity: .4; }
+  </style>
 </head>
 <body>
-    {% include 'partials/loading.html' %}
+{% include 'partials/loading.html' %}
 
-    <header id="header">
-        <div class="header-container">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo" class="logo">
-            <nav>
-                <a href="/">Home</a>
-                <a href="/about">About Us</a>
-                <a href="/products">Products</a>
-                <a href="/services">Services</a>
-                <a href="/research">Research</a>
-                <a href="/contact">Contact</a>
-                <a href="/Gallery">Gallery</a>
-            </nav>
-            <a href="/Pharmaintel_ai" class="cta-header-button">Pharmaintel AI</a>
+<header class="p-header" id="p-header">
+  <div class="p-header-inner">
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics" class="p-logo"></a>
+    <nav class="p-nav">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/products" class="active">Products</a>
+      <a href="/services">Services</a>
+      <a href="/research">Research</a>
+      <a href="/Gallery">Gallery</a>
+      <a href="/contact">Contact</a>
+    </nav>
+    <div class="p-header-actions">
+      <a href="/Pharmaintel_ai" class="p-ai-btn">Pharmaintel AI</a>
+    </div>
+  </div>
+</header>
+
+<!-- ── HERO ── -->
+<section class="pd-hero">
+  <div style="position:relative;z-index:2;max-width:700px;margin:0 auto">
+    <div class="pd-breadcrumb">
+      <a href="/">Home</a><span>›</span>
+      <a href="/products">Products</a><span>›</span>
+      <span style="color:rgba(255,255,255,.8)">{{ product.name }}</span>
+    </div>
+    <span class="p-badge p-badge-blue" style="margin-bottom:16px;display:inline-block">{{ product.get('category', 'Pharmaceutical') }}</span>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;margin-bottom:14px;letter-spacing:-.02em">{{ product.name }}</h1>
+    <p style="color:rgba(255,255,255,.65);font-size:1rem;line-height:1.8;max-width:560px;margin:0 auto">{{ product.get('description', 'Premium pharmaceutical solution by Tunes Therapeutics Pvt. Ltd.') }}</p>
+  </div>
+</section>
+
+<!-- ── DETAIL ── -->
+<section class="p-section p-section-light">
+  <div class="p-container">
+    <div class="pd-split">
+
+      <!-- Image -->
+      <div class="p-reveal-left">
+        <div class="pd-img-wrap">
+          {% if product.name == 'Ecoglim MV1' %}
+            <img src="{{ url_for('static', filename='images/1.jpg') }}" alt="{{ product.name }}">
+          {% elif product.name == 'Ecoglim MV2' %}
+            <img src="{{ url_for('static', filename='images/2.jpg') }}" alt="{{ product.name }}">
+          {% elif product.name == 'Ecoglim MP1' %}
+            <img src="{{ url_for('static', filename='images/p1.jpg') }}" alt="{{ product.name }}">
+          {% elif product.name == 'Ecoglim MP2' %}
+            <img src="{{ url_for('static', filename='images/p2.jpg') }}" alt="{{ product.name }}">
+          {% elif product.name == 'NACTAID' %}
+            <img src="{{ url_for('static', filename='images/3.jpg') }}" alt="{{ product.name }}">
+          {% elif product.name == 'RESGABA-NT' %}
+            <img src="{{ url_for('static', filename='images/4.jpg') }}" alt="{{ product.name }}">
+          {% elif product.name == 'RESGABA-DLX' %}
+            <img src="{{ url_for('static', filename='images/5.jpg') }}" alt="{{ product.name }}">
+          {% elif product.name == 'RABISHIR-DSR' %}
+            <img src="{{ url_for('static', filename='images/6.jpg') }}" alt="{{ product.name }}">
+          {% else %}
+            <div class="pd-img-placeholder"><span style="position:relative;z-index:1">💊</span></div>
+          {% endif %}
         </div>
-    </header>
 
-    <main>
-        <div class="product-hero">
-            <h1>{{ product.name }}</h1>
-            <p>{{ product.get('description', 'Premium pharmaceutical solution') }}</p>
+        <!-- Trust badges -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px">
+          <div class="p-card" style="padding:16px;text-align:center">
+            <div style="font-size:1.5rem;margin-bottom:6px">✅</div>
+            <div style="font-size:.78rem;font-weight:600;color:var(--navy-800)">DCGI Approved</div>
+          </div>
+          <div class="p-card" style="padding:16px;text-align:center">
+            <div style="font-size:1.5rem;margin-bottom:6px">🏭</div>
+            <div style="font-size:.78rem;font-weight:600;color:var(--navy-800)">GMP Certified</div>
+          </div>
+          <div class="p-card" style="padding:16px;text-align:center">
+            <div style="font-size:1.5rem;margin-bottom:6px">🔬</div>
+            <div style="font-size:.78rem;font-weight:600;color:var(--navy-800)">Clinically Tested</div>
+          </div>
+          <div class="p-card" style="padding:16px;text-align:center">
+            <div style="font-size:1.5rem;margin-bottom:6px">🌡️</div>
+            <div style="font-size:.78rem;font-weight:600;color:var(--navy-800)">Quality Assured</div>
+          </div>
         </div>
+      </div>
 
-        <div class="product-content">
-            <div class="product-image-container">
-                {% if product.name == 'Ecoglim MV1' %}
-                    <img src="{{ url_for('static', filename='images/1.jpg') }}" alt="{{ product.name }}" class="product-image" />
-                {% elif product.name == 'Ecoglim MV2' %}
-                    <img src="{{ url_for('static', filename='images/2.jpg') }}" alt="{{ product.name }}" class="product-image" />
-                {% elif product.name == 'Ecoglim MP1' %}
-                    <img src="{{ url_for('static', filename='images/p1.jpg') }}" alt="{{ product.name }}" class="product-image" />
-                {% elif product.name == 'Ecoglim MP2' %}
-                    <img src="{{ url_for('static', filename='images/p2.jpg') }}" alt="{{ product.name }}" class="product-image" />
-                {% elif product.name == 'NACTAID' %}
-                    <img src="{{ url_for('static', filename='images/3.jpg') }}" alt="{{ product.name }}" class="product-image" />
-                {% elif product.name == 'RESGABA-NT' %}
-                    <img src="{{ url_for('static', filename='images/4.jpg') }}" alt="{{ product.name }}" class="product-image" />
-                {% elif product.name == 'RESGABA-DLX' %}
-                    <img src="{{ url_for('static', filename='images/5.jpg') }}" alt="{{ product.name }}" class="product-image" />
-                {% elif product.name == 'RABISHIR-DSR' %}
-                    <img src="{{ url_for('static', filename='images/6.jpg') }}" alt="{{ product.name }}" class="product-image" />
-                {% else %}
-                    <img src="{{ url_for('static', filename='images/product_images.jpg') }}" alt="{{ product.name }}" class="product-image" />
-                {% endif %}
-            </div>
+      <!-- Info -->
+      <div class="p-reveal-right">
+        {% if product.get('price') %}
+        <div class="pd-price">₹{{ product.price }}</div>
+        {% endif %}
 
-            <div class="product-info">
-                {% if product.description %}
-                <div class="info-section">
-                    <h3>Description</h3>
-                    <p>{{ product.description }}</p>
-                </div>
-                {% endif %}
-
-                {% if product.benefits %}
-                <div class="info-section">
-                    <h3>Benefits</h3>
-                    <p>{{ product.benefits }}</p>
-                </div>
-                {% endif %}
-
-                {% if product.get('composition') %}
-                <div class="info-section">
-                    <h3>Composition</h3>
-                    <p><strong>{{ product.composition }}</strong></p>
-                </div>
-                {% endif %}
-
-                {% if product.get('indication') %}
-                <div class="info-section">
-                    <h3>Indication</h3>
-                    <p><strong>{{ product.indication }}</strong></p>
-                </div>
-                {% endif %}
-
-                {% if product.get('how_to_use') %}
-                <div class="info-section">
-                    <h3>How to Use</h3>
-                    <p>{{ product.how_to_use }}</p>
-                </div>
-                {% endif %}
-
-                {% if product.get('side_effects') %}
-                <div class="info-section">
-                    <h3>Side Effects</h3>
-                    <p>{{ product.side_effects }}</p>
-                </div>
-                {% endif %}
-
-                {% if product.get('price') %}
-                <div class="info-section">
-                    <h3>Price</h3>
-                    <div class="price-badge">₹{{ product.price }}</div>
-                </div>
-                {% endif %}
-
-                <div class="action-buttons">
-                    <a href="/online-ordering" class="btn btn-primary">Order Now</a>
-                    <a href="/products" class="btn btn-secondary">Back to Products</a>
-                </div>
-            </div>
+        {% if product.description %}
+        <div class="pd-info-section">
+          <h4>Description</h4>
+          <p>{{ product.description }}</p>
         </div>
-    </main>
+        {% endif %}
 
-    <script>
-        // Header scroll effect
-        window.addEventListener('scroll', function() {
-            const header = document.getElementById('header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-    </script>
+        {% if product.get('composition') %}
+        <div class="pd-info-section">
+          <h4>Composition</h4>
+          <p>{{ product.composition }}</p>
+        </div>
+        {% endif %}
 
-    {% include 'partials/footer.html' %}
+        {% if product.get('indication') %}
+        <div class="pd-info-section">
+          <h4>Indication</h4>
+          <p>{{ product.indication }}</p>
+        </div>
+        {% endif %}
+
+        {% if product.benefits %}
+        <div class="pd-info-section">
+          <h4>Key Benefits</h4>
+          <p>{{ product.benefits }}</p>
+        </div>
+        {% endif %}
+
+        {% if product.get('how_to_use') %}
+        <div class="pd-info-section">
+          <h4>How to Use</h4>
+          <p>{{ product.how_to_use }}</p>
+        </div>
+        {% endif %}
+
+        {% if product.get('side_effects') %}
+        <div class="pd-info-section" style="border-left-color:rgba(201,169,110,.6)">
+          <h4>Side Effects</h4>
+          <p>{{ product.side_effects }}</p>
+        </div>
+        {% endif %}
+
+        {% if product.get('schedule') %}
+        <div class="pd-info-section">
+          <h4>Drug Schedule</h4>
+          <p>{{ product.schedule }}</p>
+        </div>
+        {% endif %}
+
+        <div style="display:flex;gap:12px;margin-top:28px;flex-wrap:wrap">
+          <a href="/online-ordering" class="p-btn p-btn-primary" style="flex:1;text-align:center">Order Now →</a>
+          <a href="/contact" class="p-btn p-btn-navy" style="flex:1;text-align:center">Request Sample</a>
+        </div>
+        <a href="/products" style="display:block;text-align:center;margin-top:16px;font-size:.85rem;color:var(--gray-400);text-decoration:none">← Back to all products</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── RELATED CTA ── -->
+<section class="p-section p-section-sm p-section-white" style="text-align:center">
+  <div class="p-container">
+    <div class="p-reveal">
+      <h2 class="p-section-title" style="margin-bottom:12px">Explore More Products</h2>
+      <p class="p-section-subtitle" style="margin:0 auto 28px">Discover the full Tunes Therapeutics portfolio across all therapeutic categories.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="/product-catalog" class="p-btn p-btn-blue">Browse Catalog</a>
+        <a href="/products" class="p-btn p-btn-navy">Product Showcase</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include 'partials/footer.html' %}
 </body>
 </html>

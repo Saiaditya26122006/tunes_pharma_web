@@ -1,340 +1,239 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>"PHARMAINTEL_AI" - Strategy Maker</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <style>
-        /* General Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Pharmaintel AI | Tunes Therapeutics Pvt. Ltd.</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
+  <style>
+    body { background: var(--navy-950); }
 
-        body {
-            font-family: 'Sitka Small', serif;
-            background: linear-gradient(120deg, #2d89ff, #87E0E0, #120e43);
-            background-size: 300% 300%;
-            animation: gradientMove 10s ease infinite;
-            color: #000000;
-            line-height: 1.6;
-        }
+    .ai-shell {
+      min-height: 100vh; display: grid;
+      grid-template-rows: auto 1fr; background: var(--navy-950);
+    }
 
-        @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+    /* Top bar */
+    .ai-topbar {
+      position: sticky; top: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 28px;
+      background: rgba(5,13,26,.85); backdrop-filter: blur(24px);
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .ai-topbar-left { display: flex; align-items: center; gap: 16px; }
+    .ai-topbar-left img { height: 42px; }
+    .ai-topbar-left span { color: white; font-weight: 700; font-size: 1.05rem; letter-spacing: -.01em; }
+    .ai-topbar-left span em {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      font-style: normal;
+    }
+    .ai-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(30,111,241,0.15); border: 1px solid rgba(30,111,241,0.3);
+      border-radius: var(--radius-full); padding: 5px 14px;
+      font-size: .75rem; font-weight: 700; color: var(--blue-500); letter-spacing: .04em;
+    }
+    .ai-badge::before { content: ''; width: 6px; height: 6px; background: var(--blue-500); border-radius: 50%; animation: pulse-dot 1.5s ease infinite; }
+    @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.4} }
+    .ai-home-link {
+      color: rgba(255,255,255,.55); font-size: .85rem; text-decoration: none;
+      padding: 8px 18px; border: 1px solid rgba(255,255,255,.12); border-radius: var(--radius-full);
+      transition: all .25s;
+    }
+    .ai-home-link:hover { color: white; border-color: rgba(255,255,255,.3); }
 
-        /* Header Styling */
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #E6F7FF; /* Vibrant teal */
-            padding: 15px 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
+    /* Main content area */
+    .ai-main {
+      max-width: 900px; margin: 0 auto; width: 100%;
+      padding: 40px 24px 60px;
+    }
 
-        .logo {
-            height: 150px;
-        }
+    /* Welcome banner */
+    .ai-welcome {
+      text-align: center; margin-bottom: 40px;
+    }
+    .ai-welcome h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      color: white; margin-bottom: 12px; letter-spacing: -.02em;
+    }
+    .ai-welcome h1 span {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .ai-welcome p { color: rgba(255,255,255,.5); font-size: .95rem; line-height: 1.75; max-width: 560px; margin: 0 auto; }
 
-        nav {
-            display: flex;
-            align-items: center;
-        }
+    /* Cards grid */
+    .ai-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+    @media (max-width: 600px) { .ai-cards { grid-template-columns: 1fr; } }
+    .ai-feature-card {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius-md); padding: 20px 22px;
+      transition: all .25s var(--ease-smooth);
+    }
+    .ai-feature-card:hover { background: rgba(255,255,255,.07); border-color: rgba(30,111,241,.3); }
+    .ai-feature-card .icon { font-size: 1.8rem; margin-bottom: 10px; }
+    .ai-feature-card h4 { color: white; font-size: .9rem; font-weight: 600; margin-bottom: 6px; }
+    .ai-feature-card p  { color: rgba(255,255,255,.45); font-size: .8rem; line-height: 1.6; }
 
-        nav a {
-            color: #000;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 16px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-        }
+    /* Upload panel */
+    .ai-panel {
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.09);
+      border-radius: var(--radius-lg); padding: 32px; margin-bottom: 20px;
+    }
+    .ai-panel h3 { color: white; font-size: 1rem; font-weight: 600; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; }
+    .ai-panel h3 span { background: rgba(30,111,241,0.15); color: var(--blue-500); padding: 4px 10px; border-radius: 6px; font-size: .75rem; }
 
-        nav a:hover {
-            color: #222;
-            border-bottom: 2px solid #000;
-            padding-bottom: 5px;
-        }
+    /* Upload zone */
+    .upload-zone {
+      border: 2px dashed rgba(255,255,255,.15); border-radius: var(--radius-md);
+      padding: 36px 20px; text-align: center; cursor: pointer;
+      transition: all .3s; margin-bottom: 18px; position: relative;
+    }
+    .upload-zone:hover { border-color: var(--blue-500); background: rgba(30,111,241,.05); }
+    .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+    .upload-zone .upload-icon { font-size: 2.5rem; margin-bottom: 10px; }
+    .upload-zone p { color: rgba(255,255,255,.45); font-size: .87rem; }
+    .upload-zone strong { color: var(--blue-500); }
 
-        /* Main Content */
-        h1 {
-            background-color: #001f3f;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            margin: 0;
-            font-size: 28px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-        }
+    /* Query input */
+    .ai-query-row { display: flex; gap: 10px; }
+    .ai-query-input {
+      flex: 1; background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.1);
+      border-radius: var(--radius-md); padding: 14px 18px;
+      color: white; font-size: .95rem; font-family: 'Poppins', sans-serif;
+      transition: border-color .25s;
+    }
+    .ai-query-input::placeholder { color: rgba(255,255,255,.3); }
+    .ai-query-input:focus { outline: none; border-color: var(--blue-500); }
+    .ai-send-btn {
+      padding: 14px 28px; border-radius: var(--radius-md); border: none; cursor: pointer;
+      background: linear-gradient(135deg, var(--blue-500), var(--navy-700));
+      color: white; font-weight: 600; font-size: .9rem; font-family: 'Poppins', sans-serif;
+      transition: all .3s; white-space: nowrap;
+    }
+    .ai-send-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30,111,241,.4); }
 
-       /* Expanded Form Container */
-.form-container {
-    background-color: 1d1d1d; /* Maintains the black background */
-    color: white; /* Ensures text is visible on a black background */
-    border: 1px solid #444; /* Slightly darker border for consistency */
-    margin: 0 auto;
-    width: 100%;
-    max-width: 1500px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.1); /* Lighter shadow for contrast */
-    padding: 50px;
-    height: calc(100vh - 200px); /* Fill available space below header */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
+    /* Response area */
+    .ai-response {
+      background: rgba(255,255,255,.03); border: 1px solid rgba(255,255,255,.07);
+      border-radius: var(--radius-md); padding: 24px; margin-top: 20px;
+      min-height: 100px; color: rgba(255,255,255,.75); font-size: .92rem; line-height: 1.8;
+    }
+    .ai-response:empty::before { content: 'Your AI response will appear here…'; color: rgba(255,255,255,.25); }
 
-        }
-
-        label {
-            font-weight: bold;
-            color: #001f3f;
-            margin-bottom: 12px;
-            font-size: 16px;
-        }
-
-        input[type="text"], input[type="file"], input[type="images"] {
-            width: 100%;
-            padding: 15px;
-            margin-bottom: 20px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-
-        button {
-            width: 100%;
-            background-color: #1d1d1d;
-            color: white;
-            padding: 15px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        button:hover {
-            background-color: #5ababa;
-        }
-
-        .footer-message {
-            background-color: #1d1d1d; /* Light blue background */
-            color: #ffffff; /* Dark blue text */
-            padding: 15px;
-            border-radius: 4px;
-            font-size: 16px;
-            margin-top: 20px;
-            border: 1px solid #a4c8f0; /* Subtle border for better contrast */
-        }
-
-        footer {
-            text-align: center;
-            padding: 15px;
-            background-color: #001f3f;
-            color: white;
-        }
-
-        footer a {
-            color:#5ababa ;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    /* Disclaimer */
+    .ai-disclaimer {
+      display: flex; gap: 10px; align-items: flex-start;
+      background: rgba(201,169,110,0.08); border: 1px solid rgba(201,169,110,.2);
+      border-radius: var(--radius-md); padding: 16px 20px; margin-top: 24px;
+    }
+    .ai-disclaimer p { color: rgba(255,255,255,.5); font-size: .78rem; line-height: 1.6; }
+    .ai-disclaimer span { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+  </style>
 </head>
 <body>
-    {% include 'partials/loading.html' %}
+{% include 'partials/loading.html' %}
 
-<header>
-    <a href="/" class="logo-link">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo" class="logo">
-    </a>
-    <nav>
-        <a href="/">Home</a>
-        <a href="/about">About Us</a>
-        <a href="/products">Our Products</a>
-        <a href="/services">Services</a>
-        <a href="/research">Research</a>
-        <a href="/contact">Contact Us</a>
-        <a href="/Pharmaintel_ai">Pharmaintel_ai</a>
-    </nav>
-</header>
+<div class="ai-shell">
 
+  <!-- Top bar -->
+  <div class="ai-topbar">
+    <div class="ai-topbar-left">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics">
+      <span>Pharmaintel <em>AI</em></span>
+      <div class="ai-badge">GPT-4 Powered</div>
+    </div>
+    <a href="/" class="ai-home-link">← Back to Website</a>
+  </div>
 
-<h1> "PHARMAINTEL_AI" - Strategy Maker</h1>
+  <!-- Main -->
+  <div class="ai-main">
 
-<!-- Expanded Form Container -->
-<div class="form-container">
+    <!-- Welcome -->
+    <div class="ai-welcome">
+      <h1>Your Pharmaceutical <span>Intelligence Engine</span></h1>
+      <p>Analyse PDFs, ask clinical questions, and generate pharmaceutical insights — all powered by GPT-4.</p>
+    </div>
 
-    <!-- PDF Upload Form -->
-    <form method="post" enctype="multipart/form-data">
-        <label for="pdf_upload">Upload a PDF for Analysis:</label>
-        <input type="file" name="pdf_file" id="pdf_upload" accept=".pdf">
-        <button type="submit" name="upload_pdf">Analyze PDF</button>
-    </form>
+    <!-- Feature cards -->
+    <div class="ai-cards">
+      <div class="ai-feature-card">
+        <div class="icon">📄</div>
+        <h4>PDF Document Analysis</h4>
+        <p>Upload research papers, SOP documents, or drug monographs for instant AI-powered summaries and insights.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div class="icon">💊</div>
+        <h4>Drug Interaction Queries</h4>
+        <p>Ask about drug-drug interactions, contraindications, and clinical notes with evidence-backed responses.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div class="icon">📊</div>
+        <h4>Market Intelligence</h4>
+        <p>Generate strategy reports, market landscape summaries, and competitor analysis in natural language.</p>
+      </div>
+      <div class="ai-feature-card">
+        <div class="icon">🧪</div>
+        <h4>Formulation Assistant</h4>
+        <p>Explore excipient compatibility, stability considerations, and regulatory pathway guidance instantly.</p>
+      </div>
+    </div>
 
-    <!-- New form to ask OpenAI a question -->
-    <form method="post">
-        <label for="openai_query">Ask OpenAI:</label>
-        <input type="text" name="openai_query" id="openai_query">
-        <button type="submit" name="ask_openai">Ask OpenAI</button>
-    </form>
-
-    <!-- Display message -->
-    {% if message %}
-        <div class="footer-message">
-            {{ message|safe }}
+    <!-- PDF Upload panel -->
+    <div class="ai-panel">
+      <h3>📁 PDF Analysis <span>Upload</span></h3>
+      <form method="post" enctype="multipart/form-data">
+        <div class="upload-zone">
+          <input type="file" name="pdf_file" id="pdf_upload" accept=".pdf">
+          <div class="upload-icon">☁️</div>
+          <p><strong>Click to upload</strong> or drag & drop a PDF</p>
+          <p style="margin-top:6px;font-size:.78rem">Supports research papers, drug monographs, SOPs · Max 20 MB</p>
         </div>
-    {% endif %}
+        <button type="submit" name="upload_pdf" class="ai-send-btn" style="width:100%">Analyse Document →</button>
+      </form>
+    </div>
 
+    <!-- Query panel -->
+    <div class="ai-panel">
+      <h3>🤖 Ask Pharmaintel AI <span>GPT-4</span></h3>
+      <form method="post">
+        <div class="ai-query-row">
+          <input type="text" name="openai_query" id="openai_query" class="ai-query-input" placeholder="Ask a pharmaceutical question, e.g. 'What are the drug interactions for Metformin?'">
+          <button type="submit" name="ask_openai" class="ai-send-btn">Ask AI</button>
+        </div>
+      </form>
+
+      {% if message %}
+      <div class="ai-response" id="aiResponse">{{ message|safe }}</div>
+      {% else %}
+      <div class="ai-response" id="aiResponse"></div>
+      {% endif %}
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="ai-disclaimer">
+      <span>⚠️</span>
+      <p>Pharmaintel AI provides informational pharmaceutical insights and should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare professional for clinical decisions.</p>
+    </div>
+
+  </div>
 </div>
 
-<footer>
-    <div class="footer-content">
-            <div class="footer-logo">
-                <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo"></a>
-            </div>
-        <div class="footer-links">
-            <a href="/">Home</a>
-            <a href="/about">About Us</a>
-            <a href="/products">Our Products</a>
-            <a href="/research">Research</a>
-            <a href="/contact">Contact Us</a>
-            <a href="/Pharmaintel_ai">Pharmaintel_ai</a>
-         </div>
-            <div class="footer-social">
-                <a href="https://www.instagram.com/tunes_therapeutics_pvt_ltd" class="social-link" target="_blank"><img src="{{ url_for('static', filename='images/instagram-icon.png') }}" alt="Instagram"></a>
-                <a href="https://www.facebook.com/tunes_therapeutics_pvt_ltd" class="social-link" target="_blank"><img src="{{ url_for('static', filename='images/facebook-icon.png') }}" alt="Facebook"></a>
-                <a href="https://twitter.com/tunes_therapeutics_pvt_ltd" class="social-link" target="_blank"><img src="{{ url_for('static', filename='images/twitter-icon.png') }}" alt="Twitter"></a>
-                <a href="https://linkedin.com/tunes_therapeutics_pvt_ltd" class="social-link" target="_blank"><img src="{{ url_for('static', filename='images/linkedin-icon.png') }}" alt="Linkedin"></a>
-                <a href="https://wa.me/919295006066" class="social-link" target="_blank"><img src="{{ url_for('static', filename='images/whatsapp-icon.png') }}" alt="WhatsApp"></a>
-            </div>
-        <div class="footer-info">
-            <p>&copy; 2024 Tunes Therapeutics Pvt. Ltd. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
+{% include 'partials/footer.html' %}
 
-<style>
-    footer {
-        background-color: #78e3fe;
-        color: #000;
-        text-align: center;
-        padding: 30px 0;
+<script>
+  // Highlight file name on select
+  document.getElementById('pdf_upload').addEventListener('change', function() {
+    const zone = this.closest('.upload-zone');
+    if (this.files[0]) {
+      zone.querySelector('p').innerHTML = '<strong>' + this.files[0].name + '</strong> selected';
     }
-
-    .footer-content {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 0 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-
-    .footer-logo img {
-        max-width: 200px;
-    }
-
-    .footer-links {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        margin-bottom: 20px;
-    }
-
-    .footer-links a {
-        color: #000;
-        text-decoration: none;
-        font-size: 16px;
-        font-weight: 600;
-        margin: 0 15px;
-        letter-spacing: 1px;
-    }
-
-    .footer-links a:hover {
-        color: #006e77;
-    }
-
-    .footer-social {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-
-    .social-link img {
-        width: 30px;
-        height: 30px;
-    }
-
-    .footer-info p {
-        font-size: 14px;
-        color: #001f3f;
-    }
-</style>
-
-<!-- Add Chatbot CSS -->
-<style>
-    .chatbot-container {
-        margin-top: 40px;
-        padding: 20px;
-        background-color: #000000;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .chatbox {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .chatbox-messages {
-        width: 100%;
-        max-height: 300px;
-        overflow-y: auto;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        padding: 10px;
-        background-color: #000;
-    }
-
-    #chat-input {
-        width: 80%;
-        padding: 10px;
-        margin-top: 10px;
-        border: 1px solid #000;
-        border-radius: 4px;
-    }
-
-    #chat-send {
-        width: 18%;
-        padding: 10px;
-        margin-top: 10px;
-        background-color: #000000;
-        color: black;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-    }
-
-    #chat-send:hover {
-        background-color: #000000;
-    }
-</style>
-
-    {% include 'partials/footer.html' %}
+  });
+</script>
 </body>
 </html>

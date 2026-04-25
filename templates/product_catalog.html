@@ -1,367 +1,175 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product Catalog | Tunes Therapeutics</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Product Catalog | Tunes Therapeutics Pvt. Ltd.</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
+  <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
+  <style>
+    .cat-hero {
+      background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 55%, var(--navy-700) 100%);
+      min-height: 44vh; display: flex; align-items: center;
+      padding: 140px 24px 70px; position: relative; overflow: hidden;
+      text-align: center; color: white;
+    }
+    .cat-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 60%, rgba(30,111,241,0.14) 0%, transparent 60%);
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            line-height: 1.6;
-        }
+    /* Search strip */
+    .search-strip {
+      background: white; border-radius: var(--radius-lg); padding: 24px 32px;
+      box-shadow: var(--shadow-md); border: 1px solid rgba(15,30,45,0.07);
+      margin-bottom: 36px;
+    }
+    .search-strip-grid { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 12px; align-items: end; }
+    @media (max-width: 768px) { .search-strip-grid { grid-template-columns: 1fr; } }
 
-        header {
-            position: sticky;
-            top: 20px;
-            z-index: 1000;
-            padding: 0 20px;
-            margin-bottom: 30px;
-        }
+    .search-go {
+      padding: 12px 24px; border-radius: var(--radius-full); border: none; cursor: pointer;
+      background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
+      color: white; font-size: .9rem; font-weight: 600; font-family: 'Poppins', sans-serif;
+      transition: all .3s var(--ease-smooth); white-space: nowrap;
+    }
+    .search-go:hover {
+      background: linear-gradient(135deg, var(--blue-500), var(--navy-700));
+      transform: translateY(-2px);
+    }
 
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: 50px;
-            padding: 15px 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
+    /* Product cards */
+    .cat-card {
+      background: white; border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: var(--shadow-sm); border: 1px solid rgba(15,30,45,.07);
+      transition: all .35s var(--ease-smooth); display: flex; flex-direction: column;
+    }
+    .cat-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-xl); }
+    .cat-card-img {
+      height: 180px; overflow: hidden; position: relative;
+      background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
+    }
+    .cat-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s; }
+    .cat-card:hover .cat-card-img img { transform: scale(1.07); }
+    .cat-card-body { padding: 22px 22px 20px; flex: 1; display: flex; flex-direction: column; }
+    .cat-card-body h3 { font-size: 1rem; font-weight: 700; color: var(--navy-800); margin-bottom: 10px; }
 
-        .logo {
-            height: 75px;
-        }
+    .cat-info-row { display: flex; gap: 6px; margin-bottom: 6px; font-size: .8rem; }
+    .cat-info-label { color: var(--gray-400); font-weight: 600; min-width: 90px; }
+    .cat-info-val   { color: var(--gray-600); }
 
-        nav {
-            display: flex;
-            gap: 8px;
-            flex: 1;
-            justify-content: center;
-        }
+    .cat-price { font-size: 1.1rem; font-weight: 700; color: var(--blue-500); margin: 12px 0; }
+    .cat-actions { display: flex; gap: 8px; margin-top: auto; padding-top: 14px; }
 
-        nav a {
-            color: #2c3e50;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 15px;
-            font-weight: 500;
-            padding: 8px 12px;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-
-        nav a:hover {
-            color: #3498db;
-            background: rgba(52, 152, 219, 0.1);
-        }
-
-        .cta-header-button {
-            background: #2c3e50;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .cta-header-button:hover {
-            background: #34495e;
-            transform: translateY(-2px);
-        }
-
-        .catalog-hero {
-            background: #34495e;
-            color: white;
-            padding: 60px 20px;
-            text-align: center;
-        }
-
-        .catalog-hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 20px;
-        }
-
-        .search-section {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .search-container {
-            background: white;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-
-        .search-form {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr auto;
-            gap: 15px;
-            align-items: end;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            font-size: 0.9rem;
-            color: #555;
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group select {
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-
-        .search-btn {
-            background: #3498db;
-            color: white;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .search-btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .product-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: #3498db;
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
-        }
-
-        .product-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .product-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .product-card h3 {
-            font-size: 1.5rem;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .product-info {
-            margin-bottom: 15px;
-        }
-
-        .product-info p {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            margin: 5px 0;
-        }
-
-        .product-info strong {
-            color: #2c3e50;
-        }
-
-        .product-price {
-            font-size: 1.5rem;
-            color: #3498db;
-            font-weight: 700;
-            margin: 15px 0;
-        }
-
-        .product-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            text-align: center;
-            display: inline-block;
-        }
-
-        .btn-primary {
-            background: #3498db;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: #2c3e50;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #34495e;
-        }
-
-        .no-results {
-            text-align: center;
-            padding: 60px 20px;
-            color: #7f8c8d;
-        }
-
-        @media (max-width: 768px) {
-            .search-form {
-                grid-template-columns: 1fr;
-            }
-
-            .products-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    /* Empty */
+    .cat-empty { text-align: center; padding: 80px 20px; grid-column: 1/-1; }
+    .cat-empty .icon { font-size: 3rem; margin-bottom: 14px; }
+    .cat-empty h3 { color: var(--navy-800); margin-bottom: 8px; }
+    .cat-empty p { color: var(--gray-500); font-size: .9rem; }
+  </style>
 </head>
 <body>
-    {% include 'partials/loading.html' %}
-    <header>
-        <div class="header-container">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
-            <nav>
-                <a href="/">Home</a>
-                <a href="/products">Products</a>
-                <a href="/services">Services</a>
-                <a href="/product-catalog">Catalog</a>
-                <a href="/stockist-locator">Find Stockist</a>
-            </nav>
-            <a href="/Pharmaintel_ai" class="cta-header-button">Pharmaintel AI</a>
+{% include 'partials/loading.html' %}
+
+<header class="p-header" id="p-header">
+  <div class="p-header-inner">
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics" class="p-logo"></a>
+    <nav class="p-nav">
+      <a href="/">Home</a>
+      <a href="/products">Products</a>
+      <a href="/services">Services</a>
+      <a href="/product-catalog" class="active">Catalog</a>
+      <a href="/stockist-locator">Find Stockist</a>
+      <a href="/contact">Contact</a>
+    </nav>
+    <div class="p-header-actions">
+      <a href="/Pharmaintel_ai" class="p-ai-btn">Pharmaintel AI</a>
+    </div>
+  </div>
+</header>
+
+<!-- ── HERO ── -->
+<section class="cat-hero">
+  <div style="position:relative;z-index:2;max-width:620px;margin:0 auto">
+    <div class="p-hero-badge" style="margin-bottom:20px"><span class="dot"></span>Complete Portfolio</div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.3rem,5vw,3.6rem);font-weight:700;margin-bottom:14px;letter-spacing:-.02em">Intelligent <span style="background:linear-gradient(135deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Product Catalog</span></h1>
+    <p style="color:rgba(255,255,255,.65);font-size:1rem;line-height:1.8">Search by name, composition, indication, or category — every SKU with full clinical metadata.</p>
+  </div>
+</section>
+
+<!-- ── CATALOG ── -->
+<section class="p-section p-section-light">
+  <div class="p-container">
+
+    <!-- Search -->
+    <div class="search-strip p-reveal">
+      <form method="GET" class="search-strip-grid">
+        <div class="p-form-group">
+          <label>Search Products</label>
+          <input type="text" name="search" placeholder="Product name or composition…" value="{{ search_query }}">
         </div>
-    </header>
-
-    <section class="catalog-hero">
-        <h1>Product Catalog</h1>
-        <p>Search and explore our comprehensive range of pharmaceutical products</p>
-    </section>
-
-    <section class="search-section">
-        <div class="search-container">
-            <form method="GET" class="search-form">
-                <div class="form-group">
-                    <label>Search Products</label>
-                    <input type="text" name="search" placeholder="Product name or composition..." value="{{ search_query }}">
-                </div>
-                <div class="form-group">
-                    <label>Category</label>
-                    <select name="category">
-                        <option value="">All Categories</option>
-                        {% for cat in categories %}
-                        <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Indication</label>
-                    <select name="indication">
-                        <option value="">All Indications</option>
-                        {% for ind in indications %}
-                        <option value="{{ ind }}" {% if selected_indication == ind %}selected{% endif %}>{{ ind }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <button type="submit" class="search-btn">Search</button>
-            </form>
+        <div class="p-form-group">
+          <label>Category</label>
+          <select name="category">
+            <option value="">All Categories</option>
+            {% for cat in categories %}
+            <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+            {% endfor %}
+          </select>
         </div>
+        <div class="p-form-group">
+          <label>Indication</label>
+          <select name="indication">
+            <option value="">All Indications</option>
+            {% for ind in indications %}
+            <option value="{{ ind }}" {% if selected_indication == ind %}selected{% endif %}>{{ ind }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="search-go">Search →</button>
+      </form>
+    </div>
 
-        <div class="products-grid">
-            {% if products %}
-                {% for key, product in products.items() %}
-                <div class="product-card">
-                    <h3>{{ product.name }}</h3>
-                    <div class="product-info">
-                        <p><strong>Composition:</strong> {{ product.get('composition', 'N/A') }}</p>
-                        <p><strong>Category:</strong> {{ product.get('category', 'N/A') }}</p>
-                        <p><strong>Indication:</strong> {{ product.get('indication', 'N/A') }}</p>
-                        <p><strong>Schedule:</strong> {{ product.get('schedule', 'N/A') }}</p>
-                    </div>
-                    <div class="product-price">{{ product.get('price', 'Contact for price') }}</div>
-                    <p style="color: #7f8c8d; font-size: 0.9rem;">{{ product.get('description', '') }}</p>
-                    <div class="product-actions">
-                        <a href="/products/{{ key }}" class="btn btn-primary">View Details</a>
-                        <a href="/online-ordering" class="btn btn-secondary">Order Now</a>
-                    </div>
-                </div>
-                {% endfor %}
-            {% else %}
-                <div class="no-results">
-                    <h2>No products found</h2>
-                    <p>Try adjusting your search criteria</p>
-                </div>
+    <!-- Grid -->
+    <div class="p-grid-3">
+      {% if products %}
+        {% for key, product in products.items() %}
+        <div class="cat-card p-reveal p-delay-{{ loop.index % 4 }}">
+          <div class="cat-card-img">
+            <img src="{{ url_for('static', filename='images/' ~ (loop.index) ~ '.jpg') }}" alt="{{ product.name }}" onerror="this.parentElement.style.background='linear-gradient(135deg,var(--navy-800),var(--navy-700))'">
+            <div style="position:absolute;top:12px;left:12px">
+              <span class="p-badge p-badge-blue" style="font-size:.72rem">{{ product.get('category', 'Pharma') }}</span>
+            </div>
+          </div>
+          <div class="cat-card-body">
+            <h3>{{ product.name }}</h3>
+            <div class="cat-info-row"><span class="cat-info-label">Composition</span><span class="cat-info-val">{{ product.get('composition', '—') }}</span></div>
+            <div class="cat-info-row"><span class="cat-info-label">Indication</span><span class="cat-info-val">{{ product.get('indication', '—') }}</span></div>
+            <div class="cat-info-row"><span class="cat-info-label">Schedule</span><span class="cat-info-val">{{ product.get('schedule', '—') }}</span></div>
+            {% if product.get('price') %}
+            <div class="cat-price">₹{{ product.price }}</div>
             {% endif %}
+            <div class="cat-actions">
+              <a href="/products/{{ key }}" class="p-btn p-btn-blue" style="font-size:12px;padding:9px 16px;flex:1;text-align:center">View Details</a>
+              <a href="/online-ordering" class="p-btn p-btn-navy" style="font-size:12px;padding:9px 16px;flex:1;text-align:center">Order Now</a>
+            </div>
+          </div>
         </div>
-    </section>
-    {% include 'partials/footer.html' %}
+        {% endfor %}
+      {% else %}
+        <div class="p-card cat-empty">
+          <div class="icon">🔍</div>
+          <h3>No products found</h3>
+          <p>Try adjusting your search or <a href="/product-catalog" style="color:var(--blue-500)">clear filters</a>.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% include 'partials/footer.html' %}
 </body>
 </html>
-

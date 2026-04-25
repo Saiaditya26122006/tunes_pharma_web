@@ -1,560 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Services | Tunes Therapeutics Pvt. Ltd.</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f6f8;
-            color: #2c3e50;
-            line-height: 1.6;
-        }
-
-        header {
-            position: sticky;
-            top: 20px;
-            z-index: 1000;
-            padding: 0 20px;
-        }
-
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: 50px;
-            padding: 15px 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .logo {
-            height: 70px;
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-            justify-content: center;
-        }
-
-        nav a {
-            color: #2c3e50;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 500;
-            padding: 8px 14px;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-
-        nav a:hover,
-        nav a.active {
-            color: #3498db;
-            background: rgba(52, 152, 219, 0.12);
-        }
-
-        .language-switcher {
-            display: flex;
-            gap: 10px;
-            margin-right: 12px;
-        }
-
-        .language-switcher a {
-            padding: 6px 14px;
-            border-radius: 20px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-            background: rgba(44, 62, 80, 0.08);
-            color: #2c3e50;
-            transition: all 0.3s ease;
-        }
-
-        .language-switcher a.active,
-        .language-switcher a:hover {
-            background: #3498db;
-            color: white;
-        }
-
-        .cta-header-button {
-            background: #2c3e50;
-            color: white;
-            padding: 12px 28px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .cta-header-button:hover {
-            background: #34495e;
-            transform: translateY(-2px);
-        }
-
-        .services-hero {
-            position: relative;
-            max-width: 1400px;
-            margin: 80px auto 40px;
-            padding: 80px 60px;
-            background: #2c3e50;
-            border-radius: 40px;
-            color: white;
-            overflow: hidden;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
-        }
-
-        .services-hero::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at top right, rgba(255,255,255,0.25), transparent 50%);
-            opacity: 0.8;
-        }
-
-        .services-hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
-        }
-
-        .services-hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 4vw, 3.8rem);
-            margin-bottom: 20px;
-        }
-
-        .services-hero p {
-            font-size: 1.1rem;
-            color: rgba(255,255,255,0.85);
-            margin-bottom: 20px;
-        }
-
-        .tagline {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255,255,255,0.15);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: 600;
-            margin-bottom: 25px;
-        }
-
-        .hero-actions {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .hero-actions a {
-            padding: 14px 34px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            border: 2px solid rgba(255,255,255,0.5);
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .hero-actions a.primary {
-            background: white;
-            color: #2c3e50;
-            border-color: white;
-        }
-
-        .hero-actions a:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        .services-section {
-            max-width: 1400px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .section-heading {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .section-heading h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2rem, 3vw, 2.7rem);
-            margin-bottom: 10px;
-        }
-
-        .section-heading p {
-            color: #7f8c8d;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
-
-        .service-card {
-            background: white;
-            border-radius: 25px;
-            padding: 30px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid rgba(255,255,255,0.5);
-        }
-
-        .service-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 25px 45px rgba(44,62,80,0.15);
-        }
-
-        .service-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            background: rgba(52, 152, 219, 0.12);
-            color: #3498db;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 26px;
-            margin-bottom: 20px;
-        }
-
-        .service-card h3 {
-            margin-bottom: 12px;
-            font-size: 1.3rem;
-        }
-
-        .service-card ul {
-            list-style: none;
-            margin-top: 15px;
-            color: #7f8c8d;
-        }
-
-        .service-card ul li {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .service-card a {
-            display: inline-flex;
-            margin-top: 15px;
-            color: #3498db;
-            font-weight: 600;
-            text-decoration: none;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .detail-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            align-items: center;
-            background: white;
-            border-radius: 30px;
-            padding: 40px;
-            margin-bottom: 40px;
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.08);
-        }
-
-        .detail-image {
-            min-height: 250px;
-            border-radius: 20px;
-            background: #ecf0f1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: #95a5a6;
-        }
-
-        .detail-content h3 {
-            font-size: 1.8rem;
-            margin-bottom: 15px;
-        }
-
-        .detail-content p {
-            color: #7f8c8d;
-            margin-bottom: 20px;
-        }
-
-        .detail-content .detail-list {
-            list-style: none;
-            margin-bottom: 20px;
-        }
-
-        .detail-content .detail-list li {
-            margin-bottom: 10px;
-            padding-left: 20px;
-            position: relative;
-        }
-
-        .detail-content .detail-list li::before {
-            content: '•';
-            position: absolute;
-            left: 0;
-            color: #3498db;
-            font-size: 1.4rem;
-            line-height: 1;
-        }
-
-        .detail-actions a {
-            display: inline-block;
-            background: #3498db;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-right: 12px;
-            transition: background 0.3s ease;
-        }
-
-        .detail-actions a.secondary {
-            background: transparent;
-            border: 2px solid #3498db;
-            color: #3498db;
-        }
-
-        .detail-actions a:hover {
-            background: #2980b9;
-            color: white;
-        }
-
-        .cta-panel {
-            max-width: 1200px;
-            margin: 60px auto;
-            padding: 50px;
-            border-radius: 30px;
-            background: linear-gradient(135deg, #34495e, #2c3e50);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            text-align: center;
-        }
-
-        .cta-panel h3 {
-            font-size: 2rem;
-        }
-
-        .cta-panel a {
-            display: inline-block;
-            margin: 0 auto;
-            padding: 14px 40px;
-            border-radius: 30px;
-            background: white;
-            color: #2c3e50;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        @media (max-width: 768px) {
-            header {
-                top: 10px;
-            }
-
-            .header-container {
-                flex-direction: column;
-                gap: 15px;
-                padding: 20px;
-            }
-
-            nav {
-                flex-wrap: wrap;
-            }
-
-            .services-hero {
-                padding: 50px 30px;
-                margin: 40px 15px;
-            }
-
-            .detail-section {
-                padding: 30px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Services | Tunes Therapeutics Pvt. Ltd.</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
+  <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
+  <style>
+    /* Hero pill nav */
+    .svc-hero {
+      background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 55%, var(--navy-700) 100%);
+      min-height: 60vh; display: flex; align-items: center;
+      padding: 140px 24px 90px; position: relative; overflow: hidden;
+    }
+    .svc-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 40%, rgba(30,111,241,0.14) 0%, transparent 55%),
+                  radial-gradient(ellipse at 15% 70%, rgba(0,180,255,0.08) 0%, transparent 45%);
+    }
+    .svc-hero-inner { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; width: 100%; }
+    .svc-hero-text  { max-width: 680px; color: white; }
+    /* Service card */
+    .svc-card { padding: 32px 28px; }
+    .svc-card h3 { font-size: 1.15rem; font-weight: 600; color: var(--navy-800); margin-bottom: 10px; }
+    .svc-card p  { font-size: .88rem; color: var(--gray-500); line-height: 1.75; margin-bottom: 16px; }
+    .svc-list { list-style: none; margin-bottom: 18px; }
+    .svc-list li { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; font-size: .85rem; color: var(--gray-600); }
+    .svc-list li::before { content: '✓'; color: var(--blue-500); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .svc-link { display: inline-flex; align-items: center; gap: 6px; color: var(--blue-500); font-size: .85rem; font-weight: 600; transition: gap .3s; }
+    .svc-card:hover .svc-link { gap: 10px; }
+    /* Detail split row */
+    .svc-detail {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+      align-items: center; margin-bottom: 60px;
+      background: white; border-radius: var(--radius-lg);
+      padding: 48px; box-shadow: var(--shadow-md);
+      border: 1px solid rgba(15,30,45,0.06);
+    }
+    .svc-detail.flip { direction: rtl; }
+    .svc-detail.flip > * { direction: ltr; }
+    .svc-detail-icon {
+      min-height: 260px; border-radius: var(--radius-md);
+      background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 6rem; position: relative; overflow: hidden;
+    }
+    .svc-detail-icon::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 30% 40%, rgba(30,111,241,0.25), transparent 60%);
+    }
+    .svc-detail-content h3 { font-family: 'Playfair Display',serif; font-size: 1.8rem; color: var(--navy-900); margin-bottom: 14px; line-height: 1.2; }
+    .svc-detail-content p  { color: var(--gray-500); line-height: 1.85; margin-bottom: 18px; }
+    @media (max-width:768px) {
+      .svc-detail { grid-template-columns: 1fr; padding: 28px; }
+      .svc-detail.flip { direction: ltr; }
+    }
+  </style>
 </head>
 <body>
-    {% include 'partials/loading.html' %}
-    <header id="header">
-        <div class="header-container">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo" class="logo">
-            <nav>
-                <a href="/">{{ t.home if t else 'Home' }}</a>
-                <a href="/about">{{ t.about if t else 'About' }}</a>
-                <a href="/products">{{ t.products if t else 'Products' }}</a>
-                <a href="/services" class="active">{{ t.services if t else 'Services' }}</a>
-                <a href="/research">{{ t.research if t else 'Research' }}</a>
-                <a href="/contact">{{ t.contact if t else 'Contact' }}</a>
-                <a href="/Gallery">{{ t.gallery if t else 'Gallery' }}</a>
-            </nav>
-            <div style="display:flex;align-items:center;">
-                <div class="language-switcher">
-                    <a href="/set-language/en" class="{% if lang == 'en' %}active{% endif %}">EN</a>
-                    <a href="/set-language/hi" class="{% if lang == 'hi' %}active{% endif %}">हिं</a>
-                </div>
-                <a href="/Pharmaintel_ai" class="cta-header-button">{{ t.pharmaintel_ai if t else 'Pharmaintel AI' }}</a>
-            </div>
-        </div>
-    </header>
+{% include 'partials/loading.html' %}
 
-    <section class="services-hero">
-        <div class="services-hero-content">
-            <div class="tagline">Digital + Field Synergy</div>
-            <h1>{{ t.services if t else 'Services' }} that power your pharmaceutical growth</h1>
-            <p>Every experience is crafted to help doctors, distributors, partners, and patients engage with Tunes Therapeutics effortlessly. Discover our intelligent digital suite below.</p>
-            <div class="hero-actions">
-                <a href="/online-ordering" class="primary">Place an Order</a>
-                <a href="/contact">Talk to Sales</a>
-            </div>
-        </div>
-    </section>
+<header class="p-header" id="p-header">
+  <div class="p-header-inner">
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics" class="p-logo"></a>
+    <nav class="p-nav">
+      <a href="/">{{ t.home if t else 'Home' }}</a>
+      <a href="/about">{{ t.about if t else 'About' }}</a>
+      <a href="/products">{{ t.products if t else 'Products' }}</a>
+      <a href="/services" class="active">{{ t.services if t else 'Services' }}</a>
+      <a href="/research">{{ t.research if t else 'Research' }}</a>
+      <a href="/Gallery">{{ t.gallery if t else 'Gallery' }}</a>
+      <a href="/contact">{{ t.contact if t else 'Contact' }}</a>
+    </nav>
+    <div class="p-header-actions">
+      <div class="p-lang-sw">
+        <a href="/set-language/en" class="{% if lang=='en' %}active{% endif %}">EN</a>
+        <a href="/set-language/hi" class="{% if lang=='hi' %}active{% endif %}">हिं</a>
+      </div>
+      <a href="/Pharmaintel_ai" class="p-ai-btn">{{ t.pharmaintel_ai if t else 'Pharmaintel AI' }}</a>
+    </div>
+  </div>
+</header>
 
-    <section class="services-section">
-        <div class="section-heading">
-            <h2>Unified Service Ecosystem</h2>
-            <p>Explore the five flagship tools that keep our partners informed, stocked, and supported 24/7.</p>
-        </div>
-        <div class="services-grid">
-            <div class="service-card">
-                <div class="service-icon">📚</div>
-                <h3>Product Catalog</h3>
-                <p>Advanced filters, therapeutic tags, and DCGI schedule details for every SKU.</p>
-                <ul>
-                    <li>Search by composition and indication</li>
-                    <li>Access price insights</li>
-                    <li>View product briefs instantly</li>
-                </ul>
-                <a href="/product-catalog">Open catalog →</a>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">📍</div>
-                <h3>Stockist Locator</h3>
-                <p>State and city filters help doctors find the nearest Tunes partner.</p>
-                <ul>
-                    <li>Pan-India coverage</li>
-                    <li>Click-to-call integration</li>
-                    <li>Email and address access</li>
-                </ul>
-                <a href="/stockist-locator">Find stockist →</a>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">🩺</div>
-                <h3>Doctor Portal</h3>
-                <p>Dedicated area for medical professionals to access clinical resources.</p>
-                <ul>
-                    <li>Download studies & CMEs</li>
-                    <li>Request samples online</li>
-                    <li>Connect with MR instantly</li>
-                </ul>
-                <a href="/doctor-portal">Enter portal →</a>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">📑</div>
-                <h3>Regulatory Hub</h3>
-                <p>Transparency across certifications, approvals, and QA compliances.</p>
-                <ul>
-                    <li>GMP / WHO-GMP certificates</li>
-                    <li>ISO 9001 documentation</li>
-                    <li>DCGI approval tracker</li>
-                </ul>
-                <a href="/regulatory-compliance">View compliance →</a>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">🛒</div>
-                <h3>Online Ordering</h3>
-                <p>B2B ordering workflow for distributors, hospitals, and retail chains.</p>
-                <ul>
-                    <li>Multi-product cart</li>
-                    <li>Schedule uploads</li>
-                    <li>Dedicated sales follow-up</li>
-                </ul>
-                <a href="/online-ordering">Order now →</a>
-            </div>
-        </div>
-    </section>
+<!-- ── HERO ── -->
+<section class="svc-hero">
+  <div class="svc-hero-inner">
+    <div class="svc-hero-text">
+      <div class="p-hero-badge" style="margin-bottom:22px"><span class="dot"></span>Digital + Field Synergy</div>
+      <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.6rem,5vw,4.2rem);font-weight:700;line-height:1.1;margin-bottom:20px;letter-spacing:-.02em">Services that <span style="background:linear-gradient(135deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">power your growth</span></h1>
+      <p style="color:rgba(255,255,255,.65);font-size:1.08rem;line-height:1.85;max-width:560px;margin-bottom:36px">Every experience is crafted to help doctors, distributors, partners, and patients engage with Tunes Therapeutics effortlessly. Discover our intelligent digital suite below.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a href="/online-ordering" class="p-btn p-btn-primary">Place an Order</a>
+        <a href="/contact"         class="p-btn p-btn-outline">Talk to Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <section class="services-section">
-        <div class="detail-section">
-            <div class="detail-image">📚</div>
-            <div class="detail-content">
-                <h3>Intelligent Product Catalog</h3>
-                <p>Discover formulations faster with our AI-ready catalog that pairs every SKU with composition, indication, pricing, and regulatory metadata.</p>
-                <ul class="detail-list">
-                    <li>Therapy-level filtering</li>
-                    <li>Instant access to marketing collaterals</li>
-                    <li>Links to doctor engagement journeys</li>
-                </ul>
-                <div class="detail-actions">
-                    <a href="/product-catalog">Browse Catalog</a>
-                    <a href="/products" class="secondary">Product Showcase</a>
-                </div>
-            </div>
-        </div>
+<!-- ── SERVICE CARDS ── -->
+<section class="p-section p-section-light">
+  <div class="p-container">
+    <div class="p-section-header center p-reveal">
+      <span class="p-section-tag">Service Ecosystem</span>
+      <h2 class="p-section-title">Unified Digital Suite</h2>
+      <div class="p-divider center"></div>
+      <p class="p-section-subtitle">Five flagship tools keeping our partners informed, stocked, and supported 24/7.</p>
+    </div>
+    <div class="p-grid-3">
+      <div class="svc-card p-card p-reveal p-delay-1" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">📚</div>
+        <h3>Product Catalog</h3>
+        <p>Advanced filters, therapeutic tags, and DCGI schedule details for every SKU in our portfolio.</p>
+        <ul class="svc-list">
+          <li>Search by composition &amp; indication</li>
+          <li>Therapy-level filtering</li>
+          <li>View product briefs instantly</li>
+        </ul>
+        <a href="/product-catalog" class="svc-link">Open Catalog <span>→</span></a>
+      </div>
+      <div class="svc-card p-card p-reveal p-delay-2" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">📍</div>
+        <h3>Stockist Locator</h3>
+        <p>State and city filters help doctors and pharmacies find the nearest Tunes partner instantly.</p>
+        <ul class="svc-list">
+          <li>Pan-India coverage</li>
+          <li>Click-to-call integration</li>
+          <li>Email and address access</li>
+        </ul>
+        <a href="/stockist-locator" class="svc-link">Find Stockist <span>→</span></a>
+      </div>
+      <div class="svc-card p-card p-reveal p-delay-3" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">🩺</div>
+        <h3>Doctor Portal</h3>
+        <p>Dedicated secure area for medical professionals to access clinical resources and connect with us.</p>
+        <ul class="svc-list">
+          <li>Download studies &amp; CMEs</li>
+          <li>Request samples online</li>
+          <li>Connect with MR team</li>
+        </ul>
+        <a href="/doctor-portal" class="svc-link">Enter Portal <span>→</span></a>
+      </div>
+      <div class="svc-card p-card p-reveal p-delay-4" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">📑</div>
+        <h3>Regulatory Hub</h3>
+        <p>Full transparency across certifications, DCGI approvals, and QA compliance documentation.</p>
+        <ul class="svc-list">
+          <li>GMP / WHO-GMP certificates</li>
+          <li>ISO 9001 documentation</li>
+          <li>DCGI approval tracker</li>
+        </ul>
+        <a href="/regulatory-compliance" class="svc-link">View Compliance <span>→</span></a>
+      </div>
+      <div class="svc-card p-card p-reveal p-delay-5" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">🛒</div>
+        <h3>Online Ordering</h3>
+        <p>B2B ordering workflow for distributors, hospitals, and retail chains — streamlined and efficient.</p>
+        <ul class="svc-list">
+          <li>Multi-product order capture</li>
+          <li>Schedule uploads supported</li>
+          <li>Automated confirmation</li>
+        </ul>
+        <a href="/online-ordering" class="svc-link">Order Now <span>→</span></a>
+      </div>
+      <div class="svc-card p-card p-reveal p-delay-6" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">🤖</div>
+        <h3>Pharmaintel AI</h3>
+        <p>GPT-4 powered pharmaceutical intelligence — upload PDFs, analyse strategies, get instant insights.</p>
+        <ul class="svc-list">
+          <li>Document analysis &amp; strategy</li>
+          <li>Pharmaceutical Q&amp;A engine</li>
+          <li>Market intelligence reports</li>
+        </ul>
+        <a href="/Pharmaintel_ai" class="svc-link">Launch AI Tool <span>→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <div class="detail-section">
-            <div class="detail-content">
-                <h3>Doctor-First Portal</h3>
-                <p>Secure login for healthcare professionals to stay updated with Tunes Therapeutics research, sample policies, and MR connect options.</p>
-                <ul class="detail-list">
-                    <li>Clinical study downloads</li>
-                    <li>Sample request workflow</li>
-                    <li>Direct communication with medical reps</li>
-                </ul>
-                <div class="detail-actions">
-                    <a href="/doctor-portal">Login Portal</a>
-                    <a href="/research" class="secondary">Research Insights</a>
-                </div>
-            </div>
-            <div class="detail-image">🩺</div>
-        </div>
-
-        <div class="detail-section">
-            <div class="detail-image">🛒</div>
-            <div class="detail-content">
-                <h3>Seamless B2B Ordering</h3>
-                <p>From hospitals to retail chains, streamline procurement with structured ordering, quantity capture, and proactive sales follow-ups.</p>
-                <ul class="detail-list">
-                    <li>Multi-product order capture</li>
-                    <li>Company profile + regulatory docs upload</li>
-                    <li>Automated confirmation screen</li>
-                </ul>
-                <div class="detail-actions">
-                    <a href="/online-ordering">Start Ordering</a>
-                    <a href="/stockist-locator" class="secondary">Locate Stockist</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="cta-panel">
-        <h3>Need a guided walkthrough?</h3>
-        <p>Our digital success managers can demo the entire suite—from catalog to compliance—in under 20 minutes.</p>
-        <a href="/contact">Schedule a Session</a>
+<!-- ── SERVICE DETAILS ── -->
+<section class="p-section p-section-white">
+  <div class="p-container">
+    <div class="p-section-header center p-reveal">
+      <span class="p-section-tag">Deep Dive</span>
+      <h2 class="p-section-title">How Each Service Works</h2>
+      <div class="p-divider center"></div>
     </div>
 
-    {% include 'partials/footer.html' %}
+    <div class="svc-detail p-reveal">
+      <div class="svc-detail-icon">📚</div>
+      <div class="svc-detail-content">
+        <span class="p-badge p-badge-blue" style="margin-bottom:14px">Product Intelligence</span>
+        <h3>Intelligent Product Catalog</h3>
+        <p>Discover formulations faster with our AI-ready catalog that pairs every SKU with composition, indication, pricing, and regulatory metadata — built for doctors and distributors alike.</p>
+        <ul class="svc-list">
+          <li>Therapy-level filtering and search</li>
+          <li>Instant access to marketing collaterals</li>
+          <li>Links to doctor engagement journeys</li>
+          <li>DCGI schedule and storage requirements</li>
+        </ul>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="/product-catalog" class="p-btn p-btn-blue" style="font-size:14px;padding:11px 24px">Browse Catalog</a>
+          <a href="/products"        class="p-btn p-btn-navy" style="font-size:14px;padding:11px 24px">Product Showcase</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="svc-detail flip p-reveal">
+      <div class="svc-detail-content">
+        <span class="p-badge p-badge-blue" style="margin-bottom:14px">Healthcare Professionals</span>
+        <h3>Doctor-First Portal</h3>
+        <p>Secure login for healthcare professionals to stay updated with Tunes Therapeutics research, sample policies, and MR connect options. Everything a prescribing doctor needs, in one place.</p>
+        <ul class="svc-list">
+          <li>Clinical study downloads and CMEs</li>
+          <li>Sample request workflow</li>
+          <li>Direct communication with medical reps</li>
+          <li>Product briefs and prescribing guidelines</li>
+        </ul>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="/doctor-portal" class="p-btn p-btn-blue"  style="font-size:14px;padding:11px 24px">Login to Portal</a>
+          <a href="/research"      class="p-btn p-btn-navy"  style="font-size:14px;padding:11px 24px">Research Insights</a>
+        </div>
+      </div>
+      <div class="svc-detail-icon">🩺</div>
+    </div>
+
+    <div class="svc-detail p-reveal">
+      <div class="svc-detail-icon">🛒</div>
+      <div class="svc-detail-content">
+        <span class="p-badge p-badge-blue" style="margin-bottom:14px">B2B Commerce</span>
+        <h3>Seamless B2B Ordering</h3>
+        <p>From hospitals to retail chains, streamline procurement with structured ordering, quantity capture, and proactive sales follow-ups. Our ordering system keeps your stock optimised and team connected.</p>
+        <ul class="svc-list">
+          <li>Multi-product order capture in one form</li>
+          <li>Company profile &amp; regulatory docs upload</li>
+          <li>Automated order confirmation screen</li>
+          <li>Direct connection to our sales team</li>
+        </ul>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="/online-ordering"  class="p-btn p-btn-blue"  style="font-size:14px;padding:11px 24px">Start Ordering</a>
+          <a href="/stockist-locator" class="p-btn p-btn-navy"  style="font-size:14px;padding:11px 24px">Locate Stockist</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="p-section p-section-sm p-section-dark" style="text-align:center;position:relative;overflow:hidden">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 60% 50%,rgba(30,111,241,0.18) 0%,transparent 60%);pointer-events:none"></div>
+  <div class="p-container" style="position:relative;z-index:1">
+    <div class="p-reveal">
+      <h2 class="p-section-title" style="margin-bottom:14px">Need a guided walkthrough?</h2>
+      <p class="p-section-subtitle" style="margin:0 auto 32px">Our digital success managers can demo the entire suite — from catalog to compliance — in under 20 minutes.</p>
+      <a href="/contact" class="p-btn p-btn-primary" style="font-size:15px">Schedule a Demo Session</a>
+    </div>
+  </div>
+</section>
+
+{% include 'partials/footer.html' %}
 </body>
 </html>
-

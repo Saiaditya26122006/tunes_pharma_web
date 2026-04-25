@@ -1,874 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us | Tunes Therapeutics Pvt. Ltd.</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        /* === Global Styles === */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* === Header and Navigation === */
-        header {
-            position: sticky;
-            top: 20px;
-            z-index: 1000;
-            padding: 0 20px;
-            transition: all 0.3s ease;
-        }
-
-        header.scrolled {
-            top: 10px;
-        }
-
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 50px;
-            padding: 15px 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .logo {
-            height: 60px;
-            transition: transform 0.3s ease;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-            justify-content: center;
-        }
-
-        nav a {
-            color: #2c3e50;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 15px;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            position: relative;
-            padding: 8px 12px;
-            transition: all 0.3s ease;
-            border-radius: 20px;
-        }
-
-        nav a:hover {
-            color: #3498db;
-            background: rgba(52, 152, 219, 0.1);
-        }
-
-        .cta-header-button {
-            background: #2c3e50;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
-            white-space: nowrap;
-        }
-
-        .cta-header-button:hover {
-            background: #34495e;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4);
-        }
-
-        /* === Hero Section === */
-        .hero {
-            position: relative;
-            min-height: 70vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #34495e;
-            overflow: hidden;
-            padding: 120px 20px 80px;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('{{ url_for("static", filename="images/z.jpg") }}') center/cover;
-            opacity: 0.15;
-            z-index: 1;
-        }
-
-        .hero-particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .particle {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: floatParticle 20s infinite;
-        }
-
-        @keyframes floatParticle {
-            0% {
-                transform: translateY(100vh) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100vh) translateX(200px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 2;
-            text-align: center;
-            color: white;
-            max-width: 1000px;
-            animation: slideIn 1s ease-out;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 6vw, 4.5rem);
-            font-weight: 700;
-            margin-bottom: 25px;
-            text-shadow: 2px 4px 15px rgba(0, 0, 0, 0.3);
-            line-height: 1.2;
-        }
-
-        .hero p {
-            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-            opacity: 0.95;
-            font-weight: 300;
-            line-height: 1.8;
-            margin-bottom: 40px;
-        }
-
-        .hero-stats {
-            display: flex;
-            justify-content: center;
-            gap: 60px;
-            margin-top: 50px;
-            flex-wrap: wrap;
-        }
-
-        .hero-stat {
-            text-align: center;
-        }
-
-        .hero-stat-number {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #3498db;
-            font-family: 'Playfair Display', serif;
-            display: block;
-        }
-
-        .hero-stat-label {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 5px;
-        }
-
-        /* === Mission & Vision Cards === */
-        .mission-vision-section {
-            padding: 100px 20px;
-            background: #ffffff;
-        }
-
-        .mission-vision-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-            gap: 40px;
-        }
-
-        .mission-card, .vision-card {
-            background: white;
-            padding: 50px 40px;
-            border-radius: 30px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .mission-card::before, .vision-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 6px;
-            background: #3498db;
-        }
-
-        .mission-card:hover, .vision-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-        }
-
-        .mission-card {
-            background: #2c3e50;
-            color: white;
-        }
-
-        .mission-card h2, .vision-card h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            margin-bottom: 25px;
-            color: white;
-        }
-
-        .vision-card h2 {
-            color: #2c3e50;
-        }
-
-        .mission-card p, .vision-card p {
-            font-size: 1.15rem;
-            line-height: 1.9;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .vision-card p {
-            color: #555;
-        }
-
-        .card-icon {
-            width: 80px;
-            height: 80px;
-            background: rgba(52, 152, 219, 0.2);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 40px;
-            margin-bottom: 25px;
-        }
-
-        .mission-card .card-icon {
-            background: rgba(52, 152, 219, 0.3);
-        }
-
-        /* === Values Section === */
-        .values-section {
-            padding: 100px 20px;
-            background: #f8f9fa;
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-header h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2.5rem, 5vw, 3.5rem);
-            color: #2c3e50;
-            margin-bottom: 20px;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-header h2::after {
-            content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 4px;
-            background: #3498db;
-            border-radius: 2px;
-        }
-
-        .section-header p {
-            font-size: 1.2rem;
-            color: #7f8c8d;
-            max-width: 700px;
-            margin: 30px auto 0;
-        }
-
-        .values-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .value-card {
-            background: white;
-            padding: 40px 30px;
-            border-radius: 25px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            transition: all 0.4s ease;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .value-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: #3498db;
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
-        }
-
-        .value-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-        }
-
-        .value-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .value-icon {
-            width: 70px;
-            height: 70px;
-            background: #3498db;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 35px;
-            margin: 0 auto 25px;
-            transition: transform 0.3s ease;
-        }
-
-        .value-card:hover .value-icon {
-            transform: rotate(5deg) scale(1.1);
-        }
-
-        .value-card h3 {
-            font-size: 1.5rem;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-weight: 600;
-        }
-
-        .value-card p {
-            color: #7f8c8d;
-            line-height: 1.8;
-        }
-
-        /* === Company Info Section === */
-        .company-info-section {
-            padding: 100px 20px;
-            background: #2c3e50;
-            color: white;
-        }
-
-        .company-info-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-        }
-
-        .company-info-content h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2rem, 4vw, 3rem);
-            margin-bottom: 30px;
-            color: white;
-        }
-
-        .company-info-content p {
-            font-size: 1.1rem;
-            line-height: 1.9;
-            color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 25px;
-        }
-
-        .company-image {
-            position: relative;
-            border-radius: 25px;
-            overflow: hidden;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-        }
-
-        .company-image img {
-            width: 100%;
-            height: auto;
-            display: block;
-            transition: transform 0.5s ease;
-        }
-
-        .company-image:hover img {
-            transform: scale(1.05);
-        }
-
-        /* === Stats Section === */
-        .stats-section {
-            padding: 80px 20px;
-            background: #34495e;
-            color: white;
-        }
-
-        .stats-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-        }
-
-        .stat-item {
-            text-align: center;
-            padding: 30px;
-        }
-
-        .stat-number {
-            font-size: 3.5rem;
-            font-weight: 700;
-            color: #3498db;
-            margin-bottom: 10px;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .stat-label {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* === Scroll Animations === */
-        .fade-in {
-            opacity: 0;
-            transform: scale(0.9) translateY(30px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
-
-        /* === Footer === */
-        footer {
-            background: rgba(44, 62, 80, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            color: white;
-            padding: 60px 20px 30px;
-            margin-top: 80px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 40px;
-        }
-
-        .footer-logo img {
-            max-width: 180px;
-            margin-bottom: 20px;
-            filter: brightness(0) invert(1);
-        }
-
-        .footer-column h4 {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: #3498db;
-            font-weight: 600;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            display: block;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-            padding: 5px 0;
-        }
-
-        .footer-links a:hover {
-            color: #3498db;
-            padding-left: 10px;
-        }
-
-        .footer-social {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .social-link {
-            width: 45px;
-            height: 45px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .social-link:hover {
-            background: #3498db;
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-        }
-
-        .social-link img {
-            width: 24px;
-            height: 24px;
-            filter: brightness(0) invert(1);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.7);
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        /* === Responsive Design === */
-        @media (max-width: 768px) {
-            header {
-                padding: 10px 20px;
-            }
-
-            nav {
-                flex-wrap: wrap;
-                gap: 5px;
-            }
-
-            nav a {
-                font-size: 12px;
-                margin: 0 5px;
-            }
-
-            .logo {
-                height: 60px;
-            }
-
-            .mission-vision-container {
-                grid-template-columns: 1fr;
-            }
-
-            .company-info-container {
-                grid-template-columns: 1fr;
-            }
-
-            .hero-stats {
-                gap: 30px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>About Us | Tunes Therapeutics Pvt. Ltd.</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
+  <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
+  <style>
+    /* Values card */
+    .val-card { padding: 32px 26px; }
+    .val-card h3 { font-size: 1.1rem; font-weight: 600; color: var(--navy-800); margin-bottom: 8px; }
+    .val-card p  { font-size: .88rem; color: var(--gray-500); line-height: 1.75; }
+    /* Mission / Vision cards */
+    .mv-card { padding: 44px 40px; }
+    .mv-card h2 { font-family: 'Playfair Display',serif; font-size: 2.2rem; margin-bottom: 20px; line-height: 1.2; }
+    .mv-card p  { font-size: 1.05rem; line-height: 1.9; }
+    /* Timeline item */
+    .tl-card { padding: 24px 28px; cursor: default; }
+    .tl-year { font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--blue-500); margin-bottom: 6px; }
+    .tl-card h4 { font-size: 1rem; font-weight: 600; color: var(--navy-800); margin-bottom: 6px; }
+    .tl-card p  { font-size: .88rem; color: var(--gray-500); line-height: 1.7; }
+    /* About page hero orbs */
+    @keyframes orb-float {
+      0%,100%{ transform:translateY(0) scale(1); }
+      50%    { transform:translateY(-20px) scale(1.06); }
+    }
+  </style>
 </head>
 <body>
-    {% include 'partials/loading.html' %}
+{% include 'partials/loading.html' %}
 
-    <header id="header">
-        <div class="header-container">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo" class="logo">
-            <nav>
-                <a href="/">Home</a>
-                <a href="/about">About Us</a>
-                <a href="/products">Products</a>
-                <a href="/services">Services</a>
-                <a href="/research">Research</a>
-                <a href="/contact">Contact</a>
-                <a href="/Gallery">Gallery</a>
-            </nav>
-            <a href="/Pharmaintel_ai" class="cta-header-button">Pharmaintel AI</a>
+<header class="p-header" id="p-header">
+  <div class="p-header-inner">
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics" class="p-logo"></a>
+    <nav class="p-nav">
+      <a href="/">Home</a>
+      <a href="/about" class="active">About</a>
+      <a href="/products">Products</a>
+      <a href="/services">Services</a>
+      <a href="/research">Research</a>
+      <a href="/Gallery">Gallery</a>
+      <a href="/contact">Contact</a>
+    </nav>
+    <div class="p-header-actions">
+      <a href="/Pharmaintel_ai" class="p-ai-btn">Pharmaintel AI</a>
+    </div>
+  </div>
+</header>
+
+<!-- ── HERO ── -->
+<section class="p-hero">
+  <canvas id="hero-canvas" class="p-hero-canvas"></canvas>
+  <div class="p-hero-overlay"></div>
+  <div class="p-hero-content">
+    <div class="p-hero-badge"><span class="dot"></span>Est. 2020 · Guntur, Andhra Pradesh</div>
+    <h1>About <span class="gradient-text">Tunes Therapeutics</span></h1>
+    <p>Pioneering pharmaceutical excellence with innovation, quality, and an unwavering commitment to improving global healthcare — one patient at a time.</p>
+    <!-- Hero stats -->
+    <div style="display:flex;justify-content:center;gap:48px;margin-top:48px;flex-wrap:wrap">
+      <div style="text-align:center">
+        <span style="font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:700;color:var(--gold-light);display:block" data-counter data-target="8" data-suffix="+">8+</span>
+        <span style="font-size:.82rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em">Products</span>
+      </div>
+      <div style="text-align:center">
+        <span style="font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:700;color:var(--gold-light);display:block" data-counter data-target="50000" data-suffix="+">50000+</span>
+        <span style="font-size:.82rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em">Patients Served</span>
+      </div>
+      <div style="text-align:center">
+        <span style="font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:700;color:var(--gold-light);display:block" data-counter data-target="5" data-suffix="+">5+</span>
+        <span style="font-size:.82rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em">States Covered</span>
+      </div>
+      <div style="text-align:center">
+        <span style="font-family:'Playfair Display',serif;font-size:2.6rem;font-weight:700;color:var(--gold-light);display:block" data-counter data-target="100" data-suffix="%">100%</span>
+        <span style="font-size:.82rem;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.1em">GMP Certified</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── WHO WE ARE ── -->
+<section class="p-section p-section-white">
+  <div class="p-container">
+    <div class="p-grid-2">
+      <div class="p-reveal-left">
+        <span class="p-section-tag">Our Story</span>
+        <h2 class="p-section-title">Who We Are</h2>
+        <div class="p-divider"></div>
+        <p style="color:var(--gray-500);line-height:1.85;margin-bottom:18px">Tunes Therapeutics Pvt. Ltd. is a leading pharmaceutical company headquartered in Guntur, Andhra Pradesh, dedicated to transforming healthcare through innovative solutions. With a strong foundation in research and development, we bring life-changing medicines to patients and caregivers across India.</p>
+        <p style="color:var(--gray-500);line-height:1.85;margin-bottom:28px">Our team of experienced professionals, scientists, and healthcare experts work tirelessly to ensure that every product we develop meets the highest international standards of quality, safety, and effectiveness — from WHO-GMP certified manufacturing to DCGI-approved formulations.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a href="/contact"   class="p-btn p-btn-navy">Get In Touch</a>
+          <a href="/products"  class="p-btn p-btn-blue">Our Products</a>
         </div>
-    </header>
-
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-particles" id="heroParticles"></div>
-        <div class="hero-content">
-            <h1>About Tunes Therapeutics</h1>
-            <p>Pioneering pharmaceutical excellence with innovation, quality, and unwavering commitment to improving global healthcare</p>
-            <div class="hero-stats">
-                <div class="hero-stat">
-                    <span class="hero-stat-number" data-target="100">0</span>
-                    <span class="hero-stat-label">Products</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="hero-stat-number" data-target="50">0</span>
-                    <span class="hero-stat-label">Countries</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="hero-stat-number" data-target="1000">0</span>
-                    <span class="hero-stat-label">Research Projects</span>
-                </div>
-                <div class="hero-stat">
-                    <span class="hero-stat-number" data-target="50000">0</span>
-                    <span class="hero-stat-label">Patients Served</span>
-                </div>
-            </div>
+      </div>
+      <div class="p-reveal-right">
+        <div class="p-parallax-wrap">
+          <img src="{{ url_for('static', filename='images/y.jpg') }}" alt="Tunes Therapeutics Facility" onerror="this.src='https://via.placeholder.com/600x500?text=Tunes+Therapeutics'">
+          <div class="p-parallax-badge">
+            <div class="val">2020</div>
+            <div class="lbl">Founded in Guntur, AP</div>
+          </div>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Mission & Vision Section -->
-    <section class="mission-vision-section">
-        <div class="mission-vision-container">
-            <div class="mission-card fade-in">
-                <div class="card-icon">🎯</div>
-                <h2>Our Mission</h2>
-                <p>Our mission is to provide quality, efficacious and affordable medicines to patients and caregivers, backed by a team of experts committed to meeting global healthcare needs. We strive to make healthcare accessible to all through innovation and excellence.</p>
-            </div>
-            <div class="vision-card fade-in">
-                <div class="card-icon">👁️</div>
-                <h2>Our Vision</h2>
-                <p>Enhancing life through connecting people. We strive to create continuous value through a strong customer focus, which drives market gains and long-term growth consistently. Our vision is to be a global leader in pharmaceutical innovation.</p>
-            </div>
+<!-- ── MISSION & VISION ── -->
+<section class="p-section p-section-light">
+  <div class="p-container">
+    <div class="p-section-header center p-reveal">
+      <span class="p-section-tag">Purpose</span>
+      <h2 class="p-section-title">Mission &amp; Vision</h2>
+      <div class="p-divider center"></div>
+    </div>
+    <div class="p-grid-2" style="align-items:stretch">
+      <div class="mv-card p-card p-card-dark p-reveal p-delay-1" data-tilt>
+        <div class="p-icon p-icon-gold">🎯</div>
+        <h2 style="color:white">Our Mission</h2>
+        <p style="color:rgba(255,255,255,.75)">To provide quality, efficacious and affordable medicines to patients and caregivers, backed by a team of experts committed to meeting global healthcare needs. We strive to make healthcare accessible to all through innovation and excellence — improving lives at every touch point.</p>
+      </div>
+      <div class="mv-card p-card p-reveal p-delay-2" data-tilt>
+        <div class="p-icon p-icon-blue">👁️</div>
+        <h2 style="color:var(--navy-900)">Our Vision</h2>
+        <p style="color:var(--gray-500)">Enhancing life through connecting people. We strive to create continuous value through a strong customer focus, which drives market gains and long-term growth consistently. Our vision is to be a trusted pharmaceutical leader recognized for quality, innovation, and patient-centric care across India and beyond.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CORE VALUES ── -->
+<section class="p-section p-section-white">
+  <div class="p-container">
+    <div class="p-section-header center p-reveal">
+      <span class="p-section-tag">Core Values</span>
+      <h2 class="p-section-title">The Principles That Guide Us</h2>
+      <div class="p-divider center"></div>
+      <p class="p-section-subtitle">Every decision, product, and partnership at Tunes Therapeutics is rooted in these foundational principles.</p>
+    </div>
+    <div class="p-grid-3">
+      <div class="val-card p-card p-reveal p-delay-1" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">🔬</div>
+        <h3>Innovation</h3>
+        <p>Continuously advancing pharmaceutical science through cutting-edge research to bring breakthrough solutions to market.</p>
+      </div>
+      <div class="val-card p-card p-reveal p-delay-2" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">✅</div>
+        <h3>Quality</h3>
+        <p>Rigorous quality control and adherence to international standards ensuring every product meets the highest safety and efficacy levels.</p>
+      </div>
+      <div class="val-card p-card p-reveal p-delay-3" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">🤝</div>
+        <h3>Integrity</h3>
+        <p>Building trust through transparency, ethical practices, and unwavering commitment to doing what's right for patients and partners.</p>
+      </div>
+      <div class="val-card p-card p-reveal p-delay-4" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">🌍</div>
+        <h3>Accessibility</h3>
+        <p>Making quality healthcare affordable and accessible to patients across India, bridging the gap between innovation and reach.</p>
+      </div>
+      <div class="val-card p-card p-reveal p-delay-5" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">💚</div>
+        <h3>Patient-Centered</h3>
+        <p>Putting patients at the heart of everything we do — every formulation, every decision is made with patient outcomes in mind.</p>
+      </div>
+      <div class="val-card p-card p-reveal p-delay-6" data-tilt>
+        <div class="p-card-accent"></div>
+        <div class="p-icon p-icon-blue">⚡</div>
+        <h3>Excellence</h3>
+        <p>Pursuing excellence in every aspect of our operations — from R&amp;D and manufacturing to customer service and compliance.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── COMPANY JOURNEY ── -->
+<section class="p-section p-section-dark">
+  <div class="p-container">
+    <div class="p-grid-2" style="gap:64px">
+      <div class="p-reveal-left">
+        <span class="p-section-tag">Our Journey</span>
+        <h2 class="p-section-title">Milestones &amp; Growth</h2>
+        <div class="p-divider gold"></div>
+        <p style="color:rgba(255,255,255,.58);line-height:1.85;margin-bottom:40px">From a vision rooted in quality pharmaceutical care to a growing presence across multiple Indian states, our journey reflects our commitment to excellence at every stage.</p>
+        <div class="p-timeline">
+          <div class="p-timeline-item p-reveal">
+            <div class="p-timeline-dot"></div>
+            <div class="p-timeline-year">2020</div>
+            <h4 style="color:white">Foundation</h4>
+            <p>Tunes Therapeutics Pvt. Ltd. incorporated in Guntur, Andhra Pradesh with a clear vision for quality pharma.</p>
+          </div>
+          <div class="p-timeline-item p-reveal p-delay-1">
+            <div class="p-timeline-dot"></div>
+            <div class="p-timeline-year">2021</div>
+            <h4 style="color:white">First Formulations</h4>
+            <p>Launch of Ecoglim series — comprehensive diabetes management solutions entering the Andhra Pradesh market.</p>
+          </div>
+          <div class="p-timeline-item p-reveal p-delay-2">
+            <div class="p-timeline-dot"></div>
+            <div class="p-timeline-year">2022</div>
+            <h4 style="color:white">Portfolio Expansion</h4>
+            <p>RESGABA and RABISHIR-DSR series launched, addressing neuropathy and gastrointestinal care needs.</p>
+          </div>
+          <div class="p-timeline-item p-reveal p-delay-3">
+            <div class="p-timeline-dot"></div>
+            <div class="p-timeline-year">2023</div>
+            <h4 style="color:white">Digital Transformation</h4>
+            <p>Launch of Pharmaintel AI platform and digital ecosystem for doctors, distributors, and patients.</p>
+          </div>
+          <div class="p-timeline-item p-reveal p-delay-4">
+            <div class="p-timeline-dot"></div>
+            <div class="p-timeline-year">2024+</div>
+            <h4 style="color:white">Pan-India Growth</h4>
+            <p>Expanding stockist network across 5+ states, serving 50,000+ patients with a growing product portfolio.</p>
+          </div>
         </div>
-    </section>
-
-    <!-- Values Section -->
-    <section class="values-section">
-        <div class="section-header fade-in">
-            <h2>Our Core Values</h2>
-            <p>The principles that guide everything we do at Tunes Therapeutics</p>
+      </div>
+      <div class="p-reveal-right" style="display:flex;flex-direction:column;gap:20px;padding-top:80px">
+        <div class="p-card p-card-glass p-reveal" data-tilt style="padding:28px">
+          <div class="p-icon p-icon-gold" style="margin-bottom:14px">🏭</div>
+          <h4 style="color:white;margin-bottom:8px">GMP Certified Manufacturing</h4>
+          <p style="color:rgba(255,255,255,.62);font-size:.88rem;line-height:1.7">WHO-GMP certified facilities ensuring the highest standards of pharmaceutical manufacturing and quality control.</p>
         </div>
-        <div class="values-grid">
-            <div class="value-card fade-in">
-                <div class="value-icon">🔬</div>
-                <h3>Innovation</h3>
-                <p>Continuously advancing pharmaceutical science through cutting-edge research and development to bring breakthrough solutions to market.</p>
-            </div>
-            <div class="value-card fade-in">
-                <div class="value-icon">✅</div>
-                <h3>Quality</h3>
-                <p>Rigorous quality control and adherence to international standards ensuring every product meets the highest levels of safety and efficacy.</p>
-            </div>
-            <div class="value-card fade-in">
-                <div class="value-icon">🤝</div>
-                <h3>Integrity</h3>
-                <p>Building trust through transparency, ethical practices, and unwavering commitment to doing what's right for patients and partners.</p>
-            </div>
-            <div class="value-card fade-in">
-                <div class="value-icon">🌍</div>
-                <h3>Global Reach</h3>
-                <p>Serving communities worldwide with accessible healthcare solutions that improve lives across borders and cultures.</p>
-            </div>
-            <div class="value-card fade-in">
-                <div class="value-icon">💚</div>
-                <h3>Patient-Centered</h3>
-                <p>Putting patients at the heart of everything we do, ensuring our solutions address real-world healthcare challenges.</p>
-            </div>
-            <div class="value-card fade-in">
-                <div class="value-icon">⚡</div>
-                <h3>Excellence</h3>
-                <p>Pursuing excellence in every aspect of our operations, from research to manufacturing to customer service.</p>
-            </div>
+        <div class="p-card p-card-glass p-reveal p-delay-1" data-tilt style="padding:28px">
+          <div class="p-icon p-icon-gold" style="margin-bottom:14px">📋</div>
+          <h4 style="color:white;margin-bottom:8px">DCGI Approved Products</h4>
+          <p style="color:rgba(255,255,255,.62);font-size:.88rem;line-height:1.7">All formulations carry DCGI approval and comply with Schedule H regulations of the Drugs and Cosmetics Act.</p>
         </div>
-    </section>
-
-    <!-- Company Info Section -->
-    <section class="company-info-section">
-        <div class="company-info-container">
-            <div class="company-info-content fade-in">
-                <h2>Who We Are</h2>
-                <p>Tunes Therapeutics Pvt. Ltd. is a leading pharmaceutical company dedicated to transforming healthcare through innovative solutions. With a strong foundation in research and development, we bring life-changing medicines to patients worldwide.</p>
-                <p>Our team of experienced professionals, scientists, and healthcare experts work tirelessly to ensure that every product we develop meets the highest standards of quality, safety, and effectiveness.</p>
-                <p>We believe in the power of science to improve lives and are committed to making a positive impact on global health outcomes through our pharmaceutical innovations.</p>
-            </div>
-            <div class="company-image fade-in">
-                <img src="{{ url_for('static', filename='images/y.jpg') }}" alt="Tunes Therapeutics" onerror="this.src='https://via.placeholder.com/600x400?text=Company+Image'">
-            </div>
+        <div class="p-card p-card-glass p-reveal p-delay-2" data-tilt style="padding:28px">
+          <div class="p-icon p-icon-gold" style="margin-bottom:14px">🎓</div>
+          <h4 style="color:white;margin-bottom:8px">Expert Leadership</h4>
+          <p style="color:rgba(255,255,255,.62);font-size:.88rem;line-height:1.7">Led by Directors Talluri Damodar &amp; Talluri Usha Rekha with deep expertise in pharmaceutical sciences and distribution.</p>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Stats Section -->
-    <section class="stats-section">
-        <div class="stats-container">
-            <div class="stat-item fade-in">
-                <div class="stat-number" data-target="100">0</div>
-                <div class="stat-label">Products</div>
-            </div>
-            <div class="stat-item fade-in">
-                <div class="stat-number" data-target="50">0</div>
-                <div class="stat-label">Countries</div>
-            </div>
-            <div class="stat-item fade-in">
-                <div class="stat-number" data-target="1000">0</div>
-                <div class="stat-label">Research Projects</div>
-            </div>
-            <div class="stat-item fade-in">
-                <div class="stat-number" data-target="50000">0</div>
-                <div class="stat-label">Patients Served</div>
-            </div>
-        </div>
-    </section>
+<!-- ── CTA ── -->
+<section class="p-section p-section-sm p-section-light" style="text-align:center">
+  <div class="p-container">
+    <div class="p-reveal">
+      <h2 class="p-section-title">Partner with Tunes Therapeutics</h2>
+      <p class="p-section-subtitle" style="margin:14px auto 32px">Whether you're a healthcare professional, distributor, or partner — we'd love to connect.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="/contact"  class="p-btn p-btn-navy">Contact Us Today</a>
+        <a href="/products" class="p-btn p-btn-blue">Explore Products</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-    {% include 'partials/footer.html' %}
-
-    <script>
-        // Header Scroll Effect
-        window.addEventListener('scroll', function() {
-            const header = document.getElementById('header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
-
-        // Floating Particles
-        function createParticles() {
-            const particlesContainer = document.getElementById('heroParticles');
-            const particleCount = 30;
-
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                const size = Math.random() * 4 + 2;
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-                particle.style.left = Math.random() * 100 + '%';
-                particle.style.animationDuration = (Math.random() * 15 + 15) + 's';
-                particle.style.animationDelay = Math.random() * 5 + 's';
-                particlesContainer.appendChild(particle);
-            }
-        }
-        createParticles();
-
-        // Scroll Animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Animated Counter
-        function animateCounter(element) {
-            const target = parseInt(element.getAttribute('data-target'));
-            const duration = 2000;
-            const increment = target / (duration / 16);
-            let current = 0;
-
-            const updateCounter = () => {
-                current += increment;
-                if (current < target) {
-                    element.textContent = Math.floor(current);
-                    requestAnimationFrame(updateCounter);
-                } else {
-                    element.textContent = target.toLocaleString();
-                }
-            };
-
-            updateCounter();
-        }
-
-        const statsObserver = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const statNumbers = entry.target.querySelectorAll('.stat-number, .hero-stat-number');
-                    statNumbers.forEach(statNumber => {
-                        if (statNumber && !statNumber.classList.contains('animated')) {
-                            statNumber.classList.add('animated');
-                            animateCounter(statNumber);
-                        }
-                    });
-                }
-            });
-        }, { threshold: 0.5 });
-
-        document.querySelectorAll('.stats-section, .hero-stats').forEach(stat => {
-            statsObserver.observe(stat);
-        });
-    </script>
+{% include 'partials/footer.html' %}
 </body>
 </html>

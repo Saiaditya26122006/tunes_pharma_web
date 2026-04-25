@@ -1,392 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Us | Tunes Therapeutics Pvt. Ltd.</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        /* === Loading Screen Styles === */
-        /* === Global Styles === */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        /* === Header and Navigation === */
-        header {
-            position: sticky;
-            top: 20px;
-            z-index: 1000;
-            padding: 0 20px;
-            transition: all 0.3s ease;
-        }
-
-        header.scrolled {
-            top: 10px;
-        }
-
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 50px;
-            padding: 15px 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .logo {
-            height: 60px;
-            transition: transform 0.3s ease;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-            justify-content: center;
-        }
-
-        nav a {
-            color: #2c3e50;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 15px;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            position: relative;
-            padding: 8px 12px;
-            transition: all 0.3s ease;
-            border-radius: 20px;
-        }
-
-        nav a:hover {
-            color: #3498db;
-            background: rgba(52, 152, 219, 0.1);
-        }
-
-        .cta-header-button {
-            background: #2c3e50;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
-            white-space: nowrap;
-        }
-
-        .cta-header-button:hover {
-            background: #34495e;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4);
-        }
-
-        /* === Main Content === */
-        main {
-            padding: 80px 20px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2rem, 4vw, 3rem);
-            text-align: center;
-            margin-bottom: 20px;
-            color: #2c3e50;
-            position: relative;
-            display: inline-block;
-            width: 100%;
-        }
-
-        h2::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: #3498db;
-            border-radius: 2px;
-        }
-
-        p {
-            font-size: 1.1rem;
-            margin-bottom: 40px;
-            text-align: center;
-            color: #555;
-        }
-
-        .contact-details {
-            background: white;
-            padding: 50px 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin-top: 40px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .contact-details::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: #3498db;
-        }
-
-        .contact-details h3 {
-            font-size: 1.8rem;
-            color: #2c3e50;
-            margin-bottom: 30px;
-            font-weight: 600;
-        }
-
-        .contact-details p {
-            font-size: 1.1rem;
-            margin: 20px 0;
-            color: #555;
-            text-align: left;
-        }
-
-        .contact-details a {
-            color: #3498db;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .contact-details a:hover {
-            color: #2980b9;
-            text-decoration: underline;
-        }
-
-        /* === Scroll Animations === */
-        .fade-in {
-            opacity: 0;
-            transform: scale(0.9) translateY(20px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
-
-        /* === Footer === */
-        footer {
-            background: rgba(44, 62, 80, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            color: white;
-            padding: 60px 20px 30px;
-            margin-top: 80px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 40px;
-        }
-
-        .footer-logo img {
-            max-width: 180px;
-            margin-bottom: 20px;
-            filter: brightness(0) invert(1);
-        }
-
-        .footer-column h4 {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: #3498db;
-            font-weight: 600;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            display: block;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-            padding: 5px 0;
-        }
-
-        .footer-links a:hover {
-            color: #3498db;
-            padding-left: 10px;
-        }
-
-        .footer-social {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .social-link {
-            width: 45px;
-            height: 45px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .social-link:hover {
-            background: #3498db;
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-        }
-
-        .social-link img {
-            width: 24px;
-            height: 24px;
-            filter: brightness(0) invert(1);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.7);
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        /* === Responsive Design === */
-        @media (max-width: 768px) {
-            header {
-                padding: 10px 20px;
-            }
-
-            nav {
-                flex-wrap: wrap;
-                gap: 5px;
-            }
-
-            nav a {
-                font-size: 12px;
-                margin: 0 5px;
-            }
-
-            .logo {
-                height: 60px;
-            }
-
-            .contact-details {
-                padding: 30px 20px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Contact Us | Tunes Therapeutics Pvt. Ltd.</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
+  <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
+  <style>
+    .contact-hero {
+      background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 55%, var(--navy-700) 100%);
+      min-height: 46vh; display: flex; align-items: center;
+      padding: 140px 24px 80px; position: relative; overflow: hidden;
+      text-align: center; color: white;
+    }
+    .contact-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 60%, rgba(30,111,241,0.14) 0%, transparent 60%);
+    }
+    /* Split layout */
+    .contact-split {
+      display: grid; grid-template-columns: 1fr 1.1fr; gap: 48px; align-items: start;
+    }
+    @media (max-width:900px) { .contact-split { grid-template-columns: 1fr; } }
+    /* Form panel */
+    .form-panel {
+      background: white; border-radius: var(--radius-lg);
+      padding: 44px 40px; box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(15,30,45,0.07);
+    }
+    .form-panel h2 { font-family: 'Playfair Display',serif; font-size: 1.9rem; color: var(--navy-900); margin-bottom: 8px; }
+    .form-panel p  { color: var(--gray-500); font-size: .92rem; margin-bottom: 28px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width:500px) { .form-row { grid-template-columns: 1fr; } }
+    .form-submit {
+      width: 100%; padding: 15px; border: none; cursor: pointer;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
+      color: white; font-size: 15px; font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      transition: all .3s var(--ease-smooth);
+      box-shadow: 0 4px 20px rgba(15,30,45,0.25);
+    }
+    .form-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(15,30,45,0.35);
+      background: linear-gradient(135deg, var(--blue-500), var(--navy-700));
+    }
+    .form-success {
+      display: none; text-align: center; padding: 32px;
+      color: #16a34a;
+    }
+    .form-success .check { font-size: 3rem; margin-bottom: 12px; }
+    /* Social links */
+    .social-grid { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+    .social-btn {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 18px; border-radius: var(--radius-full);
+      background: rgba(30,111,241,0.07);
+      border: 1px solid rgba(30,111,241,0.15);
+      color: var(--navy-800); font-size: .85rem; font-weight: 600;
+      text-decoration: none; transition: all .25s var(--ease-smooth);
+    }
+    .social-btn:hover {
+      background: var(--navy-800); color: white; border-color: var(--navy-800);
+      transform: translateY(-2px);
+    }
+    .social-btn img { width: 18px; height: 18px; }
+    /* Map placeholder */
+    .map-box {
+      border-radius: var(--radius-lg); overflow: hidden;
+      background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
+      min-height: 240px; display: flex; align-items: center; justify-content: center;
+      position: relative; box-shadow: var(--shadow-md);
+    }
+    .map-box::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(circle at 40% 50%, rgba(30,111,241,0.2), transparent 60%);
+    }
+    .map-label { color: rgba(255,255,255,.7); font-size: .9rem; text-align: center; position: relative; z-index: 1; }
+    .map-label .icon { font-size: 2.5rem; display: block; margin-bottom: 8px; }
+  </style>
 </head>
 <body>
-    {% include 'partials/loading.html' %}
+{% include 'partials/loading.html' %}
 
-    <header id="header">
-        <div class="header-container">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo" class="logo">
-            <nav>
-                <a href="/">Home</a>
-                <a href="/about">About Us</a>
-                <a href="/products">Products</a>
-                <a href="/services">Services</a>
-                <a href="/research">Research</a>
-                <a href="/contact">Contact</a>
-                <a href="/Gallery">Gallery</a>
-            </nav>
-            <a href="/Pharmaintel_ai" class="cta-header-button">Pharmaintel AI</a>
+<header class="p-header" id="p-header">
+  <div class="p-header-inner">
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics" class="p-logo"></a>
+    <nav class="p-nav">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/products">Products</a>
+      <a href="/services">Services</a>
+      <a href="/research">Research</a>
+      <a href="/Gallery">Gallery</a>
+      <a href="/contact" class="active">Contact</a>
+    </nav>
+    <div class="p-header-actions">
+      <a href="/Pharmaintel_ai" class="p-ai-btn">Pharmaintel AI</a>
+    </div>
+  </div>
+</header>
+
+<!-- ── HERO ── -->
+<section class="contact-hero">
+  <div style="position:relative;z-index:2;max-width:600px;margin:0 auto">
+    <div class="p-hero-badge" style="margin-bottom:20px"><span class="dot"></span>We're here to help</div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.4rem,5vw,3.8rem);font-weight:700;margin-bottom:16px;letter-spacing:-.02em">Get In <span style="background:linear-gradient(135deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Touch</span></h1>
+    <p style="color:rgba(255,255,255,.65);font-size:1.05rem;line-height:1.8">Questions, partnerships, orders, or samples — our team is ready to respond. Reach out and let's connect.</p>
+  </div>
+</section>
+
+<!-- ── CONTACT SPLIT ── -->
+<section class="p-section p-section-light">
+  <div class="p-container">
+    <div class="contact-split">
+
+      <!-- Left: Info -->
+      <div class="p-reveal-left">
+        <span class="p-section-tag">Contact Details</span>
+        <h2 class="p-section-title" style="margin:12px 0 8px">Reach Our Team</h2>
+        <div class="p-divider"></div>
+        <p style="color:var(--gray-500);margin-bottom:28px;line-height:1.8">We typically respond to all inquiries within one business day. For urgent orders or medical queries, call us directly.</p>
+
+        <div class="p-contact-card">
+          <div class="p-icon p-icon-blue" style="width:48px;height:48px;border-radius:12px;font-size:20px">👤</div>
+          <div>
+            <h4>Directors</h4>
+            <p>Talluri Damodar &amp; Talluri Usha Rekha</p>
+          </div>
         </div>
-    </header>
-
-    <main>
-        <h2 class="fade-in">Contact Information</h2>
-        <p class="fade-in">If you have any questions or inquiries, feel free to contact us:</p>
-
-        <div class="contact-details fade-in">
-            <h3>Contact Person: Director - Talluri Damodar, Talluri Usha Rekha</h3>
-            <p><strong>Email:</strong> <a href="mailto:Brindamedicals21@gmail.com">Brindamedicals21@gmail.com</a></p>
-            <p><strong>Phone:</strong> <a href="tel:+919295006066">+91 9295006066</a></p>
-            <p><strong>Address:</strong> #3-340/4, Polakampadu, Undavalli, Guntur 522501</p>
+        <div class="p-contact-card">
+          <div class="p-icon p-icon-blue" style="width:48px;height:48px;border-radius:12px;font-size:20px">📧</div>
+          <div>
+            <h4>Email Us</h4>
+            <p><a href="mailto:Brindamedicals21@gmail.com">Brindamedicals21@gmail.com</a></p>
+          </div>
         </div>
-    </main>
+        <div class="p-contact-card">
+          <div class="p-icon p-icon-blue" style="width:48px;height:48px;border-radius:12px;font-size:20px">📞</div>
+          <div>
+            <h4>Call Us</h4>
+            <p><a href="tel:+919295006066">+91 9295 006 066</a></p>
+          </div>
+        </div>
+        <div class="p-contact-card">
+          <div class="p-icon p-icon-blue" style="width:48px;height:48px;border-radius:12px;font-size:20px">📍</div>
+          <div>
+            <h4>Our Office</h4>
+            <p>#3-340/4, Polakampadu, Undavalli,<br>Guntur 522501, Andhra Pradesh</p>
+          </div>
+        </div>
 
-    {% include 'partials/footer.html' %}
+        <!-- Map box -->
+        <div class="map-box" style="margin-top:24px">
+          <div class="map-label">
+            <span class="icon">📍</span>
+            <strong>Guntur, Andhra Pradesh</strong><br>
+            <span style="font-size:.82rem;opacity:.7">#3-340/4, Polakampadu, Undavalli</span>
+          </div>
+        </div>
 
-    <script>
-        // Header Scroll Effect
-        window.addEventListener('scroll', function() {
-            const header = document.getElementById('header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
+        <!-- Social links -->
+        <div style="margin-top:28px">
+          <p style="font-size:.82rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gray-400);margin-bottom:12px">Follow Us</p>
+          <div class="social-grid">
+            <a href="https://www.facebook.com/tunes_therapeutics_pvt_ltd" target="_blank" class="social-btn">
+              <img src="{{ url_for('static', filename='images/facebook-icon.png') }}" alt="Facebook"> Facebook
+            </a>
+            <a href="https://www.instagram.com/tunes_therapeutics_pvt_ltd" target="_blank" class="social-btn">
+              <img src="{{ url_for('static', filename='images/instagram-icon.png') }}" alt="Instagram"> Instagram
+            </a>
+            <a href="https://linkedin.com/tunes_therapeutics_pvt_ltd" target="_blank" class="social-btn">
+              <img src="{{ url_for('static', filename='images/linkedin-icon.png') }}" alt="LinkedIn"> LinkedIn
+            </a>
+            <a href="https://wa.me/919295006066" target="_blank" class="social-btn" style="background:rgba(37,211,102,0.08);border-color:rgba(37,211,102,0.2);color:#166534">
+              <img src="{{ url_for('static', filename='images/whatsapp-icon.png') }}" alt="WhatsApp"> WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
 
-        // Scroll Animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+      <!-- Right: Form -->
+      <div class="p-reveal-right">
+        <div class="form-panel">
+          <h2>Send Us a Message</h2>
+          <p>Fill in the form and we'll get back to you within 24 hours.</p>
 
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
+          <form id="contactForm" onsubmit="handleSubmit(event)">
+            <div class="form-row">
+              <div class="p-form-group">
+                <label>First Name</label>
+                <input type="text" placeholder="Rajesh" required>
+              </div>
+              <div class="p-form-group">
+                <label>Last Name</label>
+                <input type="text" placeholder="Kumar" required>
+              </div>
+            </div>
+            <div class="p-form-group">
+              <label>Email Address</label>
+              <input type="email" placeholder="rajesh@example.com" required>
+            </div>
+            <div class="p-form-group">
+              <label>Phone Number</label>
+              <input type="tel" placeholder="+91 98765 43210">
+            </div>
+            <div class="p-form-group">
+              <label>I am a...</label>
+              <select>
+                <option value="">Select your role</option>
+                <option>Doctor / Healthcare Professional</option>
+                <option>Pharmacist / Chemist</option>
+                <option>Distributor / Stockist</option>
+                <option>Hospital / Clinic</option>
+                <option>Patient</option>
+                <option>Business Inquiry</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="p-form-group">
+              <label>Message</label>
+              <textarea placeholder="Tell us how we can help — product enquiries, samples, partnerships, or support..." required></textarea>
+            </div>
+            <button type="submit" class="form-submit">Send Message →</button>
+          </form>
 
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
-    </script>
+          <div class="form-success" id="formSuccess">
+            <div class="check">✅</div>
+            <h3 style="color:var(--navy-900);margin-bottom:8px">Message Sent!</h3>
+            <p style="color:var(--gray-500)">Thank you for reaching out. We'll get back to you within 24 hours.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── QUICK ACTIONS ── -->
+<section class="p-section p-section-sm p-section-white">
+  <div class="p-container">
+    <div class="p-section-header center p-reveal">
+      <span class="p-section-tag">Quick Access</span>
+      <h2 class="p-section-title">Other Ways to Connect</h2>
+    </div>
+    <div class="p-grid-3" style="margin-top:0">
+      <div class="p-card p-reveal p-delay-1" style="padding:28px;text-align:center" data-tilt>
+        <div class="p-card-accent"></div>
+        <div style="font-size:2.5rem;margin-bottom:14px">🛒</div>
+        <h4 style="color:var(--navy-800);margin-bottom:8px;font-size:1.05rem">Place a B2B Order</h4>
+        <p style="color:var(--gray-500);font-size:.87rem;line-height:1.7;margin-bottom:16px">Distributors and hospitals can submit purchase requests directly online.</p>
+        <a href="/online-ordering" class="p-btn p-btn-blue" style="font-size:13px;padding:10px 20px">Start Ordering</a>
+      </div>
+      <div class="p-card p-reveal p-delay-2" style="padding:28px;text-align:center" data-tilt>
+        <div class="p-card-accent"></div>
+        <div style="font-size:2.5rem;margin-bottom:14px">🤖</div>
+        <h4 style="color:var(--navy-800);margin-bottom:8px;font-size:1.05rem">Pharmaintel AI</h4>
+        <p style="color:var(--gray-500);font-size:.87rem;line-height:1.7;margin-bottom:16px">Get instant pharmaceutical insights powered by GPT-4 intelligence.</p>
+        <a href="/Pharmaintel_ai" class="p-btn p-btn-navy" style="font-size:13px;padding:10px 20px">Launch AI Tool</a>
+      </div>
+      <div class="p-card p-reveal p-delay-3" style="padding:28px;text-align:center" data-tilt>
+        <div class="p-card-accent"></div>
+        <div style="font-size:2.5rem;margin-bottom:14px">📍</div>
+        <h4 style="color:var(--navy-800);margin-bottom:8px;font-size:1.05rem">Find a Stockist</h4>
+        <p style="color:var(--gray-500);font-size:.87rem;line-height:1.7;margin-bottom:16px">Locate the nearest authorized Tunes distributor in your city or state.</p>
+        <a href="/stockist-locator" class="p-btn p-btn-blue" style="font-size:13px;padding:10px 20px">Find Stockist</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% include 'partials/footer.html' %}
+
+<script>
+function handleSubmit(e) {
+  e.preventDefault();
+  const form = document.getElementById('contactForm');
+  const success = document.getElementById('formSuccess');
+  const btn = form.querySelector('.form-submit');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+  setTimeout(() => {
+    form.style.display = 'none';
+    success.style.display = 'block';
+  }, 1200);
+}
+</script>
 </body>
 </html>

@@ -2,403 +2,213 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gallery | Tunes Therapeutics Pvt. Ltd.</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Gallery | Tunes Therapeutics Pvt. Ltd.</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
+  <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
   <style>
-        /* === Loading Screen Styles === */
-        /* === Global Styles === */
-        * {
-            margin: 0;
-            padding: 0;
-      box-sizing: border-box;
+    .gal-hero {
+      background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 55%, var(--navy-700) 100%);
+      min-height: 46vh; display: flex; align-items: center;
+      padding: 140px 24px 80px; position: relative; overflow: hidden;
+      text-align: center; color: white;
+    }
+    .gal-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 60%, rgba(30,111,241,0.14) 0%, transparent 60%);
     }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
-    body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-      color: #333;
-            line-height: 1.6;
-            overflow-x: hidden;
+    /* Filter pills */
+    .gal-filters { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; }
+    .gal-filter {
+      padding: 8px 22px; border-radius: var(--radius-full); border: 1.5px solid rgba(15,30,45,0.12);
+      background: white; font-size: .85rem; font-weight: 600; color: var(--gray-600);
+      cursor: pointer; transition: all .25s var(--ease-smooth);
+    }
+    .gal-filter.active,
+    .gal-filter:hover {
+      background: var(--navy-800); color: white; border-color: var(--navy-800);
     }
 
-        /* === Header and Navigation === */
-    header {
-            position: sticky;
-            top: 20px;
-            z-index: 1000;
-            padding: 0 20px;
-            transition: all 0.3s ease;
-        }
-
-        header.scrolled {
-            top: 10px;
-        }
-
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 50px;
-            padding: 15px 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .logo {
-            height: 60px;
-            transition: transform 0.3s ease;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-        }
-
-        .logo:hover {
-            transform: scale(1.05);
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex: 1;
-            justify-content: center;
-        }
-
-        nav a {
-            color: #2c3e50;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 15px;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-            position: relative;
-            padding: 8px 12px;
-            transition: all 0.3s ease;
-            border-radius: 20px;
-        }
-
-        nav a:hover {
-            color: #3498db;
-            background: rgba(52, 152, 219, 0.1);
-        }
-
-        .cta-header-button {
-            background: #2c3e50;
-            color: white;
-            padding: 12px 30px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(44, 62, 80, 0.3);
-            white-space: nowrap;
-        }
-
-        .cta-header-button:hover {
-            background: #34495e;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(44, 62, 80, 0.4);
-        }
-
-        /* === Gallery Section === */
-        .gallery-section {
-            padding: 80px 20px;
-        }
-
-        .gallery-header {
-      text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .gallery-header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            color: #2c3e50;
-            margin-bottom: 20px;
-            position: relative;
-            display: inline-block;
-        }
-
-        .gallery-header h1::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
-            background: #3498db;
-            border-radius: 2px;
+    /* Masonry grid */
+    .gal-grid {
+      columns: 3; column-gap: 20px;
+      max-width: 1300px; margin: 0 auto;
     }
+    @media (max-width: 900px) { .gal-grid { columns: 2; } }
+    @media (max-width: 550px) { .gal-grid { columns: 1; } }
 
-    .gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s ease;
-            cursor: pointer;
-        }
-
-        .gallery-item:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.5s ease;
-        }
-
-        .gallery-item:hover img {
-            transform: scale(1.1);
-        }
-
-        .gallery-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 5px;
-            background: #3498db;
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
-        }
-
-        .gallery-item:hover::before {
-            transform: scaleX(1);
-        }
-
-        /* === Scroll Animations === */
-        .fade-in {
-            opacity: 0;
-            transform: scale(0.9) translateY(20px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
-
-        /* === Footer === */
-        footer {
-            background: rgba(44, 62, 80, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            color: white;
-            padding: 60px 20px 30px;
-            margin-top: 80px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 30px;
-            padding: 40px;
-        }
-
-        .footer-logo img {
-            max-width: 180px;
-            margin-bottom: 20px;
-            filter: brightness(0) invert(1);
-        }
-
-        .footer-column h4 {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            color: #3498db;
-            font-weight: 600;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            display: block;
-            margin-bottom: 12px;
-            transition: all 0.3s ease;
-            padding: 5px 0;
-        }
-
-        .footer-links a:hover {
-            color: #3498db;
-            padding-left: 10px;
-        }
-
-        .footer-social {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .social-link {
-            width: 45px;
-            height: 45px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .social-link:hover {
-            background: #3498db;
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-        }
-
-        .social-link img {
-            width: 24px;
-            height: 24px;
-            filter: brightness(0) invert(1);
-        }
-
-        .footer-bottom {
-            text-align: center;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.7);
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        /* === Responsive Design === */
-        @media (max-width: 768px) {
-            header {
-                padding: 10px 20px;
-            }
-
-            nav {
-                flex-wrap: wrap;
-                gap: 5px;
-            }
-
-            nav a {
-                font-size: 12px;
-                margin: 0 5px;
-            }
-
-            .logo {
-                height: 60px;
-      }
-
-      .gallery {
-                grid-template-columns: 1fr;
-      }
+    .gal-item {
+      break-inside: avoid; margin-bottom: 20px;
+      border-radius: var(--radius-md); overflow: hidden;
+      position: relative; cursor: pointer;
+      box-shadow: var(--shadow-sm); transition: all .35s var(--ease-smooth);
     }
+    .gal-item:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .gal-item img { width: 100%; display: block; transition: transform .5s var(--ease-smooth); }
+    .gal-item:hover img { transform: scale(1.07); }
+
+    .gal-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(5,13,26,.85) 0%, transparent 55%);
+      opacity: 0; transition: opacity .35s; display: flex; align-items: flex-end; padding: 20px;
+    }
+    .gal-item:hover .gal-overlay { opacity: 1; }
+    .gal-overlay span { color: white; font-weight: 600; font-size: .9rem; }
+
+    /* Lightbox */
+    .lightbox {
+      display: none; position: fixed; inset: 0; z-index: 9000;
+      background: rgba(5,13,26,.92); backdrop-filter: blur(12px);
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 90vw; max-height: 88vh; border-radius: var(--radius-md);
+      box-shadow: 0 32px 80px rgba(0,0,0,.5); object-fit: contain;
+    }
+    .lb-close {
+      position: absolute; top: 24px; right: 28px; font-size: 2rem; color: white;
+      cursor: pointer; line-height: 1; opacity: .7; transition: opacity .2s;
+    }
+    .lb-close:hover { opacity: 1; }
+    .lb-prev, .lb-next {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      font-size: 2.5rem; color: white; cursor: pointer; opacity: .6;
+      transition: opacity .2s; padding: 12px; user-select: none;
+    }
+    .lb-prev { left: 16px; }
+    .lb-next { right: 16px; }
+    .lb-prev:hover, .lb-next:hover { opacity: 1; }
   </style>
 </head>
 <body>
-    {% include 'partials/loading.html' %}
+{% include 'partials/loading.html' %}
 
-    <header id="header">
-        <div class="header-container">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo" class="logo">
-            <nav>
-                <a href="/">Home</a>
-                <a href="/about">About Us</a>
-                <a href="/products">Products</a>
-                <a href="/services">Services</a>
-                <a href="/research">Research</a>
-                <a href="/contact">Contact</a>
-                <a href="/Gallery">Gallery</a>
-            </nav>
-            <a href="/Pharmaintel_ai" class="cta-header-button">Pharmaintel AI</a>
-        </div>
-  </header>
+<header class="p-header" id="p-header">
+  <div class="p-header-inner">
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics" class="p-logo"></a>
+    <nav class="p-nav">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/products">Products</a>
+      <a href="/services">Services</a>
+      <a href="/research">Research</a>
+      <a href="/Gallery" class="active">Gallery</a>
+      <a href="/contact">Contact</a>
+    </nav>
+    <div class="p-header-actions">
+      <a href="/Pharmaintel_ai" class="p-ai-btn">Pharmaintel AI</a>
+    </div>
+  </div>
+</header>
 
-    <section class="gallery-section">
-        <div class="gallery-header fade-in">
-            <h1>Our Gallery</h1>
-        </div>
-        <div class="gallery">
-            <div class="gallery-item fade-in">
-                <img src="{{ url_for('static', filename='images/1.jpg') }}" alt="Gallery Image 1" onerror="this.src='https://via.placeholder.com/400x300?text=Image+1'">
-            </div>
-            <div class="gallery-item fade-in">
-                <img src="{{ url_for('static', filename='images/2.jpg') }}" alt="Gallery Image 2" onerror="this.src='https://via.placeholder.com/400x300?text=Image+2'">
-            </div>
-            <div class="gallery-item fade-in">
-                <img src="{{ url_for('static', filename='images/3.jpg') }}" alt="Gallery Image 3" onerror="this.src='https://via.placeholder.com/400x300?text=Image+3'">
-            </div>
-            <div class="gallery-item fade-in">
-                <img src="{{ url_for('static', filename='images/4.jpg') }}" alt="Gallery Image 4" onerror="this.src='https://via.placeholder.com/400x300?text=Image+4'">
-            </div>
-            <div class="gallery-item fade-in">
-                <img src="{{ url_for('static', filename='images/5.jpg') }}" alt="Gallery Image 5" onerror="this.src='https://via.placeholder.com/400x300?text=Image+5'">
-            </div>
-            <div class="gallery-item fade-in">
-                <img src="{{ url_for('static', filename='images/6.jpg') }}" alt="Gallery Image 6" onerror="this.src='https://via.placeholder.com/400x300?text=Image+6'">
-            </div>
-        </div>
-    </section>
+<!-- ── HERO ── -->
+<section class="gal-hero">
+  <div style="position:relative;z-index:2;max-width:600px;margin:0 auto">
+    <div class="p-hero-badge" style="margin-bottom:20px"><span class="dot"></span>Our Visual Story</div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.4rem,5vw,3.8rem);font-weight:700;margin-bottom:16px;letter-spacing:-.02em">Behind the <span style="background:linear-gradient(135deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Brand</span></h1>
+    <p style="color:rgba(255,255,255,.65);font-size:1.05rem;line-height:1.8">A glimpse into our facilities, products, events, and the people driving pharmaceutical excellence.</p>
+  </div>
+</section>
 
-    {% include 'partials/footer.html' %}
+<!-- ── GALLERY ── -->
+<section class="p-section p-section-light">
+  <div class="p-container">
+    <div class="gal-filters p-reveal">
+      <button class="gal-filter active" onclick="filterGal('all',this)">All</button>
+      <button class="gal-filter" onclick="filterGal('products',this)">Products</button>
+      <button class="gal-filter" onclick="filterGal('facility',this)">Facility</button>
+      <button class="gal-filter" onclick="filterGal('events',this)">Events</button>
+    </div>
 
-    <script>
-        // Header Scroll Effect
-        window.addEventListener('scroll', function() {
-            const header = document.getElementById('header');
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        });
+    <div class="gal-grid" id="galGrid">
+      <div class="gal-item p-reveal" data-cat="products" onclick="openLb(0)">
+        <img src="{{ url_for('static', filename='images/1.jpg') }}" alt="Ecoglim MV1" loading="lazy">
+        <div class="gal-overlay"><span>Ecoglim MV1 — Diabetes</span></div>
+      </div>
+      <div class="gal-item p-reveal p-delay-1" data-cat="products" onclick="openLb(1)">
+        <img src="{{ url_for('static', filename='images/2.jpg') }}" alt="NACTAID" loading="lazy">
+        <div class="gal-overlay"><span>NACTAID — Hepatoprotective</span></div>
+      </div>
+      <div class="gal-item p-reveal p-delay-2" data-cat="facility" onclick="openLb(2)">
+        <img src="{{ url_for('static', filename='images/3.jpg') }}" alt="Manufacturing" loading="lazy">
+        <div class="gal-overlay"><span>GMP Manufacturing Facility</span></div>
+      </div>
+      <div class="gal-item p-reveal" data-cat="products" onclick="openLb(3)">
+        <img src="{{ url_for('static', filename='images/4.jpg') }}" alt="RESGABA-NT" loading="lazy">
+        <div class="gal-overlay"><span>RESGABA-NT — Neuropathy</span></div>
+      </div>
+      <div class="gal-item p-reveal p-delay-1" data-cat="events" onclick="openLb(4)">
+        <img src="{{ url_for('static', filename='images/5.jpg') }}" alt="Medical Conference" loading="lazy">
+        <div class="gal-overlay"><span>Annual Medical Conference 2024</span></div>
+      </div>
+      <div class="gal-item p-reveal p-delay-2" data-cat="facility" onclick="openLb(5)">
+        <img src="{{ url_for('static', filename='images/6.jpg') }}" alt="Quality Lab" loading="lazy">
+        <div class="gal-overlay"><span>Quality Assurance Lab</span></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        // Scroll Animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+<!-- ── LIGHTBOX ── -->
+<div class="lightbox" id="lightbox">
+  <span class="lb-close" onclick="closeLb()">✕</span>
+  <span class="lb-prev" onclick="navLb(-1)">‹</span>
+  <img id="lb-img" src="" alt="">
+  <span class="lb-next" onclick="navLb(1)">›</span>
+</div>
 
-        const observer = new IntersectionObserver(function(entries) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, observerOptions);
+{% include 'partials/footer.html' %}
 
-        document.querySelectorAll('.fade-in').forEach(el => {
-            observer.observe(el);
-        });
-    </script>
+<script>
+  const galImgs = [
+    "{{ url_for('static', filename='images/1.jpg') }}",
+    "{{ url_for('static', filename='images/2.jpg') }}",
+    "{{ url_for('static', filename='images/3.jpg') }}",
+    "{{ url_for('static', filename='images/4.jpg') }}",
+    "{{ url_for('static', filename='images/5.jpg') }}",
+    "{{ url_for('static', filename='images/6.jpg') }}"
+  ];
+  let lbIdx = 0;
+
+  function openLb(idx) {
+    lbIdx = idx;
+    document.getElementById('lb-img').src = galImgs[idx];
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLb() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function navLb(dir) {
+    lbIdx = (lbIdx + dir + galImgs.length) % galImgs.length;
+    document.getElementById('lb-img').src = galImgs[lbIdx];
+  }
+  document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLb();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeLb();
+    if (e.key === 'ArrowRight') navLb(1);
+    if (e.key === 'ArrowLeft') navLb(-1);
+  });
+
+  function filterGal(cat, btn) {
+    document.querySelectorAll('.gal-filter').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.gal-item').forEach(item => {
+      if (cat === 'all' || item.dataset.cat === cat) {
+        item.style.display = '';
+      } else {
+        item.style.display = 'none';
+      }
+    });
+  }
+</script>
 </body>
 </html>

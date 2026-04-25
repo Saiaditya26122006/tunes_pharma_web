@@ -1,256 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Ordering | Tunes Therapeutics</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Online Ordering | Tunes Therapeutics Pvt. Ltd.</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
+  <style>
+    .order-hero {
+      background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 55%, var(--navy-700) 100%);
+      min-height: 40vh; display: flex; align-items: center;
+      padding: 140px 24px 70px; position: relative; overflow: hidden;
+      text-align: center; color: white;
+    }
+    .order-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 60%, rgba(30,111,241,0.13) 0%, transparent 60%);
+    }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-        }
+    .order-layout {
+      display: grid; grid-template-columns: 1fr 340px; gap: 32px; align-items: start;
+    }
+    @media (max-width: 960px) { .order-layout { grid-template-columns: 1fr; } }
 
-        header {
-            position: sticky;
-            top: 20px;
-            z-index: 1000;
-            padding: 0 20px;
-            margin-bottom: 30px;
-        }
+    .order-form-card {
+      background: white; border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg); border: 1px solid rgba(15,30,45,0.07);
+      overflow: hidden;
+    }
+    .form-section-head {
+      padding: 20px 32px; background: var(--navy-950);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .form-section-head span { font-size: 1.3rem; }
+    .form-section-head h3 { color: white; font-size: .95rem; font-weight: 600; }
+    .form-section-body { padding: 28px 32px; }
 
-        .header-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 1400px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(20px);
-            border-radius: 50px;
-            padding: 15px 40px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
+    /* Product row */
+    .prod-row {
+      display: grid; grid-template-columns: 1fr auto; gap: 16px; align-items: center;
+      padding: 14px 0; border-bottom: 1px solid rgba(15,30,45,0.06);
+    }
+    .prod-row:last-child { border-bottom: none; }
+    .prod-row-name { font-size: .9rem; font-weight: 500; color: var(--navy-800); }
+    .prod-row-sub { font-size: .78rem; color: var(--gray-400); margin-top: 2px; }
+    .qty-input {
+      width: 80px; padding: 8px 12px; border: 1.5px solid rgba(15,30,45,.12);
+      border-radius: 8px; font-size: .9rem; text-align: center;
+      color: var(--navy-800); font-family: 'Poppins', sans-serif;
+      transition: border-color .2s;
+    }
+    .qty-input:focus { outline: none; border-color: var(--blue-500); }
 
-        .logo {
-            height: 75px;
-        }
+    /* Side summary */
+    .order-summary {
+      position: sticky; top: 90px;
+    }
+    .summary-card {
+      background: white; border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md); border: 1px solid rgba(15,30,45,0.07);
+      padding: 28px;
+    }
+    .summary-card h3 { font-size: 1rem; font-weight: 700; color: var(--navy-800); margin-bottom: 20px; }
+    .summary-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: .85rem; }
+    .summary-row span { color: var(--gray-500); }
+    .summary-row strong { color: var(--navy-800); }
+    .summary-divider { height: 1px; background: rgba(15,30,45,.07); margin: 16px 0; }
 
-        nav {
-            display: flex;
-            gap: 8px;
-            flex: 1;
-            justify-content: center;
-        }
+    .order-submit {
+      width: 100%; padding: 15px; border: none; cursor: pointer;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
+      color: white; font-size: 15px; font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      transition: all .3s var(--ease-smooth);
+      box-shadow: 0 4px 20px rgba(15,30,45,0.25);
+    }
+    .order-submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(15,30,45,0.35);
+      background: linear-gradient(135deg, var(--blue-500), var(--navy-700));
+    }
 
-        nav a {
-            color: #2c3e50;
-            text-decoration: none;
-            margin: 0 15px;
-            font-size: 15px;
-            font-weight: 500;
-            padding: 8px 12px;
-            border-radius: 20px;
-            transition: all 0.3s ease;
-        }
-
-        nav a:hover {
-            color: #3498db;
-            background: rgba(52, 152, 219, 0.1);
-        }
-
-        .ordering-hero {
-            background: #34495e;
-            color: white;
-            padding: 60px 20px;
-            text-align: center;
-        }
-
-        .ordering-hero h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            margin-bottom: 20px;
-        }
-
-        .ordering-content {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .order-form-container {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-
-        .form-section {
-            margin-bottom: 40px;
-        }
-
-        .form-section h2 {
-            font-size: 1.5rem;
-            color: #2c3e50;
-            margin-bottom: 25px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #3498db;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            color: #2c3e50;
-            font-weight: 500;
-            margin-bottom: 8px;
-            font-size: 0.95rem;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 12px 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #3498db;
-        }
-
-        .products-selection {
-            margin-top: 20px;
-        }
-
-        .product-item {
-            display: grid;
-            grid-template-columns: 2fr 1fr auto;
-            gap: 15px;
-            align-items: center;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            margin-bottom: 15px;
-        }
-
-        .submit-btn {
-            background: #3498db;
-            color: white;
-            padding: 15px 40px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            width: 100%;
-        }
-
-        .submit-btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-        }
-    </style>
+    .trust-strip { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+    .trust-item { display: flex; align-items: center; gap: 10px; font-size: .8rem; color: var(--gray-500); }
+    .trust-item span { font-size: 1.1rem; }
+  </style>
 </head>
 <body>
-    {% include 'partials/loading.html' %}
-    <header>
-        <div class="header-container">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="logo">
-            <nav>
-                <a href="/">Home</a>
-                <a href="/products">Products</a>
-                <a href="/services">Services</a>
-                <a href="/online-ordering">Ordering</a>
-            </nav>
-            <a href="/Pharmaintel_ai" class="cta-header-button">Pharmaintel AI</a>
-        </div>
-    </header>
+{% include 'partials/loading.html' %}
 
-    <section class="ordering-hero">
-        <h1>Online Ordering</h1>
-        <p>Place your wholesale orders conveniently online</p>
-    </section>
+<header class="p-header" id="p-header">
+  <div class="p-header-inner">
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics" class="p-logo"></a>
+    <nav class="p-nav">
+      <a href="/">Home</a>
+      <a href="/products">Products</a>
+      <a href="/services">Services</a>
+      <a href="/online-ordering" class="active">Order</a>
+      <a href="/stockist-locator">Find Stockist</a>
+      <a href="/contact">Contact</a>
+    </nav>
+    <div class="p-header-actions">
+      <a href="/Pharmaintel_ai" class="p-ai-btn">Pharmaintel AI</a>
+    </div>
+  </div>
+</header>
 
-    <section class="ordering-content">
-        <div class="order-form-container">
-            <form method="POST">
-                <div class="form-section">
-                    <h2>Company Information</h2>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Company Name *</label>
-                            <input type="text" name="company" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Contact Person *</label>
-                            <input type="text" name="name" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Email Address *</label>
-                            <input type="email" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Phone Number *</label>
-                            <input type="tel" name="phone" required>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Billing Address *</label>
-                        <textarea name="address" rows="3" required></textarea>
-                    </div>
+<!-- ── HERO ── -->
+<section class="order-hero">
+  <div style="position:relative;z-index:2;max-width:600px;margin:0 auto">
+    <div class="p-hero-badge" style="margin-bottom:20px"><span class="dot"></span>B2B Commerce</div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;margin-bottom:14px;letter-spacing:-.02em">Place a <span style="background:linear-gradient(135deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Wholesale Order</span></h1>
+    <p style="color:rgba(255,255,255,.6);font-size:1rem;line-height:1.8">Streamlined ordering for distributors, hospitals, and retail chains. Our sales team follows up within 24 hours.</p>
+  </div>
+</section>
+
+<!-- ── ORDER FORM ── -->
+<section class="p-section p-section-light">
+  <div class="p-container">
+    <form method="POST" id="orderForm">
+      <div class="order-layout">
+
+        <!-- Left: form panels -->
+        <div>
+          <!-- Company Info -->
+          <div class="order-form-card p-reveal" style="margin-bottom:24px">
+            <div class="form-section-head">
+              <span>🏢</span><h3>Company Information</h3>
+            </div>
+            <div class="form-section-body">
+              <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <div class="p-form-group">
+                  <label>Company Name *</label>
+                  <input type="text" name="company" placeholder="ABC Pharma Pvt. Ltd." required>
                 </div>
-
-                <div class="form-section">
-                    <h2>Product Selection</h2>
-                    <div class="products-selection" id="productsList">
-                        {% for key, product in products.items() %}
-                        <div class="product-item">
-                            <div>
-                                <strong>{{ product.name }}</strong>
-                                <p style="color: #7f8c8d; font-size: 0.9rem; margin-top: 5px;">{{ product.get('price', 'Contact for price') }}</p>
-                            </div>
-                            <div class="form-group">
-                                <label>Quantity</label>
-                                <input type="number" name="quantities" min="0" value="0" style="width: 100px;">
-                                <input type="hidden" name="products" value="{{ key }}">
-                            </div>
-                        </div>
-                        {% endfor %}
-                    </div>
+                <div class="p-form-group">
+                  <label>Contact Person *</label>
+                  <input type="text" name="name" placeholder="Rajesh Kumar" required>
                 </div>
+              </div>
+              <div class="form-row" style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <div class="p-form-group">
+                  <label>Email Address *</label>
+                  <input type="email" name="email" placeholder="procurement@company.com" required>
+                </div>
+                <div class="p-form-group">
+                  <label>Phone Number *</label>
+                  <input type="tel" name="phone" placeholder="+91 98765 43210" required>
+                </div>
+              </div>
+              <div class="p-form-group">
+                <label>Billing Address *</label>
+                <textarea name="address" rows="3" placeholder="Street, City, State, PIN" required></textarea>
+              </div>
+              <div class="p-form-group">
+                <label>Business Type</label>
+                <select name="business_type">
+                  <option value="">Select type</option>
+                  <option>Distributor / C&F Agent</option>
+                  <option>Hospital / Nursing Home</option>
+                  <option>Retail Pharmacy Chain</option>
+                  <option>Institutional Buyer</option>
+                  <option>Export / International</option>
+                </select>
+              </div>
+            </div>
+          </div>
 
-                <button type="submit" class="submit-btn">Submit Order</button>
-            </form>
+          <!-- Products -->
+          <div class="order-form-card p-reveal">
+            <div class="form-section-head">
+              <span>💊</span><h3>Select Products & Quantities</h3>
+            </div>
+            <div class="form-section-body">
+              {% for key, product in products.items() %}
+              <div class="prod-row">
+                <div>
+                  <div class="prod-row-name">{{ product.name }}</div>
+                  <div class="prod-row-sub">{{ product.get('category', '') }} · {{ product.get('price', 'Contact for price') }}</div>
+                  <input type="hidden" name="products" value="{{ key }}">
+                </div>
+                <div>
+                  <label style="font-size:.72rem;color:var(--gray-400);display:block;margin-bottom:4px;text-align:center">Qty</label>
+                  <input type="number" name="quantities" min="0" value="0" class="qty-input">
+                </div>
+              </div>
+              {% endfor %}
+              <div class="p-form-group" style="margin-top:20px">
+                <label>Special Instructions / Remarks</label>
+                <textarea name="remarks" rows="2" placeholder="Delivery requirements, urgent items, etc."></textarea>
+              </div>
+            </div>
+          </div>
         </div>
-    </section>
-    {% include 'partials/footer.html' %}
+
+        <!-- Right: summary -->
+        <div class="order-summary">
+          <div class="summary-card p-reveal">
+            <h3>Order Summary</h3>
+            <div class="summary-row"><span>Order Type</span><strong>B2B Wholesale</strong></div>
+            <div class="summary-row"><span>Min. Order Value</span><strong>Contact Sales</strong></div>
+            <div class="summary-row"><span>Lead Time</span><strong>3–5 Business Days</strong></div>
+            <div class="summary-row"><span>Payment Terms</span><strong>As Agreed</strong></div>
+            <div class="summary-divider"></div>
+            <div class="summary-row"><span>Follow-up Within</span><strong style="color:var(--blue-500)">24 Hours</strong></div>
+            <button type="submit" class="order-submit" style="margin-top:16px">Submit Order →</button>
+            <div class="trust-strip">
+              <div class="trust-item"><span>🔒</span>Secure & confidential submission</div>
+              <div class="trust-item"><span>✅</span>GMP certified products only</div>
+              <div class="trust-item"><span>📞</span>Dedicated sales support</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</section>
+
+{% include 'partials/footer.html' %}
 </body>
 </html>
-
