@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Research & Innovation | Tunes Therapeutics Pvt. Ltd.</title>
+  <title>Market Insights | Tunes Therapeutics Pvt. Ltd.</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
@@ -23,39 +23,30 @@
     .res-hero-inner { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; width: 100%; }
     .res-hero-text  { max-width: 680px; color: white; }
 
-    /* Research area card */
-    .res-area-card { padding: 36px 30px; }
-    .res-area-card h3 { font-size: 1.15rem; font-weight: 600; color: var(--navy-800); margin: 14px 0 10px; }
-    .res-area-card p  { font-size: .88rem; color: var(--gray-500); line-height: 1.75; }
-    .res-area-icon { font-size: 2.5rem; }
+    /* Market card */
+    .mkt-card { padding: 36px 30px; }
+    .mkt-card h3 { font-size: 1.15rem; font-weight: 600; color: var(--navy-800); margin: 14px 0 10px; }
+    .mkt-card p  { font-size: .88rem; color: var(--gray-500); line-height: 1.75; }
+    .mkt-icon { font-size: 2.5rem; }
 
-    /* Pipeline table */
-    .pipeline-table { width: 100%; border-collapse: collapse; }
-    .pipeline-table th { background: var(--navy-800); color: white; padding: 14px 18px; text-align: left; font-size: .85rem; font-weight: 600; }
-    .pipeline-table td { padding: 14px 18px; border-bottom: 1px solid rgba(15,30,45,0.07); font-size: .9rem; color: var(--gray-600); }
-    .pipeline-table tr:hover td { background: rgba(30,111,241,0.04); }
-    .pipeline-table tr:first-child th:first-child { border-radius: 10px 0 0 0; }
-    .pipeline-table tr:first-child th:last-child  { border-radius: 0 10px 0 0; }
+    /* Therapy bar */
+    .therapy-bar { display: flex; flex-direction: column; gap: 14px; }
+    .tbar-row { display: flex; align-items: center; gap: 14px; }
+    .tbar-label { min-width: 160px; font-size: .85rem; font-weight: 600; color: var(--navy-800); }
+    .tbar-track { flex: 1; height: 10px; background: rgba(15,30,45,0.08); border-radius: 99px; overflow: hidden; }
+    .tbar-fill   { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--blue-500), var(--navy-700)); }
+    .tbar-pct    { min-width: 36px; font-size: .82rem; font-weight: 700; color: var(--blue-500); text-align: right; }
 
-    /* Phase badge */
-    .phase-badge {
-      display: inline-block; padding: 4px 12px; border-radius: var(--radius-full);
-      font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
-    }
-    .phase-1 { background: rgba(30,111,241,0.1); color: var(--blue-500); }
-    .phase-2 { background: rgba(201,169,110,0.15); color: #a07840; }
-    .phase-3 { background: rgba(22,163,74,0.1); color: #166534; }
-
-    /* Pub card */
-    .pub-card {
+    /* Insight card */
+    .insight-card {
       background: white; border-radius: var(--radius-md); padding: 24px 28px;
       border: 1px solid rgba(15,30,45,0.07); box-shadow: var(--shadow-sm);
       transition: all .3s var(--ease-smooth); margin-bottom: 16px;
       border-left: 4px solid var(--blue-500);
     }
-    .pub-card:hover { transform: translateX(6px); box-shadow: var(--shadow-md); }
-    .pub-card h4 { font-size: .95rem; font-weight: 600; color: var(--navy-800); margin-bottom: 6px; }
-    .pub-card p  { font-size: .82rem; color: var(--gray-500); }
+    .insight-card:hover { transform: translateX(6px); box-shadow: var(--shadow-md); }
+    .insight-card h4 { font-size: .95rem; font-weight: 600; color: var(--navy-800); margin-bottom: 6px; }
+    .insight-card p  { font-size: .82rem; color: var(--gray-500); }
   </style>
 </head>
 <body>
@@ -69,7 +60,7 @@
       <a href="/about">About</a>
       <a href="/products">Products</a>
       <a href="/services">Services</a>
-      <a href="/research" class="active">Research</a>
+      <a href="/research" class="active">Market Insights</a>
       <a href="/Gallery">Gallery</a>
       <a href="/contact">Contact</a>
     </nav>
@@ -83,147 +74,187 @@
 <section class="res-hero">
   <div class="res-hero-inner">
     <div class="res-hero-text p-reveal">
-      <div class="p-hero-badge" style="margin-bottom:22px"><span class="dot"></span>Science-First Philosophy</div>
-      <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.6rem,5vw,4.2rem);font-weight:700;line-height:1.1;margin-bottom:20px;letter-spacing:-.02em">Research that <span style="background:linear-gradient(135deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">redefines care</span></h1>
-      <p style="color:rgba(255,255,255,.65);font-size:1.08rem;line-height:1.85;max-width:560px;margin-bottom:36px">At Tunes Therapeutics, every formulation begins with rigorous science. Our R&D engine combines clinical expertise, modern analytics, and a relentless focus on patient outcomes.</p>
+      <div class="p-hero-badge" style="margin-bottom:22px"><span class="dot"></span>India Pharma Market Opportunity</div>
+      <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.6rem,5vw,4.2rem);font-weight:700;line-height:1.1;margin-bottom:20px;letter-spacing:-.02em">A large and <span style="background:linear-gradient(135deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">growing market</span></h1>
+      <p style="color:rgba(255,255,255,.65);font-size:1.08rem;line-height:1.85;max-width:560px;margin-bottom:36px">The Indian pharmaceutical market is one of the fastest growing in the world. Tunes Pharma is positioned in the chronic therapy segment — an area of consistent, compounding demand driven by rising prevalence of lifestyle diseases.</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <a href="/contact" class="p-btn p-btn-primary">Partner With Us</a>
+        <a href="/contact"  class="p-btn p-btn-primary">Partner With Us</a>
         <a href="/products" class="p-btn p-btn-outline">Explore Products</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── RESEARCH AREAS ── -->
+<!-- ── TAM / SAM / SOM ── -->
 <section class="p-section p-section-light">
   <div class="p-container">
     <div class="p-section-header center p-reveal">
-      <span class="p-section-tag">Focus Areas</span>
-      <h2 class="p-section-title">Our Research Pillars</h2>
+      <span class="p-section-tag">Market Size</span>
+      <h2 class="p-section-title">The Opportunity</h2>
       <div class="p-divider center"></div>
-      <p class="p-section-subtitle">Three core domains where Tunes Therapeutics is building meaningful clinical advantage.</p>
+      <p class="p-section-subtitle">India's pharmaceutical market is projected to grow at 12% CAGR — driven primarily by chronic disease management and branded generics adoption.</p>
     </div>
     <div class="p-grid-3">
-      <div class="res-area-card p-card p-reveal p-delay-1" data-tilt>
+      <div class="mkt-card p-card p-reveal p-delay-1" data-tilt>
         <div class="p-card-accent"></div>
-        <div class="res-area-icon">🧬</div>
-        <h3>Clinical Trials</h3>
-        <p>We conduct multi-centre clinical studies adhering to ICH-GCP guidelines, ensuring every new formulation meets the highest standards of safety and efficacy before reaching patients.</p>
+        <div class="mkt-icon">🌏</div>
+        <h3>Total Addressable Market</h3>
+        <p>The overall Indian pharmaceutical industry — encompassing generics, branded generics, OTC, and speciality drugs across all therapy areas and channels.</p>
+        <div style="margin-top:18px;font-size:2rem;font-weight:700;color:var(--blue-500);font-family:'Playfair Display',serif">$52 Billion</div>
       </div>
-      <div class="res-area-card p-card p-reveal p-delay-2" data-tilt>
+      <div class="mkt-card p-card p-reveal p-delay-2" data-tilt>
         <div class="p-card-accent"></div>
-        <div class="res-area-icon">🔬</div>
-        <h3>Innovation Lab</h3>
-        <p>Our analytical R&D facility enables formulation science, stability studies, and novel drug delivery research — bridging bench-to-bedside with speed and precision.</p>
+        <div class="mkt-icon">🎯</div>
+        <h3>Serviceable Addressable Market</h3>
+        <p>Branded generic prescription drugs in chronic therapy areas (Cardiology, Diabetology, Neurology, Gastro, Derma) across Tier 1 and Tier 2 markets in South India.</p>
+        <div style="margin-top:18px;font-size:2rem;font-weight:700;color:var(--blue-500);font-family:'Playfair Display',serif">$35 Billion</div>
       </div>
-      <div class="res-area-card p-card p-reveal p-delay-3" data-tilt>
+      <div class="mkt-card p-card p-reveal p-delay-3" data-tilt>
         <div class="p-card-accent"></div>
-        <div class="res-area-icon">🤝</div>
-        <h3>Academic Partnerships</h3>
-        <p>We collaborate with premier Indian universities and CSIR institutes to co-develop therapeutic solutions and publish peer-reviewed evidence supporting our portfolio.</p>
+        <div class="mkt-icon">📍</div>
+        <h3>Serviceable Obtainable Market</h3>
+        <p>Our near-term reachable segment — branded generic chronic therapy prescriptions in Andhra Pradesh and Telangana through our field and distribution network.</p>
+        <div style="margin-top:18px;font-size:2rem;font-weight:700;color:var(--blue-500);font-family:'Playfair Display',serif">$16 Billion</div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ── PIPELINE ── -->
+<!-- ── THERAPY MIX & CAGR ── -->
 <section class="p-section p-section-white">
   <div class="p-container">
-    <div class="p-section-header center p-reveal">
-      <span class="p-section-tag">Development Pipeline</span>
-      <h2 class="p-section-title">What's in the Pipeline</h2>
-      <div class="p-divider center"></div>
-    </div>
-    <div class="p-reveal" style="background:white;border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-md);border:1px solid rgba(15,30,45,0.06)">
-      <table class="pipeline-table">
-        <thead>
-          <tr>
-            <th>Formulation</th>
-            <th>Therapeutic Area</th>
-            <th>Phase</th>
-            <th>Expected Launch</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Ecoglim XR</strong> — Extended Release</td>
-            <td>Diabetes Management</td>
-            <td><span class="phase-badge phase-3">Phase 3</span></td>
-            <td>2025</td>
-          </tr>
-          <tr>
-            <td><strong>NACTAID Plus</strong> — Antioxidant Complex</td>
-            <td>Hepatoprotective</td>
-            <td><span class="phase-badge phase-3">Phase 3</span></td>
-            <td>2025</td>
-          </tr>
-          <tr>
-            <td><strong>RESGABA Forte</strong> — High-Dose NTX</td>
-            <td>Neuropathic Pain</td>
-            <td><span class="phase-badge phase-2">Phase 2</span></td>
-            <td>2026</td>
-          </tr>
-          <tr>
-            <td><strong>TUNES GI Shield</strong> — Probiotic Matrix</td>
-            <td>Gastroenterology</td>
-            <td><span class="phase-badge phase-2">Phase 2</span></td>
-            <td>2026</td>
-          </tr>
-          <tr>
-            <td><strong>CardioSync T</strong> — Cardioprotective Blend</td>
-            <td>Cardiovascular</td>
-            <td><span class="phase-badge phase-1">Phase 1</span></td>
-            <td>2027</td>
-          </tr>
-        </tbody>
-      </table>
+    <div class="p-grid-2" style="gap:56px;align-items:start">
+
+      <!-- Therapy share -->
+      <div class="p-reveal-left">
+        <span class="p-section-tag">Therapy Mix</span>
+        <h2 class="p-section-title" style="margin:12px 0 8px">Chronic Therapy Market Share</h2>
+        <div class="p-divider"></div>
+        <p style="color:var(--gray-500);margin-bottom:28px;line-height:1.8;font-size:.9rem">The chronic therapy segment is driven by seven key areas. Tunes Pharma operates primarily in Diabetology, Cardiology, Gastro, and General Medicine — four of the largest segments.</p>
+
+        <div class="therapy-bar">
+          <div class="tbar-row">
+            <span class="tbar-label">Diabetic / Anti-infectives</span>
+            <div class="tbar-track"><div class="tbar-fill" style="width:19%"></div></div>
+            <span class="tbar-pct">19%</span>
+          </div>
+          <div class="tbar-row">
+            <span class="tbar-label">Dermatology</span>
+            <div class="tbar-track"><div class="tbar-fill" style="width:16%"></div></div>
+            <span class="tbar-pct">16%</span>
+          </div>
+          <div class="tbar-row">
+            <span class="tbar-label">Cardiology</span>
+            <div class="tbar-track"><div class="tbar-fill" style="width:13%"></div></div>
+            <span class="tbar-pct">13%</span>
+          </div>
+          <div class="tbar-row">
+            <span class="tbar-label">Gastroenterology</span>
+            <div class="tbar-track"><div class="tbar-fill" style="width:13%"></div></div>
+            <span class="tbar-pct">13%</span>
+          </div>
+          <div class="tbar-row">
+            <span class="tbar-label">Pain Management</span>
+            <div class="tbar-track"><div class="tbar-fill" style="width:13%"></div></div>
+            <span class="tbar-pct">13%</span>
+          </div>
+          <div class="tbar-row">
+            <span class="tbar-label">Nutraceuticals</span>
+            <div class="tbar-track"><div class="tbar-fill" style="width:12%"></div></div>
+            <span class="tbar-pct">12%</span>
+          </div>
+          <div class="tbar-row">
+            <span class="tbar-label">Respiratory</span>
+            <div class="tbar-track"><div class="tbar-fill" style="width:8%"></div></div>
+            <span class="tbar-pct">8%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Growth stats -->
+      <div class="p-reveal-right">
+        <div class="p-card p-card-dark" style="padding:40px;text-align:center">
+          <div style="font-size:3rem;margin-bottom:20px">📈</div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.7rem;color:white;margin-bottom:14px">Market Growth Indicators</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px">
+            <div style="background:rgba(255,255,255,.07);border-radius:12px;padding:20px">
+              <div style="font-size:2rem;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif">12%</div>
+              <div style="color:rgba(255,255,255,.6);font-size:.82rem;margin-top:4px">CAGR (3-Year Outlook)</div>
+            </div>
+            <div style="background:rgba(255,255,255,.07);border-radius:12px;padding:20px">
+              <div style="font-size:2rem;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif">$52B</div>
+              <div style="color:rgba(255,255,255,.6);font-size:.82rem;margin-top:4px">Total Market Size</div>
+            </div>
+            <div style="background:rgba(255,255,255,.07);border-radius:12px;padding:20px">
+              <div style="font-size:2rem;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif">4+</div>
+              <div style="color:rgba(255,255,255,.6);font-size:.82rem;margin-top:4px">Therapy Areas We Cover</div>
+            </div>
+            <div style="background:rgba(255,255,255,.07);border-radius:12px;padding:20px">
+              <div style="font-size:2rem;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif">20+</div>
+              <div style="color:rgba(255,255,255,.6);font-size:.82rem;margin-top:4px">KOL Relationships (2023)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- ── PUBLICATIONS ── -->
+<!-- ── MARKET INSIGHTS ── -->
 <section class="p-section p-section-light">
   <div class="p-container">
     <div class="p-grid-2" style="gap:48px;align-items:start">
       <div class="p-reveal-left">
-        <span class="p-section-tag">Scientific Evidence</span>
-        <h2 class="p-section-title" style="margin:12px 0 8px">Publications & Studies</h2>
+        <span class="p-section-tag">Why Chronic Therapy</span>
+        <h2 class="p-section-title" style="margin:12px 0 8px">Market Insights</h2>
         <div class="p-divider"></div>
-        <p style="color:var(--gray-500);margin-bottom:28px;line-height:1.8">Our research team actively contributes to peer-reviewed pharmaceutical journals and presents at national conferences.</p>
+        <p style="color:var(--gray-500);margin-bottom:28px;line-height:1.8">Chronic diseases require long-term prescription adherence — creating predictable, recurring demand and building loyal prescriber relationships over time.</p>
 
-        <div class="pub-card p-reveal">
-          <h4>Glycaemic Control with Ecoglim MV1 in Type 2 Diabetes Patients — A Comparative Study</h4>
-          <p>Indian Journal of Endocrinology · 2023 · 12-week RCT · n = 148</p>
+        <div class="insight-card p-reveal">
+          <h4>Rising Lifestyle Disease Burden</h4>
+          <p>India has over 77 million diabetics and 220 million hypertensives. The demand for diabetes, cardiology, and nephrology medicines is growing rapidly — and will continue to for decades.</p>
         </div>
-        <div class="pub-card p-reveal">
-          <h4>N-Acetylcysteine in Drug-Induced Hepatotoxicity: Efficacy of NACTAID Formulation</h4>
-          <p>Journal of Clinical Pharmacy · 2023 · Meta-analysis · 6 studies reviewed</p>
+        <div class="insight-card p-reveal">
+          <h4>Branded Generics Command Premium Trust</h4>
+          <p>In the Indian market, doctors prefer branded generics over unbranded ones for chronic conditions. Our portfolio is designed to compete on quality and clinical credibility, not just price.</p>
         </div>
-        <div class="pub-card p-reveal">
-          <h4>Pregabalin + Nortriptyline Combination vs Monotherapy in Neuropathic Pain</h4>
-          <p>Pain Medicine India · 2022 · Randomised, double-blind · n = 96</p>
+        <div class="insight-card p-reveal">
+          <h4>Tier 2 &amp; Tier 3 Cities — Underserved &amp; Growing</h4>
+          <p>Markets like Guntur, Vijayawada, and surrounding districts have growing specialist counts but limited quality branded generic representation — our primary growth opportunity.</p>
         </div>
       </div>
+
       <div class="p-reveal-right">
-        <div class="p-card p-card-dark" style="padding:40px;text-align:center">
-          <div style="font-size:3rem;margin-bottom:20px">📊</div>
-          <h3 style="font-family:'Playfair Display',serif;font-size:1.7rem;color:white;margin-bottom:14px">Research by Numbers</h3>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:24px">
-            <div style="background:rgba(255,255,255,.07);border-radius:12px;padding:20px">
-              <div style="font-size:2rem;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif">12+</div>
-              <div style="color:rgba(255,255,255,.6);font-size:.82rem;margin-top:4px">Published Papers</div>
+        <span class="p-section-tag">Our Strategy</span>
+        <h2 class="p-section-title" style="margin:12px 0 8px">How We're Positioned</h2>
+        <div class="p-divider"></div>
+        <p style="color:var(--gray-500);margin-bottom:28px;line-height:1.8">We are a lean, relationship-driven pharmaceutical marketing company. Our model is built for profitability without external funding — growing organically through repeat prescriptions and distributor trust.</p>
+
+        <div class="p-card" style="padding:28px;margin-bottom:18px">
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <div class="p-icon p-icon-blue" style="flex-shrink:0;font-size:1.5rem;padding:10px">🎯</div>
+            <div>
+              <h4 style="font-size:.95rem;font-weight:600;color:var(--navy-800);margin-bottom:6px">Focus on 4 Core Therapy Areas</h4>
+              <p style="font-size:.84rem;color:var(--gray-500);line-height:1.7">Cardiology, Diabetology, Nephrology, and General Medicine — all chronic, all high-repeat, all specialist-driven.</p>
             </div>
-            <div style="background:rgba(255,255,255,.07);border-radius:12px;padding:20px">
-              <div style="font-size:2rem;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif">5+</div>
-              <div style="color:rgba(255,255,255,.6);font-size:.82rem;margin-top:4px">Active Trials</div>
+          </div>
+        </div>
+        <div class="p-card" style="padding:28px;margin-bottom:18px">
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <div class="p-icon p-icon-blue" style="flex-shrink:0;font-size:1.5rem;padding:10px">🤝</div>
+            <div>
+              <h4 style="font-size:.95rem;font-weight:600;color:var(--navy-800);margin-bottom:6px">Leveraging 20+ Years of Relationships</h4>
+              <p style="font-size:.84rem;color:var(--gray-500);line-height:1.7">Founder Talluri Damodar's network across IPCA, SUN, NOVARTIS, ALKEM, LUPIN, USV, and UNICHEM brings immediate credibility with prescribers and distributors.</p>
             </div>
-            <div style="background:rgba(255,255,255,.07);border-radius:12px;padding:20px">
-              <div style="font-size:2rem;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif">3</div>
-              <div style="color:rgba(255,255,255,.6);font-size:.82rem;margin-top:4px">University Partners</div>
-            </div>
-            <div style="background:rgba(255,255,255,.07);border-radius:12px;padding:20px">
-              <div style="font-size:2rem;font-weight:700;color:var(--gold);font-family:'Playfair Display',serif">500+</div>
-              <div style="color:rgba(255,255,255,.6);font-size:.82rem;margin-top:4px">Trial Participants</div>
+          </div>
+        </div>
+        <div class="p-card" style="padding:28px">
+          <div style="display:flex;gap:14px;align-items:flex-start">
+            <div class="p-icon p-icon-blue" style="flex-shrink:0;font-size:1.5rem;padding:10px">📍</div>
+            <div>
+              <h4 style="font-size:.95rem;font-weight:600;color:var(--navy-800);margin-bottom:6px">PAN India Vision — Starting from AP</h4>
+              <p style="font-size:.84rem;color:var(--gray-500);line-height:1.7">We are building from our home base in Guntur and expanding district by district — proving the model before scaling to other states.</p>
             </div>
           </div>
         </div>
@@ -237,8 +268,8 @@
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 60% 50%,rgba(30,111,241,0.18) 0%,transparent 60%);pointer-events:none"></div>
   <div class="p-container" style="position:relative;z-index:1">
     <div class="p-reveal">
-      <h2 class="p-section-title" style="margin-bottom:14px">Collaborate on research</h2>
-      <p class="p-section-subtitle" style="margin:0 auto 32px">We welcome partnerships with academic institutions, hospitals, and CROs committed to advancing pharmaceutical science.</p>
+      <h2 class="p-section-title" style="margin-bottom:14px">Join us in this opportunity</h2>
+      <p class="p-section-subtitle" style="margin:0 auto 32px">Whether you are a doctor, distributor, investor, or partner — Tunes Pharma is building something meaningful. Let's grow together.</p>
       <a href="/contact" class="p-btn p-btn-primary" style="font-size:15px">Get in Touch</a>
     </div>
   </div>
