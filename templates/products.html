@@ -52,26 +52,42 @@
       grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: 28px; transition: all .3s;
     }
-    .p-flip { height: 440px; cursor: pointer; }
+    .p-flip { height: 480px; cursor: pointer; }
     .p-flip-front {
       background: white; border: 1px solid rgba(15,30,45,0.07);
       box-shadow: var(--shadow-md);
       display: flex; flex-direction: column;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
     }
-    .p-flip-front-img { width: 100%; height: 210px; object-fit: cover; }
-    .p-flip-front-img-wrap { overflow: hidden; position: relative; }
-    .p-flip-front-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-    .p-flip-front-body h3 { font-size: 1.1rem; font-weight: 600; color: var(--navy-800); margin-bottom: 8px; }
-    .p-flip-front-body p  { font-size: .87rem; color: var(--gray-500); line-height: 1.7; flex: 1; }
+    .p-flip-front-img-wrap {
+      overflow: hidden; position: relative;
+      background: linear-gradient(135deg, #f0f4f8 0%, #e8edf5 100%);
+      height: 220px; display: flex; align-items: center; justify-content: center;
+    }
+    .p-flip-front-img {
+      width: 100%; height: 220px;
+      object-fit: contain; padding: 12px;
+      transition: transform .4s var(--ease-smooth);
+    }
+    .p-flip-front:hover .p-flip-front-img { transform: scale(1.05); }
+    .p-flip-front-body { padding: 18px 20px; flex: 1; display: flex; flex-direction: column; }
+    .p-flip-front-body h3 { font-size: 1.05rem; font-weight: 700; color: var(--navy-800); margin-bottom: 6px; }
+    .p-flip-front-body .prod-comp {
+      font-size: .76rem; color: var(--blue-600); font-weight: 600;
+      background: rgba(30,111,241,0.07); border-radius: 6px;
+      padding: 4px 10px; margin-bottom: 8px; display: inline-block;
+    }
+    .p-flip-front-body p  { font-size: .84rem; color: var(--gray-500); line-height: 1.65; flex: 1; }
     .flip-hint {
-      font-size: .78rem; color: var(--blue-400);
+      font-size: .75rem; color: var(--blue-400);
       display: flex; align-items: center; gap: 5px;
-      margin-top: 14px; font-weight: 600; letter-spacing: .03em;
+      margin-top: 12px; font-weight: 600; letter-spacing: .03em;
     }
-    .p-flip-back { padding: 28px; display: flex; flex-direction: column; }
-    .detail-row { display: flex; gap: 8px; margin-bottom: 10px; font-size: .85rem; }
-    .detail-label { color: var(--gold-light); font-weight: 600; min-width: 90px; font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; flex-shrink: 0; }
-    .detail-val   { color: rgba(255,255,255,.78); }
+    .p-flip-back { padding: 26px; display: flex; flex-direction: column; border-radius: var(--radius-lg); }
+    .detail-row { display: flex; gap: 8px; margin-bottom: 10px; font-size: .84rem; }
+    .detail-label { color: var(--gold-light); font-weight: 600; min-width: 90px; font-size: .76rem; text-transform: uppercase; letter-spacing: .05em; flex-shrink: 0; }
+    .detail-val   { color: rgba(255,255,255,.82); line-height: 1.5; }
     .prod-transition {
       transition: opacity .35s var(--ease-smooth), transform .35s var(--ease-smooth);
     }
@@ -135,118 +151,106 @@
 
     <div class="prod-grid">
 
+      <!-- Ecoglim MP2 -->
       <div class="p-flip prod-transition p-reveal p-delay-1" data-cat="diabetes">
         <div class="p-flip-inner">
           <div class="p-flip-front">
             <div class="p-flip-front-img-wrap">
               <span class="p-product-category">Diabetes</span>
-              <img src="{{ url_for('static', filename='images/p1.jpg') }}" alt="Ecoglim MV1" class="p-flip-front-img" onerror="this.style.cssText='background:#e8edf2;min-height:210px'">
-            </div>
-            <div class="p-flip-front-body">
-              <h3>Ecoglim MV1</h3>
-              <p>Glimepiride + Metformin + Multivitamins — comprehensive diabetes management with nutritional support.</p>
-              <div class="flip-hint">↺ Hover for details</div>
-            </div>
-          </div>
-          <div class="p-flip-back">
-            <span class="p-badge p-badge-gold" style="margin-bottom:14px">Diabetes Management</span>
-            <h3 style="color:white;margin-bottom:14px">Ecoglim MV1</h3>
-            <div class="detail-row"><span class="detail-label">Class</span><span class="detail-val">Antidiabetic + Multivitamin</span></div>
-            <div class="detail-row"><span class="detail-label">Schedule</span><span class="detail-val">Schedule H</span></div>
-            <div class="detail-row"><span class="detail-label">Indication</span><span class="detail-val">Type 2 Diabetes with nutritional deficiency</span></div>
-            <a href="/products/ecoglim-mv1" class="p-btn p-btn-primary" style="margin-top:auto;font-size:13px;padding:10px 22px">View Full Details →</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="p-flip prod-transition p-reveal p-delay-2" data-cat="diabetes">
-        <div class="p-flip-inner">
-          <div class="p-flip-front">
-            <div class="p-flip-front-img-wrap">
-              <span class="p-product-category">Diabetes</span>
-              <img src="{{ url_for('static', filename='images/p2.jpg') }}" alt="Ecoglim MV2" class="p-flip-front-img" onerror="this.style.cssText='background:#e8edf2;min-height:210px'">
-            </div>
-            <div class="p-flip-front-body">
-              <h3>Ecoglim MV2</h3>
-              <p>Enhanced glycemic control formula with upgraded micronutrient support for comprehensive care.</p>
-              <div class="flip-hint">↺ Hover for details</div>
-            </div>
-          </div>
-          <div class="p-flip-back">
-            <span class="p-badge p-badge-gold" style="margin-bottom:14px">Diabetes Management</span>
-            <h3 style="color:white;margin-bottom:14px">Ecoglim MV2</h3>
-            <div class="detail-row"><span class="detail-label">Class</span><span class="detail-val">Antidiabetic + Multivitamin</span></div>
-            <div class="detail-row"><span class="detail-label">Schedule</span><span class="detail-val">Schedule H</span></div>
-            <div class="detail-row"><span class="detail-label">Indication</span><span class="detail-val">Type 2 Diabetes with enhanced micronutrient formula</span></div>
-            <a href="/products/ecoglim-mv2" class="p-btn p-btn-primary" style="margin-top:auto;font-size:13px;padding:10px 22px">View Full Details →</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="p-flip prod-transition p-reveal p-delay-3" data-cat="diabetes">
-        <div class="p-flip-inner">
-          <div class="p-flip-front">
-            <div class="p-flip-front-img-wrap">
-              <span class="p-product-category">Diabetes</span>
-              <img src="{{ url_for('static', filename='images/product_images.jpg') }}" alt="Ecoglim MP1" class="p-flip-front-img" onerror="this.style.cssText='background:#e8edf2;min-height:210px'">
-            </div>
-            <div class="p-flip-front-body">
-              <h3>Ecoglim MP1</h3>
-              <p>Precision-grade antidiabetic therapy for advanced Type 2 diabetes management protocols.</p>
-              <div class="flip-hint">↺ Hover for details</div>
-            </div>
-          </div>
-          <div class="p-flip-back">
-            <span class="p-badge p-badge-gold" style="margin-bottom:14px">Diabetes Management</span>
-            <h3 style="color:white;margin-bottom:14px">Ecoglim MP1</h3>
-            <div class="detail-row"><span class="detail-label">Class</span><span class="detail-val">Antidiabetic</span></div>
-            <div class="detail-row"><span class="detail-label">Schedule</span><span class="detail-val">Schedule H</span></div>
-            <div class="detail-row"><span class="detail-label">Indication</span><span class="detail-val">Advanced Type 2 Diabetes management</span></div>
-            <a href="/products/ecoglim-mp1" class="p-btn p-btn-primary" style="margin-top:auto;font-size:13px;padding:10px 22px">View Full Details →</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="p-flip prod-transition p-reveal p-delay-4" data-cat="diabetes">
-        <div class="p-flip-inner">
-          <div class="p-flip-front">
-            <div class="p-flip-front-img-wrap">
-              <span class="p-product-category">Diabetes</span>
-              <img src="{{ url_for('static', filename='images/product_images.jpg') }}" alt="Ecoglim MP2" class="p-flip-front-img" onerror="this.style.cssText='background:#e8edf2;min-height:210px'">
+              <img src="{{ url_for('static', filename='images/ecoglim-mp2.jpg') }}" alt="Ecoglim MP2" class="p-flip-front-img" onerror="this.src='{{ url_for('static', filename='images/product_images.jpg') }}'">
             </div>
             <div class="p-flip-front-body">
               <h3>Ecoglim MP2</h3>
-              <p>Dual-mechanism antidiabetic formula offering superior insulin sensitization and secretion.</p>
+              <span class="prod-comp">Metformin PR + Glimepiride 2mg + Pioglitazone</span>
+              <p>Triple-action antidiabetic formula — insulin sensitization, hepatic glucose reduction and secretagogue.</p>
               <div class="flip-hint">↺ Hover for details</div>
             </div>
           </div>
           <div class="p-flip-back">
             <span class="p-badge p-badge-gold" style="margin-bottom:14px">Diabetes Management</span>
             <h3 style="color:white;margin-bottom:14px">Ecoglim MP2</h3>
+            <div class="detail-row"><span class="detail-label">Composition</span><span class="detail-val">Metformin HCl PR 500mg + Glimepiride 2mg + Pioglitazone 15mg</span></div>
             <div class="detail-row"><span class="detail-label">Class</span><span class="detail-val">Antidiabetic Combination</span></div>
             <div class="detail-row"><span class="detail-label">Schedule</span><span class="detail-val">Schedule H</span></div>
-            <div class="detail-row"><span class="detail-label">Indication</span><span class="detail-val">Type 2 Diabetes with dual-action mechanism</span></div>
+            <div class="detail-row"><span class="detail-label">Indication</span><span class="detail-val">Type 2 Diabetes with Insulin Resistance</span></div>
             <a href="/products/ecoglim-mp2" class="p-btn p-btn-primary" style="margin-top:auto;font-size:13px;padding:10px 22px">View Full Details →</a>
           </div>
         </div>
       </div>
 
-      <div class="p-flip prod-transition p-reveal p-delay-5" data-cat="diabetes">
+      <!-- Ecoglim MPI (MP1) -->
+      <div class="p-flip prod-transition p-reveal p-delay-2" data-cat="diabetes">
+        <div class="p-flip-inner">
+          <div class="p-flip-front">
+            <div class="p-flip-front-img-wrap">
+              <span class="p-product-category">Diabetes</span>
+              <img src="{{ url_for('static', filename='images/ecoglim-mp1.jpg') }}" alt="Ecoglim-MPI" class="p-flip-front-img" onerror="this.src='{{ url_for('static', filename='images/product_images.jpg') }}'">
+            </div>
+            <div class="p-flip-front-body">
+              <h3>Ecoglim-MPI</h3>
+              <span class="prod-comp">Metformin PR + Glimepiride 1mg + Pioglitazone</span>
+              <p>Comprehensive triple-action therapy targeting insulin resistance, glucose production and secretion.</p>
+              <div class="flip-hint">↺ Hover for details</div>
+            </div>
+          </div>
+          <div class="p-flip-back">
+            <span class="p-badge p-badge-gold" style="margin-bottom:14px">Diabetes Management</span>
+            <h3 style="color:white;margin-bottom:14px">Ecoglim-MPI</h3>
+            <div class="detail-row"><span class="detail-label">Composition</span><span class="detail-val">Metformin HCl PR 500mg + Glimepiride 1mg + Pioglitazone 15mg</span></div>
+            <div class="detail-row"><span class="detail-label">Class</span><span class="detail-val">Antidiabetic Combination</span></div>
+            <div class="detail-row"><span class="detail-label">Schedule</span><span class="detail-val">Schedule H</span></div>
+            <div class="detail-row"><span class="detail-label">Indication</span><span class="detail-val">Type 2 Diabetes with Insulin Resistance</span></div>
+            <a href="/products/ecoglim-mp1" class="p-btn p-btn-primary" style="margin-top:auto;font-size:13px;padding:10px 22px">View Full Details →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resgaba-NT -->
+      <div class="p-flip prod-transition p-reveal p-delay-3" data-cat="neuro">
+        <div class="p-flip-inner">
+          <div class="p-flip-front">
+            <div class="p-flip-front-img-wrap">
+              <span class="p-product-category">Neuropathy</span>
+              <img src="{{ url_for('static', filename='images/resgaba-nt.jpg') }}" alt="Resgaba-NT" class="p-flip-front-img" onerror="this.src='{{ url_for('static', filename='images/product_images.jpg') }}'">
+            </div>
+            <div class="p-flip-front-body">
+              <h3>Resgaba-NT</h3>
+              <span class="prod-comp">Pregabalin + Nortriptyline + Mecobalamin</span>
+              <p>Multi-modal neuropathic pain relief targeting pain signalling, mood pathways and nerve regeneration.</p>
+              <div class="flip-hint">↺ Hover for details</div>
+            </div>
+          </div>
+          <div class="p-flip-back">
+            <span class="p-badge p-badge-gold" style="margin-bottom:14px">Neuropathic Pain</span>
+            <h3 style="color:white;margin-bottom:14px">Resgaba-NT</h3>
+            <div class="detail-row"><span class="detail-label">Composition</span><span class="detail-val">Pregabalin 75mg + Nortriptyline 10mg + Mecobalamin 1500mcg</span></div>
+            <div class="detail-row"><span class="detail-label">Class</span><span class="detail-val">Anticonvulsant + Antidepressant + Vitamin B12</span></div>
+            <div class="detail-row"><span class="detail-label">Schedule</span><span class="detail-val">Schedule H</span></div>
+            <div class="detail-row"><span class="detail-label">Indication</span><span class="detail-val">Diabetic neuropathy, fibromyalgia, nerve pain</span></div>
+            <a href="/products/resgaba-nt" class="p-btn p-btn-primary" style="margin-top:auto;font-size:13px;padding:10px 22px">View Full Details →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- NACTaid -->
+      <div class="p-flip prod-transition p-reveal p-delay-4" data-cat="diabetes">
         <div class="p-flip-inner">
           <div class="p-flip-front">
             <div class="p-flip-front-img-wrap">
               <span class="p-product-category">Metabolic Support</span>
-              <img src="{{ url_for('static', filename='images/p2.jpg') }}" alt="NACTAID" class="p-flip-front-img" onerror="this.style.cssText='background:#e8edf2;min-height:210px'">
+              <img src="{{ url_for('static', filename='images/nactaid.jpg') }}" alt="NACTaid" class="p-flip-front-img" onerror="this.src='{{ url_for('static', filename='images/product_images.jpg') }}'">
             </div>
             <div class="p-flip-front-body">
-              <h3>NACTAID</h3>
-              <p>N-Acetyl Cysteine based therapy supporting antioxidant defence and metabolic wellness.</p>
+              <h3>NACTaid</h3>
+              <span class="prod-comp">N-Acetylcysteine + Taurine</span>
+              <p>Potent antioxidant combination supporting glutathione synthesis, liver health and cellular detoxification.</p>
               <div class="flip-hint">↺ Hover for details</div>
             </div>
           </div>
           <div class="p-flip-back">
             <span class="p-badge p-badge-gold" style="margin-bottom:14px">Metabolic Support</span>
-            <h3 style="color:white;margin-bottom:14px">NACTAID</h3>
+            <h3 style="color:white;margin-bottom:14px">NACTaid</h3>
+            <div class="detail-row"><span class="detail-label">Composition</span><span class="detail-val">N-Acetylcysteine 600mg + Taurine 500mg</span></div>
             <div class="detail-row"><span class="detail-label">Class</span><span class="detail-val">Antioxidant / Hepatoprotective</span></div>
             <div class="detail-row"><span class="detail-label">Schedule</span><span class="detail-val">Schedule H</span></div>
             <div class="detail-row"><span class="detail-label">Indication</span><span class="detail-val">Oxidative stress, liver support, metabolic wellness</span></div>
@@ -255,46 +259,79 @@
         </div>
       </div>
 
-      <div class="p-flip prod-transition p-reveal p-delay-1" data-cat="neuro">
+      <!-- Ecoglim-MV2 -->
+      <div class="p-flip prod-transition p-reveal p-delay-5" data-cat="diabetes">
         <div class="p-flip-inner">
           <div class="p-flip-front">
             <div class="p-flip-front-img-wrap">
-              <span class="p-product-category">Neuropathy</span>
-              <img src="{{ url_for('static', filename='images/product_images.jpg') }}" alt="RESGABA-NT" class="p-flip-front-img" onerror="this.style.cssText='background:#e8edf2;min-height:210px'">
+              <span class="p-product-category">Diabetes</span>
+              <img src="{{ url_for('static', filename='images/ecoglim-mv2.jpg') }}" alt="Ecoglim-MV2" class="p-flip-front-img" onerror="this.src='{{ url_for('static', filename='images/product_images.jpg') }}'">
             </div>
             <div class="p-flip-front-body">
-              <h3>RESGABA-NT</h3>
-              <p>Pregabalin + Nortriptyline combination for effective neuropathic pain management and relief.</p>
+              <h3>Ecoglim-MV2</h3>
+              <span class="prod-comp">Glimepiride + Metformin SR + Voglibose</span>
+              <p>Triple-action glycemic control — insulin secretion, hepatic glucose reduction and carb absorption block.</p>
               <div class="flip-hint">↺ Hover for details</div>
             </div>
           </div>
           <div class="p-flip-back">
-            <span class="p-badge p-badge-gold" style="margin-bottom:14px">Neuropathic Pain</span>
-            <h3 style="color:white;margin-bottom:14px">RESGABA-NT</h3>
-            <div class="detail-row"><span class="detail-label">Class</span><span class="detail-val">Anticonvulsant + Antidepressant</span></div>
+            <span class="p-badge p-badge-gold" style="margin-bottom:14px">Diabetes Management</span>
+            <h3 style="color:white;margin-bottom:14px">Ecoglim-MV2</h3>
+            <div class="detail-row"><span class="detail-label">Composition</span><span class="detail-val">Glimepiride 2mg + Metformin HCl SR 500mg + Voglibose 0.2mg</span></div>
+            <div class="detail-row"><span class="detail-label">Class</span><span class="detail-val">Antidiabetic Triple Combination</span></div>
             <div class="detail-row"><span class="detail-label">Schedule</span><span class="detail-val">Schedule H</span></div>
-            <div class="detail-row"><span class="detail-label">Indication</span><span class="detail-val">Diabetic neuropathy, fibromyalgia, nerve pain</span></div>
-            <a href="/products/resgaba-nt" class="p-btn p-btn-primary" style="margin-top:auto;font-size:13px;padding:10px 22px">View Full Details →</a>
+            <div class="detail-row"><span class="detail-label">Indication</span><span class="detail-val">Type 2 Diabetes Mellitus</span></div>
+            <a href="/products/ecoglim-mv2" class="p-btn p-btn-primary" style="margin-top:auto;font-size:13px;padding:10px 22px">View Full Details →</a>
           </div>
         </div>
       </div>
 
+      <!-- Ecoglim MV1 -->
+      <div class="p-flip prod-transition p-reveal p-delay-1" data-cat="diabetes">
+        <div class="p-flip-inner">
+          <div class="p-flip-front">
+            <div class="p-flip-front-img-wrap">
+              <span class="p-product-category">Diabetes</span>
+              <img src="{{ url_for('static', filename='images/ecoglim-mv1.jpg') }}" alt="Ecoglim MV1" class="p-flip-front-img" onerror="this.src='{{ url_for('static', filename='images/p1.jpg') }}'">
+            </div>
+            <div class="p-flip-front-body">
+              <h3>Ecoglim MV1</h3>
+              <span class="prod-comp">Glimepiride 1mg + Metformin SR + Methylcobalamin</span>
+              <p>Comprehensive glycemic management with nerve support — antidiabetic and B12 in one formulation.</p>
+              <div class="flip-hint">↺ Hover for details</div>
+            </div>
+          </div>
+          <div class="p-flip-back">
+            <span class="p-badge p-badge-gold" style="margin-bottom:14px">Diabetes Management</span>
+            <h3 style="color:white;margin-bottom:14px">Ecoglim MV1</h3>
+            <div class="detail-row"><span class="detail-label">Composition</span><span class="detail-val">Glimepiride 1mg + Metformin HCl SR 500mg + Methylcobalamin 0.2mg</span></div>
+            <div class="detail-row"><span class="detail-label">Class</span><span class="detail-val">Antidiabetic + Vitamin B12</span></div>
+            <div class="detail-row"><span class="detail-label">Schedule</span><span class="detail-val">Schedule H</span></div>
+            <div class="detail-row"><span class="detail-label">Indication</span><span class="detail-val">Type 2 Diabetes with nutritional neuropathy</span></div>
+            <a href="/products/ecoglim-mv1" class="p-btn p-btn-primary" style="margin-top:auto;font-size:13px;padding:10px 22px">View Full Details →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESGABA-DLX -->
       <div class="p-flip prod-transition p-reveal p-delay-2" data-cat="neuro">
         <div class="p-flip-inner">
           <div class="p-flip-front">
             <div class="p-flip-front-img-wrap">
               <span class="p-product-category">Neuropathy</span>
-              <img src="{{ url_for('static', filename='images/product_images.jpg') }}" alt="RESGABA-DLX" class="p-flip-front-img" onerror="this.style.cssText='background:#e8edf2;min-height:210px'">
+              <img src="{{ url_for('static', filename='images/resgaba-dlx.jpg') }}" alt="RESGABA-DLX" class="p-flip-front-img" onerror="this.src='{{ url_for('static', filename='images/product_images.jpg') }}'">
             </div>
             <div class="p-flip-front-body">
               <h3>RESGABA-DLX</h3>
-              <p>Pregabalin + Duloxetine for dual-action pain relief targeting central and peripheral sensitization.</p>
+              <span class="prod-comp">Pregabalin + Duloxetine</span>
+              <p>Dual-action pain relief targeting central and peripheral sensitization with mood stabilisation.</p>
               <div class="flip-hint">↺ Hover for details</div>
             </div>
           </div>
           <div class="p-flip-back">
             <span class="p-badge p-badge-gold" style="margin-bottom:14px">Neuropathic Pain</span>
             <h3 style="color:white;margin-bottom:14px">RESGABA-DLX</h3>
+            <div class="detail-row"><span class="detail-label">Composition</span><span class="detail-val">Pregabalin 75mg + Duloxetine 30mg</span></div>
             <div class="detail-row"><span class="detail-label">Class</span><span class="detail-val">SNRI + Anticonvulsant</span></div>
             <div class="detail-row"><span class="detail-label">Schedule</span><span class="detail-val">Schedule H</span></div>
             <div class="detail-row"><span class="detail-label">Indication</span><span class="detail-val">Chronic pain, neuropathy, generalized anxiety</span></div>
@@ -303,22 +340,25 @@
         </div>
       </div>
 
+      <!-- RABISHIR-DSR -->
       <div class="p-flip prod-transition p-reveal p-delay-3" data-cat="gi">
         <div class="p-flip-inner">
           <div class="p-flip-front">
             <div class="p-flip-front-img-wrap">
               <span class="p-product-category">Gastrointestinal</span>
-              <img src="{{ url_for('static', filename='images/product_images.jpg') }}" alt="RABISHIR-DSR" class="p-flip-front-img" onerror="this.style.cssText='background:#e8edf2;min-height:210px'">
+              <img src="{{ url_for('static', filename='images/rabishir-dsr.jpg') }}" alt="RABISHIR-DSR" class="p-flip-front-img" onerror="this.src='{{ url_for('static', filename='images/product_images.jpg') }}'">
             </div>
             <div class="p-flip-front-body">
               <h3>RABISHIR-DSR</h3>
-              <p>Rabeprazole + Domperidone delayed-release for superior GI acid management and motility control.</p>
+              <span class="prod-comp">Rabeprazole + Domperidone SR</span>
+              <p>Superior acid suppression with improved gastric motility for comprehensive GI management.</p>
               <div class="flip-hint">↺ Hover for details</div>
             </div>
           </div>
           <div class="p-flip-back">
             <span class="p-badge p-badge-gold" style="margin-bottom:14px">Gastrointestinal</span>
             <h3 style="color:white;margin-bottom:14px">RABISHIR-DSR</h3>
+            <div class="detail-row"><span class="detail-label">Composition</span><span class="detail-val">Rabeprazole 20mg + Domperidone 30mg SR</span></div>
             <div class="detail-row"><span class="detail-label">Class</span><span class="detail-val">PPI + Prokinetic (DSR)</span></div>
             <div class="detail-row"><span class="detail-label">Schedule</span><span class="detail-val">Schedule H</span></div>
             <div class="detail-row"><span class="detail-label">Indication</span><span class="detail-val">GERD, gastritis, peptic ulcer, acid reflux</span></div>
