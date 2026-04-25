@@ -29,11 +29,14 @@
       position: sticky; top: 100px;
       border-radius: var(--radius-lg); overflow: hidden;
       box-shadow: var(--shadow-xl);
+      background: linear-gradient(135deg, #f0f4f8 0%, #e8edf5 100%);
     }
     .pd-img-wrap img {
-      width: 100%; display: block; transition: transform .5s var(--ease-smooth);
+      width: 100%; display: block; object-fit: contain;
+      padding: 20px; min-height: 320px;
+      transition: transform .5s var(--ease-smooth);
     }
-    .pd-img-wrap:hover img { transform: scale(1.04); }
+    .pd-img-wrap:hover img { transform: scale(1.05); }
     .pd-img-placeholder {
       min-height: 380px; background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
       display: flex; align-items: center; justify-content: center; font-size: 5rem; position: relative;
@@ -41,6 +44,13 @@
     .pd-img-placeholder::before {
       content: ''; position: absolute; inset: 0;
       background: radial-gradient(circle at 30% 40%, rgba(30,111,241,.25), transparent 60%);
+    }
+    .pd-packing-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(30,111,241,0.08); border: 1px solid rgba(30,111,241,0.2);
+      border-radius: var(--radius-full); padding: 6px 16px;
+      font-size: .78rem; font-weight: 600; color: var(--blue-600);
+      margin-bottom: 16px;
     }
 
     /* Info panel */
@@ -115,52 +125,56 @@
       <!-- Image -->
       <div class="p-reveal-left">
         <div class="pd-img-wrap">
-          {% if product.name == 'Ecoglim MV1' %}
-            <img src="{{ url_for('static', filename='images/1.jpg') }}" alt="{{ product.name }}">
-          {% elif product.name == 'Ecoglim MV2' %}
-            <img src="{{ url_for('static', filename='images/2.jpg') }}" alt="{{ product.name }}">
-          {% elif product.name == 'Ecoglim MP1' %}
-            <img src="{{ url_for('static', filename='images/p1.jpg') }}" alt="{{ product.name }}">
-          {% elif product.name == 'Ecoglim MP2' %}
-            <img src="{{ url_for('static', filename='images/p2.jpg') }}" alt="{{ product.name }}">
-          {% elif product.name == 'NACTAID' %}
-            <img src="{{ url_for('static', filename='images/3.jpg') }}" alt="{{ product.name }}">
-          {% elif product.name == 'RESGABA-NT' %}
-            <img src="{{ url_for('static', filename='images/4.jpg') }}" alt="{{ product.name }}">
-          {% elif product.name == 'RESGABA-DLX' %}
-            <img src="{{ url_for('static', filename='images/5.jpg') }}" alt="{{ product.name }}">
-          {% elif product.name == 'RABISHIR-DSR' %}
-            <img src="{{ url_for('static', filename='images/6.jpg') }}" alt="{{ product.name }}">
+          {% if product.get('image') %}
+            <img src="{{ url_for('static', filename='images/' ~ product.image) }}"
+                 alt="{{ product.name }}"
+                 onerror="this.parentElement.innerHTML='<div class=\'pd-img-placeholder\'><span style=\'position:relative;z-index:1\'>💊</span></div>'">
           {% else %}
             <div class="pd-img-placeholder"><span style="position:relative;z-index:1">💊</span></div>
           {% endif %}
         </div>
 
+        <!-- Packing info -->
+        {% if product.get('packing') %}
+        <div style="margin-top:16px;text-align:center">
+          <span class="pd-packing-badge">📦 {{ product.packing }}</span>
+        </div>
+        {% endif %}
+
         <!-- Trust badges -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px">
-          <div class="p-card" style="padding:16px;text-align:center">
-            <div style="font-size:1.5rem;margin-bottom:6px">✅</div>
-            <div style="font-size:.78rem;font-weight:600;color:var(--navy-800)">DCGI Approved</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+          <div class="p-card" style="padding:14px;text-align:center">
+            <div style="font-size:1.4rem;margin-bottom:5px">✅</div>
+            <div style="font-size:.75rem;font-weight:600;color:var(--navy-800)">DCGI Approved</div>
           </div>
-          <div class="p-card" style="padding:16px;text-align:center">
-            <div style="font-size:1.5rem;margin-bottom:6px">🏭</div>
-            <div style="font-size:.78rem;font-weight:600;color:var(--navy-800)">GMP Certified</div>
+          <div class="p-card" style="padding:14px;text-align:center">
+            <div style="font-size:1.4rem;margin-bottom:5px">🏭</div>
+            <div style="font-size:.75rem;font-weight:600;color:var(--navy-800)">WHO-GMP Certified</div>
           </div>
-          <div class="p-card" style="padding:16px;text-align:center">
-            <div style="font-size:1.5rem;margin-bottom:6px">🔬</div>
-            <div style="font-size:.78rem;font-weight:600;color:var(--navy-800)">Clinically Tested</div>
+          <div class="p-card" style="padding:14px;text-align:center">
+            <div style="font-size:1.4rem;margin-bottom:5px">🔬</div>
+            <div style="font-size:.75rem;font-weight:600;color:var(--navy-800)">Clinically Tested</div>
           </div>
-          <div class="p-card" style="padding:16px;text-align:center">
-            <div style="font-size:1.5rem;margin-bottom:6px">🌡️</div>
-            <div style="font-size:.78rem;font-weight:600;color:var(--navy-800)">Quality Assured</div>
+          <div class="p-card" style="padding:14px;text-align:center">
+            <div style="font-size:1.4rem;margin-bottom:5px">🌡️</div>
+            <div style="font-size:.75rem;font-weight:600;color:var(--navy-800)">Quality Assured</div>
           </div>
         </div>
+
+        {% if product.get('manufacturer') %}
+        <div class="p-card" style="padding:14px;margin-top:12px;text-align:center">
+          <div style="font-size:.7rem;color:var(--gray-400);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Manufactured by</div>
+          <div style="font-size:.85rem;font-weight:600;color:var(--navy-800)">{{ product.manufacturer }}</div>
+        </div>
+        {% endif %}
       </div>
 
       <!-- Info -->
       <div class="p-reveal-right">
-        {% if product.get('price') %}
-        <div class="pd-price">₹{{ product.price }}</div>
+        {% if product.get('features') %}
+        <div style="margin-bottom:4px">
+          <span style="background:rgba(30,111,241,0.08);border:1px solid rgba(30,111,241,0.2);border-radius:var(--radius-full);padding:6px 16px;font-size:.8rem;font-weight:600;color:var(--blue-600)">{{ product.features }}</span>
+        </div>
         {% endif %}
 
         {% if product.description %}
@@ -184,7 +198,7 @@
         </div>
         {% endif %}
 
-        {% if product.benefits %}
+        {% if product.get('benefits') %}
         <div class="pd-info-section">
           <h4>Key Benefits</h4>
           <p>{{ product.benefits }}</p>
@@ -199,16 +213,23 @@
         {% endif %}
 
         {% if product.get('side_effects') %}
-        <div class="pd-info-section" style="border-left-color:rgba(201,169,110,.6)">
+        <div class="pd-info-section" style="border-left-color:rgba(201,169,110,.7)">
           <h4>Side Effects</h4>
           <p>{{ product.side_effects }}</p>
+        </div>
+        {% endif %}
+
+        {% if product.get('storage') %}
+        <div class="pd-info-section">
+          <h4>Storage</h4>
+          <p>{{ product.storage }}</p>
         </div>
         {% endif %}
 
         {% if product.get('schedule') %}
         <div class="pd-info-section">
           <h4>Drug Schedule</h4>
-          <p>{{ product.schedule }}</p>
+          <p>Schedule {{ product.schedule }} — Prescription only</p>
         </div>
         {% endif %}
 
