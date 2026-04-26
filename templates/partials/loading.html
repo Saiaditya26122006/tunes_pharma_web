@@ -1,135 +1,365 @@
 <style>
-    .loading-overlay {
-        position: fixed;
-        inset: 0;
-        background: radial-gradient(circle at top, rgba(52, 152, 219, 0.15), rgba(44, 62, 80, 0.95));
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        backdrop-filter: blur(10px);
-        z-index: 9999;
-        transition: opacity 0.5s ease, visibility 0.5s ease;
-    }
+  /* ══════════════════════════════════════════
+     TUNES PHARMA — SIGNATURE LOADING SCREEN
+     Story: ECG flatline → heartbeat → brand
+  ══════════════════════════════════════════ */
 
-    .loading-overlay.fade-out {
-        opacity: 0;
-        visibility: hidden;
-    }
+  .tp-loader {
+    position: fixed; inset: 0;
+    background: #050E1A;
+    z-index: 9999;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    overflow: hidden;
+    transition: opacity 0.7s cubic-bezier(0.4,0,0.2,1), visibility 0.7s;
+  }
+  .tp-loader.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
 
-    .loading-orb {
-        width: 140px;
-        height: 140px;
-        border-radius: 50%;
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(255, 255, 255, 0.08);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-        animation: orbPulse 2.5s ease-in-out infinite;
-    }
+  /* ── Ambient background glows ── */
+  .tp-glow {
+    position: absolute; border-radius: 50%;
+    pointer-events: none; will-change: transform, opacity;
+  }
+  .tp-glow-blue {
+    width: 60vw; max-width: 720px; aspect-ratio: 1;
+    background: radial-gradient(circle, rgba(30,111,241,0.14) 0%, transparent 68%);
+    top: -22%; left: -18%;
+    animation: tpGlowPulse 5s ease-in-out infinite;
+  }
+  .tp-glow-gold {
+    width: 48vw; max-width: 600px; aspect-ratio: 1;
+    background: radial-gradient(circle, rgba(201,169,110,0.1) 0%, transparent 68%);
+    bottom: -22%; right: -12%;
+    animation: tpGlowPulse 6.5s ease-in-out 1s infinite reverse;
+  }
 
-    .loading-ring {
-        position: absolute;
-        width: 160px;
-        height: 160px;
-        border-radius: 50%;
-        border: 3px solid transparent;
-        border-top-color: #ffffff;
-        border-right-color: rgba(255, 255, 255, 0.4);
-        animation: rotateRing 1.8s linear infinite;
-    }
+  /* ── Scan-line shimmer across whole screen ── */
+  .tp-scanline {
+    position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(255,255,255,0.012) 2px,
+      rgba(255,255,255,0.012) 4px
+    );
+  }
 
-    .loading-ring.secondary {
-        width: 190px;
-        height: 190px;
-        border-top-color: rgba(255, 255, 255, 0.25);
-        border-right-color: transparent;
-        animation-duration: 2.6s;
-    }
+  /* ── ECG waveform ── */
+  .tp-ecg-wrap {
+    width: min(600px, 90vw);
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .tp-ecg-svg { width: 100%; overflow: visible; display: block; }
 
-    .loading-logo {
-        width: 90px;
-        height: 90px;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.9);
-        display: grid;
-        place-items: center;
-        overflow: hidden;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    }
+  /* Glow layer — blurred copy of the ECG */
+  .tp-ecg-glow-path {
+    fill: none; stroke-linecap: round; stroke-linejoin: round;
+    stroke: rgba(201,169,110,0.3); stroke-width: 14;
+    stroke-dasharray: 1800; stroke-dashoffset: 1800;
+    animation: tpDrawEcg 1.3s cubic-bezier(0.35,0,0.25,1) 0.2s forwards;
+  }
+  /* Crisp foreground ECG */
+  .tp-ecg-line {
+    fill: none; stroke-linecap: round; stroke-linejoin: round;
+    stroke: url(#tpEcgGrad); stroke-width: 2.5;
+    stroke-dasharray: 1800; stroke-dashoffset: 1800;
+    animation: tpDrawEcg 1.3s cubic-bezier(0.35,0,0.25,1) 0.2s forwards;
+  }
 
-    .loading-logo img {
-        width: 70px;
-        height: auto;
-        animation: gentleFloat 2.5s ease-in-out infinite;
-    }
+  /* Travelling pulse dot on the R-spike */
+  .tp-spike-flash {
+    position: absolute;
+    top: 0; left: 50%;
+    width: 6px; height: 6px;
+    background: #C9A96E;
+    border-radius: 50%;
+    box-shadow: 0 0 10px 4px rgba(201,169,110,0.7);
+    transform: translate(-50%, 0);
+    opacity: 0;
+    animation: tpSpikeFlash 0.35s ease 1.0s forwards;
+  }
 
-    .loading-overlay p {
-        margin-top: 25px;
-        color: rgba(255, 255, 255, 0.85);
-        font-weight: 500;
-        letter-spacing: 0.08em;
-    }
+  /* ── Logo + brand block ── */
+  .tp-brand-wrap {
+    display: flex; flex-direction: column; align-items: center;
+    opacity: 0; transform: translateY(22px) scale(0.87);
+    animation: tpBrandReveal 0.6s cubic-bezier(0.34,1.56,0.64,1) 1.2s forwards;
+  }
 
-    @keyframes rotateRing {
-        from {
-            transform: rotate(0deg);
-        }
-        to {
-            transform: rotate(360deg);
-        }
-    }
+  /* Double orbit rings */
+  .tp-orbit-shell {
+    position: relative; width: 114px; height: 114px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .tp-orbit {
+    position: absolute; border-radius: 50%;
+    border-style: solid; border-color: transparent;
+  }
+  .tp-orbit-1 {
+    inset: -4px;
+    border-width: 1.5px;
+    border-top-color: rgba(201,169,110,0.65);
+    border-right-color: rgba(201,169,110,0.25);
+    animation: tpOrbitCW 7s linear infinite;
+  }
+  .tp-orbit-2 {
+    inset: -13px;
+    border-width: 1px;
+    border-bottom-color: rgba(30,111,241,0.5);
+    border-left-color: rgba(30,111,241,0.2);
+    animation: tpOrbitCCW 11s linear infinite;
+  }
 
-    @keyframes orbPulse {
-        0%, 100% {
-            transform: scale(1);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-        }
-        50% {
-            transform: scale(1.05);
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.4);
-        }
-    }
+  .tp-logo-circle {
+    width: 92px; height: 92px; border-radius: 50%;
+    background: #fff;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow:
+      0 16px 48px rgba(0,0,0,0.4),
+      0 0 0 1px rgba(255,255,255,0.08),
+      0 0 50px rgba(30,111,241,0.18);
+    animation: tpLogoGlow 2.8s ease-in-out 1.8s infinite;
+    position: relative; z-index: 1;
+  }
+  .tp-logo-circle img { width: 65px; height: auto; display: block; }
 
-    @keyframes gentleFloat {
-        0%, 100% {
-            transform: translateY(0);
-        }
-        50% {
-            transform: translateY(-6px);
-        }
+  /* Brand text */
+  .tp-name {
+    margin-top: 22px;
+    font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+    font-size: clamp(1.5rem, 4.5vw, 1.9rem);
+    font-weight: 700; color: #fff;
+    letter-spacing: 0.04em; line-height: 1;
+    opacity: 0;
+    animation: tpTextSlide 0.45s cubic-bezier(0.22,1,0.36,1) 1.45s forwards;
+  }
+  .tp-tagline {
+    margin-top: 9px;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.26em; text-transform: uppercase;
+    color: rgba(201,169,110,0.78);
+    opacity: 0;
+    animation: tpTextSlide 0.45s cubic-bezier(0.22,1,0.36,1) 1.62s forwards;
+  }
+  .tp-division {
+    margin-top: 5px;
+    font-size: 0.6rem; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: rgba(255,255,255,0.28);
+    opacity: 0;
+    animation: tpTextSlide 0.45s cubic-bezier(0.22,1,0.36,1) 1.76s forwards;
+  }
+
+  /* Therapy pillars — 4 small dots beneath brand */
+  .tp-pillars {
+    display: flex; gap: 18px; margin-top: 28px; align-items: center;
+    opacity: 0;
+    animation: tpFadeIn 0.4s ease 1.9s forwards;
+  }
+  .tp-pillar {
+    display: flex; flex-direction: column; align-items: center; gap: 5px;
+  }
+  .tp-pillar-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: rgba(30,111,241,0.6);
+    animation: tpPillarPop var(--d) ease var(--dl) infinite alternate;
+  }
+  .tp-pillar-dot.gold { background: rgba(201,169,110,0.65); }
+  .tp-pillar-label {
+    font-size: 0.52rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(255,255,255,0.3);
+  }
+
+  /* ── Bottom progress bar ── */
+  .tp-progress {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(30,111,241,0.7) 25%,
+      rgba(201,169,110,0.9) 50%,
+      rgba(30,111,241,0.7) 75%,
+      transparent 100%
+    );
+    transform: scaleX(0); transform-origin: left center;
+    animation: tpProgress 2.4s cubic-bezier(0.4,0,0.2,1) 0.1s forwards;
+  }
+
+  /* ════ KEYFRAMES ════ */
+  @keyframes tpDrawEcg   { to { stroke-dashoffset: 0; } }
+  @keyframes tpSpikeFlash {
+    0%   { opacity: 0; transform: translate(-50%,-2px) scale(0.5); }
+    50%  { opacity: 1; transform: translate(-50%,-6px) scale(1.4); }
+    100% { opacity: 0; transform: translate(-50%,-2px) scale(0.5); }
+  }
+  @keyframes tpBrandReveal { to { opacity: 1; transform: translateY(0) scale(1); } }
+  @keyframes tpTextSlide {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes tpFadeIn    { to { opacity: 1; } }
+  @keyframes tpOrbitCW   { to { transform: rotate(360deg); } }
+  @keyframes tpOrbitCCW  { to { transform: rotate(-360deg); } }
+  @keyframes tpLogoGlow {
+    0%,100% {
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4),
+                  0 0 0 1px rgba(255,255,255,0.08),
+                  0 0 40px rgba(30,111,241,0.18);
     }
+    50% {
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4),
+                  0 0 0 1px rgba(255,255,255,0.12),
+                  0 0 70px rgba(30,111,241,0.32),
+                  0 0 35px rgba(201,169,110,0.18);
+    }
+  }
+  @keyframes tpGlowPulse {
+    0%,100% { opacity: 0.6; transform: scale(1); }
+    50%     { opacity: 1;   transform: scale(1.12); }
+  }
+  @keyframes tpPillarPop {
+    from { transform: scale(1); opacity: 0.5; }
+    to   { transform: scale(1.5); opacity: 1; }
+  }
+  @keyframes tpProgress { to { transform: scaleX(1); } }
 </style>
 
-<div class="loading-overlay" id="globalLoading">
-    <div class="loading-orb">
-        <div class="loading-ring"></div>
-        <div class="loading-ring secondary"></div>
-        <div class="loading-logo">
-            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo">
-        </div>
+<div class="tp-loader" id="globalLoading" aria-label="Loading Tunes Pharma" role="status">
+
+  <!-- Background glows -->
+  <div class="tp-glow tp-glow-blue"></div>
+  <div class="tp-glow tp-glow-gold"></div>
+  <div class="tp-scanline"></div>
+
+  <!-- ECG heartbeat waveform -->
+  <div class="tp-ecg-wrap">
+    <svg class="tp-ecg-svg" viewBox="0 0 600 86" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <!-- Gradient: blue → gold → blue, fading at edges -->
+        <linearGradient id="tpEcgGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stop-color="rgba(30,111,241,0)"/>
+          <stop offset="10%"  stop-color="#1E6FF1"/>
+          <stop offset="42%"  stop-color="#C9A96E"/>
+          <stop offset="72%"  stop-color="#1E6FF1"/>
+          <stop offset="100%" stop-color="rgba(30,111,241,0)"/>
+        </linearGradient>
+        <!-- Blur filter for glow layer -->
+        <filter id="tpEcgBlur" x="-20%" y="-120%" width="140%" height="340%">
+          <feGaussianBlur stdDeviation="5.5"/>
+        </filter>
+      </defs>
+
+      <!--
+        ECG path story:
+          Flat → P-wave → QRS complex (R-spike) → T-wave → flat
+          Repeated twice = two heartbeats
+          The peak represents Tunes Pharma "retuning" life
+      -->
+
+      <!-- Glow layer (blurred) -->
+      <path class="tp-ecg-glow-path" filter="url(#tpEcgBlur)"
+        d="M0,43 L62,43
+           Q74,33 86,43
+           L116,43 L119,50 L124,6 L129,70 L133,43
+           Q147,43 156,30 Q165,18 174,43
+           L218,43
+           Q232,33 244,43
+           L274,43 L277,50 L282,6 L287,70 L291,43
+           Q305,43 314,30 Q323,18 332,43
+           L380,43 L600,43"/>
+
+      <!-- Main crisp ECG line -->
+      <path class="tp-ecg-line" id="tpEcgPath"
+        d="M0,43 L62,43
+           Q74,33 86,43
+           L116,43 L119,50 L124,6 L129,70 L133,43
+           Q147,43 156,30 Q165,18 174,43
+           L218,43
+           Q232,33 244,43
+           L274,43 L277,50 L282,6 L287,70 L291,43
+           Q305,43 314,30 Q323,18 332,43
+           L380,43 L600,43"/>
+    </svg>
+
+    <!-- Flash at the R-spike peak -->
+    <div class="tp-spike-flash"></div>
+  </div>
+
+  <!-- Logo + Brand Identity -->
+  <div class="tp-brand-wrap">
+    <div class="tp-orbit-shell">
+      <div class="tp-orbit tp-orbit-1"></div>
+      <div class="tp-orbit tp-orbit-2"></div>
+      <div class="tp-logo-circle">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma Logo">
+      </div>
     </div>
-    <p>Retuning health for you...</p>
+
+    <div class="tp-name">Tunes Pharma</div>
+    <div class="tp-tagline">Retunes the Health</div>
+    <div class="tp-division">A Division of Brinda Medicals &nbsp;·&nbsp; Est. 2021</div>
+
+    <!-- 4 therapy pillars as animated dots -->
+    <div class="tp-pillars">
+      <div class="tp-pillar">
+        <div class="tp-pillar-dot" style="--d:1.1s;--dl:2s"></div>
+        <span class="tp-pillar-label">Cardio</span>
+      </div>
+      <div class="tp-pillar">
+        <div class="tp-pillar-dot gold" style="--d:1.3s;--dl:2.15s"></div>
+        <span class="tp-pillar-label">Diabeto</span>
+      </div>
+      <div class="tp-pillar">
+        <div class="tp-pillar-dot" style="--d:1.0s;--dl:2.3s"></div>
+        <span class="tp-pillar-label">Nephro</span>
+      </div>
+      <div class="tp-pillar">
+        <div class="tp-pillar-dot gold" style="--d:1.2s;--dl:2.45s"></div>
+        <span class="tp-pillar-label">Gen. Med</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom progress sweep -->
+  <div class="tp-progress"></div>
 </div>
 
 <script>
-    // Faster loading - trigger on DOM ready instead of full page load
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', hideLoader);
-    } else {
-        hideLoader();
+  (function () {
+    /* Correct stroke-dasharray to actual SVG path length for a perfect draw */
+    function calibrateEcg() {
+      var path = document.getElementById('tpEcgPath');
+      if (!path || !path.getTotalLength) return;
+      try {
+        var len = Math.ceil(path.getTotalLength()) + 30;
+        document.querySelectorAll('.tp-ecg-line, .tp-ecg-glow-path').forEach(function (el) {
+          el.style.strokeDasharray = len;
+          el.style.strokeDashoffset = len;
+        });
+      } catch (e) { /* SVG not ready yet — CSS fallback of 1800 applies */ }
     }
-    
-    function hideLoader() {
-        const loader = document.getElementById('globalLoading');
-        if (!loader) return;
-        // Minimum display time for smooth animation (800ms)
-        setTimeout(() => {
-            loader.classList.add('fade-out');
-            setTimeout(() => loader.remove(), 500);
-        }, 800);
-    }
-</script>
 
+    function dismissLoader() {
+      var loader = document.getElementById('globalLoading');
+      if (!loader) return;
+      /* 2.55 s minimum so the brand story completes before fade */
+      setTimeout(function () {
+        loader.classList.add('fade-out');
+        setTimeout(function () {
+          if (loader.parentNode) loader.parentNode.removeChild(loader);
+        }, 720);
+      }, 2550);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', function () {
+        calibrateEcg();
+        dismissLoader();
+      });
+    } else {
+      calibrateEcg();
+      dismissLoader();
+    }
+  })();
+</script>
