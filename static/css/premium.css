@@ -781,6 +781,189 @@ footer { margin-top:0 !important; font-family:'Poppins',sans-serif; }
   .p-hamburger { display:flex !important; }
 }
 
+/* ====== COMPREHENSIVE MOBILE RESPONSIVE ====== */
+
+/* ── Tablet (≤ 900px) ── */
+@media (max-width: 900px) {
+  /* Hero */
+  .p-hero-content { padding: 130px 20px 70px; }
+
+  /* Section headers */
+  .p-section-header { margin-bottom: 40px; }
+
+  /* Stats fix */
+  .p-stat-item:nth-child(even) { border-right: none; }
+  .p-stat-item:nth-child(1),
+  .p-stat-item:nth-child(2)    { border-bottom: 1px solid rgba(255,255,255,.07); }
+
+  /* About page */
+  .wwa-section  { padding: 64px 0; }
+  .wwa-inner    { padding: 0 20px; }
+  .wwa-founder, .wwa-story, .wwa-pillar { padding: 36px 28px; }
+}
+
+/* ── Mobile (≤ 768px) ── */
+@media (max-width: 768px) {
+  /* --- Header --- */
+  .p-logo { height: 48px; }
+  .p-header { padding: 12px 16px; }
+  .p-header-inner { padding: 8px 14px; border-radius: 16px; }
+  .p-contact-btn { padding: 9px 16px; font-size: 13px; }
+  .p-doctor-btn::after { display: none; }          /* hide tooltip */
+
+  /* --- Hero (all pages) --- */
+  .p-hero-content { padding: 110px 18px 60px; }
+  .p-hero h1 { letter-spacing: -.01em; }
+  .p-hero p  { margin-bottom: 32px; }
+  .p-hero-btns .p-btn { width: 100%; max-width: 320px; justify-content: center; }
+  .p-hero-btns { gap: 10px; }
+
+  /* Sub-page heroes (contact, gallery, services, research) */
+  .contact-hero,
+  .gal-hero,
+  .svc-hero,
+  .res-hero    { padding: 110px 18px 56px !important; min-height: 38vh !important; }
+
+  /* --- Stats bar --- */
+  .p-stats-bar  { padding: 32px 16px; }
+  .p-stats-grid { grid-template-columns: repeat(2,1fr); }
+
+  /* --- Sections --- */
+  .p-section    { padding: 60px 16px; }
+  .p-section-sm { padding: 40px 16px; }
+  .p-section-header { margin-bottom: 32px; }
+  .p-section-title { font-size: clamp(1.45rem, 5.5vw, 2rem); }
+  .p-section-subtitle { font-size: .92rem; }
+
+  /* --- Grids --- */
+  .p-grid-2 { grid-template-columns: 1fr; gap: 20px; }
+  .p-grid-3 { grid-template-columns: 1fr; gap: 16px; }
+  .p-grid-4 { grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* --- Cards --- */
+  .p-card { border-radius: 18px; }
+  /* Disable tilt hover lift on mobile (touch devices) */
+  @media (hover: none) {
+    .p-card:hover { transform: none; box-shadow: var(--shadow-sm); }
+    .p-btn-primary:hover,
+    .p-btn-outline:hover,
+    .p-btn-blue:hover { transform: none; }
+  }
+
+  /* --- CTA banner --- */
+  .cta-banner .cta-inner {
+    flex-direction: column !important;
+    text-align: center; gap: 20px;
+  }
+  .cta-banner .cta-inner h2 { font-size: 1.5rem !important; }
+  .cta-banner .cta-inner > div { flex-direction: column !important; align-items: center !important; }
+
+  /* --- Forms --- */
+  .p-form-group input,
+  .p-form-group textarea,
+  .p-form-group select { font-size: 16px; } /* prevent iOS zoom */
+
+  /* --- Form panel (contact page) --- */
+  .form-panel { padding: 28px 20px !important; }
+  .form-panel h2 { font-size: 1.5rem !important; }
+
+  /* --- Services page --- */
+  .svc-detail { grid-template-columns: 1fr !important; padding: 24px 20px !important; gap: 20px !important; }
+  .svc-detail.flip { direction: ltr !important; }
+  .svc-detail-icon { min-height: 180px !important; font-size: 4rem !important; }
+  .svc-detail-content h3 { font-size: 1.4rem !important; }
+
+  /* --- Products page --- */
+  .prod-hero { padding: 110px 18px 56px !important; }
+  .prod-hero-content { padding: 0 !important; }
+  .prod-hero-content h1 { font-size: clamp(2rem,8vw,3rem) !important; }
+
+  /* --- Research page --- */
+  .res-hero-inner { padding: 0 !important; }
+  .res-hero-text h1 { font-size: clamp(2rem,8vw,3rem) !important; }
+
+  /* --- About page --- */
+  .wwa-section  { padding: 56px 0; }
+  .wwa-inner    { padding: 0 16px; gap: 0; }
+  .wwa-founder,
+  .wwa-story,
+  .wwa-pillar   { padding: 32px 22px; }
+
+  /* Mission/Vision */
+  .mv2-mission,
+  .mv2-vision   { padding: 40px 22px !important; }
+  .mv2-headline { font-size: 1.5rem !important; }
+
+  /* --- Flip cards — disable 3D on mobile --- */
+  .p-flip:hover .p-flip-inner { transform: none; }
+  .p-flip-back { display: none; }
+
+  /* --- Footer --- */
+  .footer-upper { padding: 48px 16px !important; }
+  .footer-upper-content {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 28px !important;
+  }
+  .footer-logo-section { grid-column: 1 / -1; }
+  .footer-lower-content { flex-direction: column; text-align: center; gap: 12px; }
+
+  /* --- Doctor dashboard --- */
+  .dash-stats { grid-template-columns: 1fr 1fr !important; }
+  .papers-grid { grid-template-columns: 1fr !important; }
+  .ai-panel { width: calc(100vw - 32px); right: -4px; }
+  .ai-widget { bottom: 20px; right: 16px; }
+
+  /* --- Admin panel --- */
+  .admin-layout { flex-direction: column; }
+  .admin-sidebar { width: 100%; height: auto; position: relative; flex-direction: row; padding: 12px 16px; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .admin-sidebar .brand { padding: 0; border: none; margin: 0; }
+  .admin-sidebar .brand p { display: none; }
+  .admin-nav { flex-direction: row; gap: 4px; }
+  .admin-nav a { padding: 8px 12px; border-right: none !important; }
+  .admin-sidebar .logout-link { margin-top: 0; padding: 0; margin-left: auto; }
+  .admin-main { padding: 20px 16px; }
+  .form-row { grid-template-columns: 1fr !important; }
+  table { font-size: .78rem; }
+  thead th, tbody td { padding: 10px 12px; }
+}
+
+/* ── Small mobile (≤ 480px) ── */
+@media (max-width: 480px) {
+  /* Header — hide Contact Us text, keep only hamburger + doctor icon */
+  .p-contact-btn { display: none; }
+  .p-logo { height: 42px; }
+  .p-doctor-btn { width: 36px; height: 36px; }
+  .p-doctor-btn svg { width: 17px; height: 17px; }
+
+  /* Grids */
+  .p-grid-4 { grid-template-columns: 1fr; }
+  .p-grid-5 { grid-template-columns: 1fr; }
+
+  /* Stats */
+  .p-stats-grid { grid-template-columns: 1fr 1fr; }
+  .p-stat-number { font-size: 1.8rem; }
+  .p-stat-label  { font-size: .7rem; }
+
+  /* Section */
+  .p-section    { padding: 48px 14px; }
+  .p-section-sm { padding: 32px 14px; }
+
+  /* Cards */
+  .p-card { border-radius: 14px; }
+
+  /* Footer — stack to single column */
+  .footer-upper-content { grid-template-columns: 1fr !important; }
+
+  /* AI Chat */
+  .ai-panel { width: calc(100vw - 24px); }
+
+  /* Products hero */
+  .prod-orb { display: none; }
+
+  /* Section badges */
+  .p-hero-badge { font-size: 10px; padding: 6px 14px; }
+}
+
 /* ── Hamburger button ── */
 .p-hamburger {
   display: none;
