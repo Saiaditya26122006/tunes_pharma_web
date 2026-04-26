@@ -29,6 +29,260 @@
       0%,100%{ transform:translateY(0) scale(1); }
       50%    { transform:translateY(-20px) scale(1.06); }
     }
+
+    /* ── WHO WE ARE — editorial layout ── */
+    .wwa-section {
+      background: #fff;
+      padding: 100px 0;
+    }
+    .wwa-inner {
+      max-width: 1400px; margin: 0 auto; padding: 0 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0;
+      min-height: 480px;
+    }
+    /* Left: Founder card */
+    .wwa-founder {
+      background: var(--navy-900);
+      border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+      padding: 48px 40px;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .wwa-founder::before {
+      content: '20+';
+      position: absolute; bottom: -20px; right: -10px;
+      font-size: 9rem; font-weight: 800;
+      color: rgba(255,255,255,0.04);
+      font-family: 'Playfair Display', serif;
+      line-height: 1; pointer-events: none; user-select: none;
+    }
+    .wwa-founder-tag {
+      display: inline-block;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.22em;
+      text-transform: uppercase; color: rgba(201,169,110,0.8);
+      margin-bottom: 20px;
+    }
+    .wwa-founder-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem; font-weight: 700; color: #fff;
+      line-height: 1.15; margin-bottom: 6px;
+    }
+    .wwa-founder-title {
+      font-size: 0.78rem; color: rgba(255,255,255,0.45);
+      letter-spacing: 0.06em; margin-bottom: 32px;
+    }
+    .wwa-career {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .wwa-career-step {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .wwa-career-dot {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+      background: rgba(201,169,110,0.7);
+    }
+    .wwa-career-text {
+      font-size: 0.78rem; color: rgba(255,255,255,0.6); line-height: 1.4;
+    }
+    .wwa-career-text strong { color: rgba(255,255,255,0.9); font-weight: 600; }
+    .wwa-career-connector {
+      width: 1px; height: 16px; background: rgba(201,169,110,0.2);
+      margin-left: 3px;
+    }
+    .wwa-companies {
+      margin-top: 28px; padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .wwa-companies-label {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: rgba(255,255,255,0.3);
+      margin-bottom: 10px;
+    }
+    .wwa-companies-list {
+      font-size: 0.75rem; color: rgba(255,255,255,0.5);
+      line-height: 1.8;
+    }
+
+    /* Middle: Year pillar */
+    .wwa-pillar {
+      background: var(--blue-500);
+      padding: 48px 32px;
+      display: flex; flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center; position: relative; overflow: hidden;
+      gap: 0;
+    }
+    .wwa-pillar::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, transparent 40%, rgba(0,0,0,0.15) 100%);
+    }
+    .wwa-pillar-inner { position: relative; z-index: 1; width: 100%; }
+    .wwa-est {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.22em;
+      text-transform: uppercase; color: rgba(255,255,255,0.55);
+      margin-bottom: 4px;
+    }
+    .wwa-year {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem,6vw,4.5rem); font-weight: 700;
+      color: #fff; line-height: 1; margin-bottom: 28px;
+    }
+    .wwa-stat-row {
+      width: 100%;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      padding-top: 20px; margin-top: 4px;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .wwa-stat {
+      text-align: center;
+    }
+    .wwa-stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.7rem; font-weight: 700; color: #fff;
+    }
+    .wwa-stat-lbl {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.55);
+      margin-top: 2px;
+    }
+
+    /* Right: Story */
+    .wwa-story {
+      background: var(--gray-50, #f8fafc);
+      border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
+      padding: 48px 40px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .wwa-story-tag {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--blue-500);
+      margin-bottom: 16px; display: block;
+    }
+    .wwa-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.15rem,2vw,1.35rem); font-weight: 700;
+      color: var(--navy-900); line-height: 1.45;
+      margin-bottom: 20px;
+      padding-left: 18px;
+      border-left: 3px solid var(--blue-500);
+    }
+    .wwa-body {
+      font-size: 0.88rem; color: var(--gray-500);
+      line-height: 1.85; margin-bottom: 14px;
+    }
+    .wwa-pills {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px;
+    }
+    .wwa-pill {
+      font-size: 0.72rem; font-weight: 600;
+      padding: 5px 12px; border-radius: 99px;
+      background: rgba(30,111,241,0.08);
+      color: var(--blue-500); border: 1px solid rgba(30,111,241,0.2);
+    }
+
+    @media(max-width:900px){
+      .wwa-inner { grid-template-columns:1fr; }
+      .wwa-founder { border-radius: var(--radius-lg) var(--radius-lg) 0 0; }
+      .wwa-story  { border-radius: 0 0 var(--radius-lg) var(--radius-lg); }
+    }
+
+    /* ── MISSION & VISION — cinematic split ── */
+    .mv2-section {
+      position: relative; overflow: hidden;
+    }
+    .mv2-split {
+      display: grid; grid-template-columns: 1fr 1fr;
+      min-height: 480px;
+    }
+    /* Mission side — dark */
+    .mv2-mission {
+      background: var(--navy-900);
+      padding: clamp(48px,6vw,80px) clamp(32px,5vw,72px);
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .mv2-mission::before {
+      content: 'M';
+      position: absolute; bottom: -40px; left: -20px;
+      font-size: 22rem; font-weight: 800;
+      font-family: 'Playfair Display', serif;
+      color: rgba(255,255,255,0.025);
+      line-height: 1; pointer-events: none; user-select: none;
+    }
+    /* Vision side — white */
+    .mv2-vision {
+      background: #fff;
+      padding: clamp(48px,6vw,80px) clamp(32px,5vw,72px);
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .mv2-vision::before {
+      content: 'V';
+      position: absolute; top: -40px; right: -10px;
+      font-size: 22rem; font-weight: 800;
+      font-family: 'Playfair Display', serif;
+      color: rgba(15,30,45,0.04);
+      line-height: 1; pointer-events: none; user-select: none;
+    }
+    .mv2-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.26em;
+      text-transform: uppercase; margin-bottom: 16px; display: block;
+    }
+    .mv2-mission .mv2-label { color: rgba(201,169,110,0.7); }
+    .mv2-vision  .mv2-label { color: var(--blue-500); }
+
+    .mv2-headline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem,3vw,2.2rem); font-weight: 700;
+      line-height: 1.2; margin-bottom: 20px;
+    }
+    .mv2-mission .mv2-headline { color: #fff; }
+    .mv2-vision  .mv2-headline { color: var(--navy-900); }
+
+    /* Animated underline */
+    .mv2-underline {
+      height: 2px; width: 48px; margin-bottom: 24px;
+      border-radius: 2px;
+      transition: width 0.6s ease;
+    }
+    .mv2-mission .mv2-underline { background: rgba(201,169,110,0.7); }
+    .mv2-vision  .mv2-underline { background: var(--blue-500); }
+    .mv2-mission:hover .mv2-underline,
+    .mv2-vision:hover  .mv2-underline { width: 80px; }
+
+    .mv2-text {
+      font-size: 0.95rem; line-height: 1.9; position: relative; z-index: 1;
+    }
+    .mv2-mission .mv2-text { color: rgba(255,255,255,0.7); }
+    .mv2-vision  .mv2-text { color: var(--gray-500); }
+
+    .mv2-accent {
+      display: inline; font-weight: 700;
+    }
+    .mv2-mission .mv2-accent { color: rgba(201,169,110,0.9); }
+    .mv2-vision  .mv2-accent { color: var(--navy-800); }
+
+    /* Center divider line */
+    .mv2-divider {
+      position: absolute; top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 1px; height: 100%;
+      background: linear-gradient(180deg,
+        transparent 0%,
+        rgba(201,169,110,0.4) 20%,
+        rgba(201,169,110,0.4) 80%,
+        transparent 100%
+      );
+      z-index: 10; pointer-events: none;
+    }
+
+    @media(max-width:768px){
+      .mv2-split { grid-template-columns:1fr; }
+      .mv2-divider { display:none; }
+    }
   </style>
 </head>
 <body>
@@ -83,54 +337,115 @@
 </section>
 
 <!-- ── WHO WE ARE ── -->
-<section class="p-section p-section-white">
-  <div class="p-container">
-    <div class="p-grid-2">
-      <div class="p-reveal-left">
-        <span class="p-section-tag">Our Story</span>
-        <h2 class="p-section-title">Who We Are</h2>
-        <div class="p-divider"></div>
-        <p style="color:var(--gray-500);line-height:1.85;margin-bottom:18px">Tunes Pharma is a Division of Brinda Medicals, established in October 2021 in Guntur, Andhra Pradesh. We are engaged in the sales and distribution of branded generic prescription products, with a focus on Cardiology, Diabetology, Nephrology, and General Medicine.</p>
-        <p style="color:var(--gray-500);line-height:1.85;margin-bottom:18px">Founded by Talluri Damodar — a pharma veteran with 20+ years of experience across industry leaders like IPCA, Sun Pharma, Novartis, Alkem, Lupin, USV and Unichem — Tunes Pharma was built on a mission to make quality, affordable medicines accessible to patients and caregivers through a dedicated expert team.</p>
-        <p style="color:var(--gray-500);line-height:1.85;margin-bottom:28px">We are committed to providing safe, effective, and affordable generic prescription products to healthcare providers and patients, ensuring better health outcomes while reducing the cost of care.</p>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <a href="/contact"   class="p-btn p-btn-navy">Get In Touch</a>
-          <a href="/products"  class="p-btn p-btn-blue">Our Products</a>
+<section class="wwa-section p-reveal">
+  <div class="wwa-inner">
+
+    <!-- Founder card -->
+    <div class="wwa-founder">
+      <div>
+        <span class="wwa-founder-tag">Founder &amp; Director</span>
+        <div class="wwa-founder-name">Talluri<br>Damodar</div>
+        <div class="wwa-founder-title">20+ Years · Pharma Industry Veteran</div>
+        <div class="wwa-career">
+          <div class="wwa-career-step">
+            <div class="wwa-career-dot"></div>
+            <div class="wwa-career-text"><strong>Medical Representative</strong></div>
+          </div>
+          <div class="wwa-career-connector"></div>
+          <div class="wwa-career-step">
+            <div class="wwa-career-dot"></div>
+            <div class="wwa-career-text"><strong>Area Business Manager</strong></div>
+          </div>
+          <div class="wwa-career-connector"></div>
+          <div class="wwa-career-step">
+            <div class="wwa-career-dot"></div>
+            <div class="wwa-career-text"><strong>Regional Head</strong></div>
+          </div>
+          <div class="wwa-career-connector"></div>
+          <div class="wwa-career-step">
+            <div class="wwa-career-dot" style="background:rgba(201,169,110,1)"></div>
+            <div class="wwa-career-text"><strong style="color:#fff">Zonal Sales Manager</strong></div>
+          </div>
         </div>
       </div>
-      <div class="p-reveal-right">
-        <div class="p-parallax-wrap">
-          <img src="{{ url_for('static', filename='images/y.jpg') }}" alt="Tunes Therapeutics Facility" onerror="this.src='https://via.placeholder.com/600x500?text=Tunes+Therapeutics'">
-          <div class="p-parallax-badge">
-            <div class="val">2021</div>
-            <div class="lbl">Founded in Guntur, AP</div>
+      <div class="wwa-companies">
+        <div class="wwa-companies-label">Worked across</div>
+        <div class="wwa-companies-list">IPCA · Sun Pharma · Novartis<br>Alkem · Lupin · USV · Unichem</div>
+      </div>
+    </div>
+
+    <!-- Year pillar -->
+    <div class="wwa-pillar">
+      <div class="wwa-pillar-inner">
+        <div class="wwa-est">Est.</div>
+        <div class="wwa-year">2021</div>
+        <div class="wwa-stat-row">
+          <div class="wwa-stat">
+            <div class="wwa-stat-num">8+</div>
+            <div class="wwa-stat-lbl">Branded Products</div>
+          </div>
+          <div class="wwa-stat">
+            <div class="wwa-stat-num">4+</div>
+            <div class="wwa-stat-lbl">Therapy Areas</div>
+          </div>
+          <div class="wwa-stat">
+            <div class="wwa-stat-num">₹15L</div>
+            <div class="wwa-stat-lbl">Founded With</div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Story panel -->
+    <div class="wwa-story">
+      <div>
+        <span class="wwa-story-tag">Our Story</span>
+        <div class="wwa-quote">"Safe, effective and affordable medicines — accessible to every patient and caregiver."</div>
+        <p class="wwa-body">Tunes Pharma is a Division of Brinda Medicals, incorporated in Guntur, Andhra Pradesh. We are a branded generic prescription company focused on four chronic therapy areas where patient need is greatest and access is most limited.</p>
+        <p class="wwa-body">What sets us apart is not just our portfolio — it's the network. Two decades of relationships across AP and Telangana, built at every level from MR to Zonal Sales Manager, form the foundation of every prescription we earn.</p>
+        <div class="wwa-pills">
+          <span class="wwa-pill">Cardiology</span>
+          <span class="wwa-pill">Diabetology</span>
+          <span class="wwa-pill">Nephrology</span>
+          <span class="wwa-pill">General Medicine</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a href="/contact"  class="p-btn p-btn-navy">Get In Touch</a>
+        <a href="/products" class="p-btn p-btn-blue">Our Products</a>
+      </div>
+    </div>
+
   </div>
 </section>
 
 <!-- ── MISSION & VISION ── -->
-<section class="p-section p-section-light">
-  <div class="p-container">
-    <div class="p-section-header center p-reveal">
-      <span class="p-section-tag">Purpose</span>
-      <h2 class="p-section-title">Mission &amp; Vision</h2>
-      <div class="p-divider center"></div>
+<section class="mv2-section p-reveal">
+  <div class="mv2-split">
+
+    <!-- Mission — dark side -->
+    <div class="mv2-mission">
+      <span class="mv2-label">Our Mission</span>
+      <h2 class="mv2-headline">Quality medicine,<br>within every patient's reach.</h2>
+      <div class="mv2-underline"></div>
+      <p class="mv2-text">
+        To provide <span class="mv2-accent">quality, efficacious and affordable medicines</span> to patients and caregivers, backed by an expert team committed to meeting real healthcare needs — not just commercial goals. We believe better health outcomes begin with access, and access begins with affordability.
+      </p>
     </div>
-    <div class="p-grid-2" style="align-items:stretch">
-      <div class="mv-card p-card p-card-dark p-reveal p-delay-1" data-tilt>
-        <div class="p-icon p-icon-gold">🎯</div>
-        <h2 style="color:white">Our Mission</h2>
-        <p style="color:rgba(255,255,255,.75)">To provide quality, efficacious and affordable medicines to patients and caregivers, backed by a team of experts committed to meeting global healthcare needs. We strive to make healthcare accessible to all through innovation and excellence — improving lives at every touch point.</p>
-      </div>
-      <div class="mv-card p-card p-reveal p-delay-2" data-tilt>
-        <div class="p-icon p-icon-blue">👁️</div>
-        <h2 style="color:var(--navy-900)">Our Vision</h2>
-        <p style="color:var(--gray-500)">Enhancing life through connecting people. We strive to create continuous value through a strong customer focus, which drives market gains and long-term growth consistently. Our vision is to be a trusted pharmaceutical leader recognized for quality, innovation, and patient-centric care across India and beyond.</p>
-      </div>
+
+    <!-- Gold centre divider -->
+    <div class="mv2-divider"></div>
+
+    <!-- Vision — light side -->
+    <div class="mv2-vision">
+      <span class="mv2-label">Our Vision</span>
+      <h2 class="mv2-headline">Enhancing life through<br>connecting people.</h2>
+      <div class="mv2-underline"></div>
+      <p class="mv2-text">
+        We strive to create <span class="mv2-accent">continuous value through strong customer focus</span> — driving market gains and long-term growth consistently. Our ambition is to be a trusted pharmaceutical name recognised for quality, innovation, and patient-centric care, starting from Andhra Pradesh and expanding <span class="mv2-accent">PAN India</span>.
+      </p>
     </div>
+
   </div>
 </section>
 
