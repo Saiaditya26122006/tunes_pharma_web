@@ -10,6 +10,63 @@ try:
 except Exception:
     sb = None
 
+# ── Email helper (Gmail SMTP — no extra package needed) ──────
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
+def send_email_notification(doctor_email, doctor_name, paper_title, paper_description, paper_url, therapy_area):
+    """Send a paper notification email to a single doctor via Gmail SMTP."""
+    gmail_user = os.getenv('GMAIL_USER', '')
+    gmail_pass = os.getenv('GMAIL_APP_PASSWORD', '')
+    if not gmail_user or not gmail_pass or not doctor_email:
+        return False
+    try:
+        therapy_label = {
+            'diabetes': 'Diabetology', 'neuropathy': 'Neuropathy',
+            'gastro': 'Gastroenterology', 'general': 'General Medicine'
+        }.get(therapy_area, 'General')
+
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = f"New Clinical Resource: {paper_title} | Tunes Pharma"
+        msg['From']    = f"Tunes Pharma <{gmail_user}>"
+        msg['To']      = doctor_email
+
+        html = f"""
+        <div style="font-family:'Poppins',Arial,sans-serif;max-width:580px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;border:1px solid #e8ecf0">
+          <div style="background:linear-gradient(135deg,#0a1628,#1e3a52);padding:32px 36px;text-align:center">
+            <p style="color:rgba(255,255,255,.5);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 8px">Tunes Pharma — Doctor Portal</p>
+            <h1 style="color:#fff;font-size:22px;margin:0;font-weight:700">New Resource Published</h1>
+          </div>
+          <div style="padding:36px">
+            <p style="color:#64748b;font-size:14px;margin:0 0 24px">Dear Dr. {doctor_name},</p>
+            <div style="background:#f8fafc;border-radius:12px;padding:24px;border-left:4px solid #1e6ff1;margin-bottom:24px">
+              <span style="display:inline-block;background:rgba(30,111,241,.1);color:#1e6ff1;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 10px;border-radius:20px;margin-bottom:12px">{therapy_label}</span>
+              <h2 style="color:#0f1e2d;font-size:18px;margin:0 0 10px;line-height:1.4">{paper_title}</h2>
+              <p style="color:#64748b;font-size:14px;line-height:1.7;margin:0">{paper_description or 'A new clinical resource has been added to your research library.'}</p>
+            </div>
+            <div style="text-align:center;margin-bottom:28px">
+              <a href="{paper_url}" style="display:inline-block;background:#1e6ff1;color:#fff;padding:13px 32px;border-radius:50px;font-size:14px;font-weight:600;text-decoration:none">View Resource →</a>
+            </div>
+            <p style="color:#94a3b8;font-size:12px;text-align:center;margin:0">
+              Log in anytime at <a href="https://tunespharma.in/doctor-portal" style="color:#1e6ff1">tunespharma.in/doctor-portal</a><br>
+              to access your full research library and AI assistant.
+            </p>
+          </div>
+          <div style="background:#f8fafc;padding:16px 36px;border-top:1px solid #e8ecf0;text-align:center">
+            <p style="color:#94a3b8;font-size:11px;margin:0">Tunes Pharma · A Division of Brinda Medicals · Guntur, Andhra Pradesh</p>
+          </div>
+        </div>
+        """
+        msg.attach(MIMEText(html, 'html'))
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(gmail_user, gmail_pass)
+            smtp.sendmail(gmail_user, doctor_email, msg.as_string())
+        return True
+    except Exception as e:
+        print(f"[Email] Failed to send to {doctor_email}: {e}")
+        return False
+
 app = Flask(__name__)
 # Use /tmp for uploads — works both locally and on Vercel serverless
 app.config['UPLOAD_FOLDER'] = '/tmp/uploads'
@@ -584,11 +641,25 @@ def admin_upload_paper():
         }).execute()
         if result.data:
             paper_id = result.data[0]['id']
-            doctors  = (sb.table('doctors').select('id').eq('is_active', True).execute()).data or []
+            # Fetch all active doctors with their emails
+            doctors = (sb.table('doctors').select('id, name, email')
+                         .eq('is_active', True).execute()).data or []
             if doctors:
+                # Create in-app notification for every doctor
                 sb.table('notifications').insert(
                     [{'doctor_id': d['id'], 'paper_id': paper_id} for d in doctors]
                 ).execute()
+                # Send email to every doctor who has an email address
+                for doc in doctors:
+                    if doc.get('email'):
+                        send_email_notification(
+                            doctor_email   = doc['email'],
+                            doctor_name    = doc['name'],
+                            paper_title    = title,
+                            paper_description = description,
+                            paper_url      = file_url,
+                            therapy_area   = therapy
+                        )
     return redirect('/admin/papers')
 
 @app.route('/admin/papers/delete/<paper_id>', methods=['POST'])
@@ -662,6 +733,40 @@ def online_ordering():
         return render_template('order_confirmation.html', order=order_data, lang=lang, t=translations.get(lang, translations['en']))
     
     return render_template('online_ordering.html', products=products_data, lang=lang, t=translations.get(lang, translations['en']))
+
+@app.route('/admin/debug')
+@admin_required
+def admin_debug():
+    """Quick health check — shows what's connected and what's missing."""
+    checks = {}
+    # Supabase
+    checks['supabase_url']  = '✅ Set' if os.getenv('SUPABASE_URL')         else '❌ Missing env var: SUPABASE_URL'
+    checks['supabase_key']  = '✅ Set' if os.getenv('SUPABASE_SERVICE_KEY') else '❌ Missing env var: SUPABASE_SERVICE_KEY'
+    checks['supabase_conn'] = '✅ Connected' if sb else '❌ Not connected (check URL and key)'
+    # Gmail
+    checks['gmail_user']    = '✅ Set' if os.getenv('GMAIL_USER')        else '❌ Missing env var: GMAIL_USER'
+    checks['gmail_pass']    = '✅ Set' if os.getenv('GMAIL_APP_PASSWORD') else '❌ Missing env var: GMAIL_APP_PASSWORD'
+    # Admin password
+    checks['admin_pass']    = '✅ Custom' if os.getenv('ADMIN_PASSWORD') else '⚠️  Using default (set ADMIN_PASSWORD env var)'
+    # AI
+    checks['anthropic_key'] = '✅ Set (AI active)' if os.getenv('ANTHROPIC_API_KEY') else '⚠️  Not set (AI shows placeholder)'
+    # DB counts
+    if sb:
+        try:
+            checks['doctors_count'] = str(len((sb.table('doctors').select('id').execute()).data or []))  + ' doctors in DB'
+            checks['papers_count']  = str(len((sb.table('papers').select('id').execute()).data or []))   + ' papers in DB'
+            checks['notif_count']   = str(len((sb.table('notifications').select('id').execute()).data or [])) + ' notifications in DB'
+        except Exception as e:
+            checks['db_error'] = f'❌ DB query failed: {e} — Did you run schema.sql in Supabase?'
+    rows = ''.join(f'<tr><td style="padding:10px 16px;font-weight:600;color:#0f1e2d;white-space:nowrap">{k}</td><td style="padding:10px 16px;color:#374151">{v}</td></tr>' for k, v in checks.items())
+    return f'''<!DOCTYPE html><html><head><title>Debug | Tunes Pharma Admin</title>
+    <style>body{{font-family:sans-serif;padding:40px;background:#f5f7fb}}
+    h1{{color:#0f1e2d}}table{{background:#fff;border-radius:12px;border-collapse:collapse;width:100%;max-width:680px;box-shadow:0 2px 12px rgba(0,0,0,.08)}}
+    tr{{border-bottom:1px solid #f0f2f5}}td{{font-size:14px}}
+    a{{color:#1e6ff1;display:block;margin-top:20px;font-size:14px}}</style></head>
+    <body><h1>🔍 System Health Check</h1>
+    <table>{rows}</table>
+    <a href="/admin/papers">← Back to Admin</a></body></html>'''
 
 if __name__ == "__main__":
     app.run(debug=True)
