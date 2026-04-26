@@ -19,11 +19,74 @@
     .mv-card { padding: 44px 40px; }
     .mv-card h2 { font-family: 'Playfair Display',serif; font-size: 2.2rem; margin-bottom: 20px; line-height: 1.2; }
     .mv-card p  { font-size: 1.05rem; line-height: 1.9; }
-    /* Timeline item */
-    .tl-card { padding: 24px 28px; cursor: default; }
-    .tl-year { font-size: .8rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--blue-500); margin-bottom: 6px; }
-    .tl-card h4 { font-size: 1rem; font-weight: 600; color: var(--navy-800); margin-bottom: 6px; }
-    .tl-card p  { font-size: .88rem; color: var(--gray-500); line-height: 1.7; }
+    /* ── Journey Rings ── */
+    .jr-subtitle { color: var(--gray-500); font-size: .98rem; line-height: 1.8; max-width: 560px; margin: 0 auto 48px; text-align: center; }
+    .jr-scroll-wrap { overflow-x: auto; padding-bottom: 8px; -webkit-overflow-scrolling: touch; }
+    .jr-scroll-wrap::-webkit-scrollbar { height: 4px; }
+    .jr-scroll-wrap::-webkit-scrollbar-thumb { background: rgba(30,111,241,.2); border-radius: 2px; }
+    .jr-rings {
+      display: flex; align-items: flex-end; justify-content: center;
+      min-width: 860px; padding: 32px 48px 24px;
+    }
+    .jr-step { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+    .jr-ring {
+      width: 180px; height: 180px; border-radius: 50%; border: 20px solid;
+      position: relative; margin: 0 -28px;
+      display: flex; align-items: center; justify-content: center;
+      background: transparent;
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+    }
+    .jr-step:hover .jr-ring { transform: translateY(-10px); }
+    /* Interlocking z-index — odd in front */
+    .jr-step:nth-child(1) .jr-ring { z-index: 5; }
+    .jr-step:nth-child(2) .jr-ring { z-index: 4; }
+    .jr-step:nth-child(3) .jr-ring { z-index: 5; }
+    .jr-step:nth-child(4) .jr-ring { z-index: 4; }
+    .jr-step:nth-child(5) .jr-ring { z-index: 5; }
+    /* Ring colours */
+    .jr-c1 { border-color: #0f1e2d; box-shadow: 0 12px 32px rgba(15,30,45,.18); }
+    .jr-c2 { border-color: #c9a96e; box-shadow: 0 12px 32px rgba(201,169,110,.2); }
+    .jr-c3 { border-color: #1e6ff1; box-shadow: 0 12px 32px rgba(30,111,241,.22); }
+    .jr-c4 { border-color: #00b4ff; box-shadow: 0 12px 32px rgba(0,180,255,.2); }
+    .jr-c5 { border-color: #e8a020; box-shadow: 0 12px 32px rgba(232,160,32,.2); }
+    .jr-inner {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 14px; text-align: center;
+    }
+    .jr-year {
+      font-size: .65rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; margin-bottom: 5px;
+    }
+    .jr-step:nth-child(1) .jr-year { color: #0f1e2d; }
+    .jr-step:nth-child(2) .jr-year { color: #a07840; }
+    .jr-step:nth-child(3) .jr-year { color: #1e6ff1; }
+    .jr-step:nth-child(4) .jr-year { color: #00b4ff; }
+    .jr-step:nth-child(5) .jr-year { color: #e8a020; }
+    .jr-name {
+      font-size: .82rem; font-weight: 700;
+      color: var(--navy-800); line-height: 1.2; margin-bottom: 6px;
+    }
+    .jr-desc { font-size: .67rem; color: var(--gray-500); line-height: 1.45; }
+    .jr-dot-wrap { margin-top: 14px; position: relative; z-index: 20; }
+    .jr-dot {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, #00c9d7, #0891b2);
+      color: white; font-size: 20px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(0,180,215,.4);
+      transition: transform .3s ease;
+      cursor: default;
+    }
+    .jr-step:hover .jr-dot { transform: scale(1.18); }
+    .jr-num { font-size: .82rem; font-weight: 700; color: var(--gray-400); margin-top: 8px; }
+    @media (max-width: 640px) {
+      .jr-rings { min-width: 600px; padding: 24px 20px 16px; }
+      .jr-ring { width: 138px; height: 138px; border-width: 15px; margin: 0 -22px; }
+      .jr-name { font-size: .72rem; }
+      .jr-desc { font-size: .6rem; }
+    }
     /* About page hero orbs */
     @keyframes orb-float {
       0%,100%{ transform:translateY(0) scale(1); }
@@ -511,65 +574,116 @@
 </section>
 
 <!-- ── COMPANY JOURNEY ── -->
-<section class="p-section p-section-dark">
+<section class="p-section p-section-light">
   <div class="p-container">
-    <div class="p-grid-2" style="gap:64px">
-      <div class="p-reveal-left">
-        <span class="p-section-tag">Our Journey</span>
-        <h2 class="p-section-title">Milestones &amp; Growth</h2>
-        <div class="p-divider gold"></div>
-        <p style="color:rgba(255,255,255,.58);line-height:1.85;margin-bottom:40px">From a vision rooted in quality pharmaceutical care to a growing presence across multiple Indian states, our journey reflects our commitment to excellence at every stage.</p>
-        <div class="p-timeline">
-          <div class="p-timeline-item p-reveal">
-            <div class="p-timeline-dot"></div>
-            <div class="p-timeline-year">Oct 2021</div>
-            <h4 style="color:white">Foundation</h4>
-            <p>Tunes Pharma (A Division of Brinda Medicals) incorporated in Guntur, Andhra Pradesh with an initial capital of ₹15 lakhs and a clear mission for quality, affordable pharma.</p>
+    <div class="p-section-header center p-reveal">
+      <span class="p-section-tag">Our Journey</span>
+      <h2 class="p-section-title">Milestones &amp; Growth</h2>
+      <div class="p-divider center"></div>
+      <p class="jr-subtitle">From a vision rooted in quality pharmaceutical care to a growing presence across multiple Indian states — every ring marks a step that shaped who we are.</p>
+    </div>
+
+    <!-- Interlocked rings -->
+    <div class="jr-scroll-wrap p-reveal">
+      <div class="jr-rings">
+
+        <!-- Ring 1 — Foundation -->
+        <div class="jr-step">
+          <div class="jr-ring jr-c1">
+            <div class="jr-inner">
+              <div class="jr-year">Oct 2021</div>
+              <div class="jr-name">Foundation</div>
+              <div class="jr-desc">Incorporated in Guntur, AP with ₹15L capital &amp; a clear mission.</div>
+            </div>
           </div>
-          <div class="p-timeline-item p-reveal p-delay-1">
-            <div class="p-timeline-dot"></div>
-            <div class="p-timeline-year">2022</div>
-            <h4 style="color:white">Product Launch</h4>
-            <p>Launch of the Ecoglim series (diabetes management), RESGABA-NT (neuropathy), NACTaid (metabolic support) and RABISHIR-DSR (gastro) — entering the AP and Telangana markets.</p>
+          <div class="jr-dot-wrap">
+            <div class="jr-dot">+</div>
           </div>
-          <div class="p-timeline-item p-reveal p-delay-2">
-            <div class="p-timeline-dot"></div>
-            <div class="p-timeline-year">2023</div>
-            <h4 style="color:white">Market Expansion</h4>
-            <p>Launched in 4 districts with a focused KOL strategy — engaging 20 key opinion leaders per district to build prescription base and brand trust.</p>
-          </div>
-          <div class="p-timeline-item p-reveal p-delay-3">
-            <div class="p-timeline-dot"></div>
-            <div class="p-timeline-year">2024–25</div>
-            <h4 style="color:white">Growing Traction</h4>
-            <p>Achieved real commercial turnover as an early-stage startup with zero investor funding: ₹1.48L (Oct-24) → ₹2.78L (Nov-24) → ₹0.93L (Dec-24) → ₹1.25L (Jan-25) — proving the model organically.</p>
-          </div>
-          <div class="p-timeline-item p-reveal p-delay-4">
-            <div class="p-timeline-dot"></div>
-            <div class="p-timeline-year">2025+</div>
-            <h4 style="color:white">PAN India Vision</h4>
-            <p>Targeting PAN India presence — expanding beyond AP and Telangana, diversifying product portfolio across Cardiology, Diabetology, Nephrology and General Medicine.</p>
-          </div>
+          <div class="jr-num">01</div>
         </div>
+
+        <!-- Ring 2 — Product Launch -->
+        <div class="jr-step">
+          <div class="jr-ring jr-c2">
+            <div class="jr-inner">
+              <div class="jr-year">2022</div>
+              <div class="jr-name">Product Launch</div>
+              <div class="jr-desc">Ecoglim, RESGABA-NT, NACTaid &amp; RABISHIR-DSR enter AP &amp; Telangana.</div>
+            </div>
+          </div>
+          <div class="jr-dot-wrap">
+            <div class="jr-dot">+</div>
+          </div>
+          <div class="jr-num">02</div>
+        </div>
+
+        <!-- Ring 3 — Market Expansion -->
+        <div class="jr-step">
+          <div class="jr-ring jr-c3">
+            <div class="jr-inner">
+              <div class="jr-year">2023</div>
+              <div class="jr-name">Market Expansion</div>
+              <div class="jr-desc">4 districts launched with KOL strategy — 20 leaders per district.</div>
+            </div>
+          </div>
+          <div class="jr-dot-wrap">
+            <div class="jr-dot">+</div>
+          </div>
+          <div class="jr-num">03</div>
+        </div>
+
+        <!-- Ring 4 — Growing Traction -->
+        <div class="jr-step">
+          <div class="jr-ring jr-c4">
+            <div class="jr-inner">
+              <div class="jr-year">2024–25</div>
+              <div class="jr-name">Growing Traction</div>
+              <div class="jr-desc">Organic turnover: ₹1.48L → ₹2.78L → ₹1.25L proving the model.</div>
+            </div>
+          </div>
+          <div class="jr-dot-wrap">
+            <div class="jr-dot">+</div>
+          </div>
+          <div class="jr-num">04</div>
+        </div>
+
+        <!-- Ring 5 — PAN India Vision -->
+        <div class="jr-step">
+          <div class="jr-ring jr-c5">
+            <div class="jr-inner">
+              <div class="jr-year">2025+</div>
+              <div class="jr-name">PAN India Vision</div>
+              <div class="jr-desc">Expanding nationwide across Cardiology, Diabetology &amp; Nephrology.</div>
+            </div>
+          </div>
+          <div class="jr-dot-wrap">
+            <div class="jr-dot">+</div>
+          </div>
+          <div class="jr-num">05</div>
+        </div>
+
+      </div><!-- /.jr-rings -->
+    </div><!-- /.jr-scroll-wrap -->
+
+    <!-- Credential cards below -->
+    <div class="p-grid-3" style="margin-top:56px">
+      <div class="p-card p-reveal p-delay-1" data-tilt style="padding:28px;text-align:center">
+        <div class="p-icon p-icon-blue" style="margin:0 auto 14px">🏭</div>
+        <h4 style="margin-bottom:8px">GMP Certified Manufacturing</h4>
+        <p style="font-size:.88rem;line-height:1.7;color:var(--gray-500)">WHO-GMP certified facilities ensuring the highest standards of pharmaceutical manufacturing and quality control.</p>
       </div>
-      <div class="p-reveal-right" style="display:flex;flex-direction:column;gap:20px;padding-top:80px">
-        <div class="p-card p-card-glass p-reveal" data-tilt style="padding:28px">
-          <div class="p-icon p-icon-gold" style="margin-bottom:14px">🏭</div>
-          <h4 style="color:white;margin-bottom:8px">GMP Certified Manufacturing</h4>
-          <p style="color:rgba(255,255,255,.62);font-size:.88rem;line-height:1.7">WHO-GMP certified facilities ensuring the highest standards of pharmaceutical manufacturing and quality control.</p>
-        </div>
-        <div class="p-card p-card-glass p-reveal p-delay-1" data-tilt style="padding:28px">
-          <div class="p-icon p-icon-gold" style="margin-bottom:14px">📋</div>
-          <h4 style="color:white;margin-bottom:8px">DCGI Approved Products</h4>
-          <p style="color:rgba(255,255,255,.62);font-size:.88rem;line-height:1.7">All formulations carry DCGI approval and comply with Schedule H regulations of the Drugs and Cosmetics Act.</p>
-        </div>
-        <div class="p-card p-card-glass p-reveal p-delay-2" data-tilt style="padding:28px">
-          <div class="p-icon p-icon-gold" style="margin-bottom:14px">🎓</div>
-          <h4 style="color:white;margin-bottom:8px">Expert Leadership</h4>
-          <p style="color:rgba(255,255,255,.62);font-size:.88rem;line-height:1.7">Founder Talluri Damodar progressed from Medical Representative → Area Business Manager → Regional Head → Zonal Sales Manager across top-10 pharma companies. Co-directed by Usha Rekha Talluri, bringing complementary expertise in healthcare operations.</p>
-        </div>
+      <div class="p-card p-reveal p-delay-2" data-tilt style="padding:28px;text-align:center">
+        <div class="p-icon p-icon-blue" style="margin:0 auto 14px">📋</div>
+        <h4 style="margin-bottom:8px">DCGI Approved Products</h4>
+        <p style="font-size:.88rem;line-height:1.7;color:var(--gray-500)">All formulations carry DCGI approval and comply with Schedule H regulations of the Drugs and Cosmetics Act.</p>
+      </div>
+      <div class="p-card p-reveal p-delay-3" data-tilt style="padding:28px;text-align:center">
+        <div class="p-icon p-icon-blue" style="margin:0 auto 14px">🎓</div>
+        <h4 style="margin-bottom:8px">Expert Leadership</h4>
+        <p style="font-size:.88rem;line-height:1.7;color:var(--gray-500)">Founder Talluri Damodar: MR → ABM → Regional Head → ZSM across top-10 pharma companies. Co-directed by Usha Rekha Talluri.</p>
       </div>
     </div>
+
   </div>
 </section>
 
