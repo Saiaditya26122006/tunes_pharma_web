@@ -65,22 +65,26 @@
 
 <header class="p-header" id="p-header">
   <div class="p-header-inner">
-    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics" class="p-logo"></a>
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma" class="p-logo"></a>
     <nav class="p-nav">
-      <a href="/">{{ t.home if t else 'Home' }}</a>
-      <a href="/about">{{ t.about if t else 'About' }}</a>
-      <a href="/products">{{ t.products if t else 'Products' }}</a>
-      <a href="/services" class="active">{{ t.services if t else 'Services' }}</a>
-      <a href="/research">{{ t.research if t else 'Research' }}</a>
-      <a href="/Gallery">{{ t.gallery if t else 'Gallery' }}</a>
-      <a href="/contact">{{ t.contact if t else 'Contact' }}</a>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <div class="p-nav-drop">
+        <a href="/products" class="p-nav-drop-trigger">Products <span class="p-caret">▾</span></a>
+        <div class="p-nav-drop-menu">
+          <a href="/products?category=diabetes">Diabetology</a>
+          <a href="/products?category=neuropathy">Neuropathy</a>
+          <a href="/products?category=gastro">Gastroenterology</a>
+          <a href="/products?category=general">General Medicine</a>
+          <a href="/products">View All Products →</a>
+        </div>
+      </div>
+      <a href="/services" class="active">Services</a>
+      <a href="/research">Market Insights</a>
+      <a href="/Gallery">Gallery</a>
     </nav>
     <div class="p-header-actions">
-      <div class="p-lang-sw">
-        <a href="/set-language/en" class="{% if lang=='en' %}active{% endif %}">EN</a>
-        <a href="/set-language/hi" class="{% if lang=='hi' %}active{% endif %}">हिं</a>
-      </div>
-      <a href="/Pharmaintel_ai" class="p-ai-btn">{{ t.pharmaintel_ai if t else 'Pharmaintel AI' }}</a>
+      <a href="/contact" class="p-contact-btn">Contact Us</a>
     </div>
   </div>
 </header>
@@ -94,7 +98,6 @@
       <p style="color:rgba(255,255,255,.65);font-size:1.08rem;line-height:1.85;max-width:560px;margin-bottom:36px">From branded generic prescription sales to wholesale distribution and patient education — Tunes Pharma (A Division of Brinda Medicals) provides end-to-end pharmaceutical services across Andhra Pradesh &amp; Telangana.</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
         <a href="/online-ordering" class="p-btn p-btn-primary">Place an Order</a>
-        <a href="/contact"         class="p-btn p-btn-outline">Talk to Us</a>
       </div>
     </div>
   </div>

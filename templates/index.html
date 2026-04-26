@@ -135,22 +135,26 @@
 <!-- ── HEADER ── -->
 <header class="p-header" id="p-header">
   <div class="p-header-inner">
-    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics" class="p-logo"></a>
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma" class="p-logo"></a>
     <nav class="p-nav">
-      <a href="/" class="active">{{ t.home }}</a>
-      <a href="/about">{{ t.about }}</a>
-      <a href="/products">{{ t.products }}</a>
-      <a href="/services">{{ t.services }}</a>
-      <a href="/research">{{ t.research }}</a>
-      <a href="/Gallery">{{ t.gallery }}</a>
-      <a href="/contact">{{ t.contact }}</a>
+      <a href="/" class="active">Home</a>
+      <a href="/about">About</a>
+      <div class="p-nav-drop">
+        <a href="/products" class="p-nav-drop-trigger">Products <span class="p-caret">▾</span></a>
+        <div class="p-nav-drop-menu">
+          <a href="/products?category=diabetes">Diabetology</a>
+          <a href="/products?category=neuropathy">Neuropathy</a>
+          <a href="/products?category=gastro">Gastroenterology</a>
+          <a href="/products?category=general">General Medicine</a>
+          <a href="/products">View All Products →</a>
+        </div>
+      </div>
+      <a href="/services">Services</a>
+      <a href="/research">Market Insights</a>
+      <a href="/Gallery">Gallery</a>
     </nav>
     <div class="p-header-actions">
-      <div class="p-lang-sw">
-        <a href="/set-language/en" class="{% if lang=='en' %}active{% endif %}">EN</a>
-        <a href="/set-language/hi" class="{% if lang=='hi' %}active{% endif %}">हिं</a>
-      </div>
-      <a href="/Pharmaintel_ai" class="p-ai-btn">{{ t.pharmaintel_ai }}</a>
+      <a href="/contact" class="p-contact-btn">Contact Us</a>
     </div>
   </div>
 </header>
@@ -166,7 +170,6 @@
     <div class="p-hero-btns">
       <a href="/products"  class="p-btn p-btn-primary">Explore Products</a>
       <a href="/about"     class="p-btn p-btn-outline">Our Story</a>
-      <a href="/Pharmaintel_ai" class="p-btn p-btn-outline" style="border-color:rgba(201,169,110,.4);color:var(--gold-light)">✦ Pharmaintel AI</a>
     </div>
   </div>
   <button class="hero-scroll-btn p-hero-scroll" onclick="window.scrollBy({top:window.innerHeight*.9,behavior:'smooth'})">
@@ -374,8 +377,7 @@
       <h2>Ready to Partner with Tunes Pharma?</h2>
       <p>Join our growing network of doctors, distributors, hospitals, and healthcare institutions across Andhra Pradesh &amp; Telangana.</p>
       <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-        <a href="/contact"       class="p-btn p-btn-primary">Contact Our Team</a>
-        <a href="/Pharmaintel_ai" class="p-btn p-btn-outline" style="border-color:rgba(201,169,110,.4);color:var(--gold-light)">✦ Try Pharmaintel AI</a>
+        <a href="/contact" class="p-btn p-btn-primary">Contact Our Team</a>
       </div>
     </div>
   </div>

@@ -89,18 +89,26 @@
 
 <header class="p-header" id="p-header">
   <div class="p-header-inner">
-    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics" class="p-logo"></a>
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma" class="p-logo"></a>
     <nav class="p-nav">
       <a href="/">Home</a>
       <a href="/about">About</a>
-      <a href="/products">Products</a>
+      <div class="p-nav-drop">
+        <a href="/products" class="p-nav-drop-trigger">Products <span class="p-caret">▾</span></a>
+        <div class="p-nav-drop-menu">
+          <a href="/products?category=diabetes">Diabetology</a>
+          <a href="/products?category=neuropathy">Neuropathy</a>
+          <a href="/products?category=gastro">Gastroenterology</a>
+          <a href="/products?category=general">General Medicine</a>
+          <a href="/products">View All Products →</a>
+        </div>
+      </div>
       <a href="/services">Services</a>
-      <a href="/research">Research</a>
+      <a href="/research">Market Insights</a>
       <a href="/Gallery">Gallery</a>
-      <a href="/contact" class="active">Contact</a>
     </nav>
     <div class="p-header-actions">
-      <a href="/Pharmaintel_ai" class="p-ai-btn">Pharmaintel AI</a>
+      <a href="/contact" class="p-contact-btn">Contact Us</a>
     </div>
   </div>
 </header>
