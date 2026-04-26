@@ -167,6 +167,36 @@ a  { text-decoration:none; }
   box-shadow:0 2px 8px rgba(15,30,45,0.2);
 }
 
+/* Doctor Portal icon button */
+.p-doctor-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 42px; height: 42px; border-radius: 50%;
+  background: rgba(15,30,45,0.06);
+  border: 1.5px solid rgba(15,30,45,0.10);
+  color: var(--navy-800);
+  transition: all .25s var(--ease-smooth);
+  position: relative; flex-shrink: 0;
+}
+.p-doctor-btn svg { width: 20px; height: 20px; }
+.p-doctor-btn:hover {
+  background: var(--navy-800);
+  border-color: var(--navy-800);
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(15,30,45,0.18);
+}
+.p-doctor-btn::after {
+  content: 'Doctor Portal';
+  position: absolute; bottom: -34px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--navy-900); color: #fff;
+  font-size: 11px; font-weight: 600; letter-spacing: .04em;
+  padding: 4px 10px; border-radius: 6px; white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  transition: opacity .2s ease;
+}
+.p-doctor-btn:hover::after { opacity: 1; }
+
 /* Contact Us header button */
 .p-contact-btn {
   background: var(--blue-500);
