@@ -157,9 +157,75 @@ function initMagnetic() {
   });
 }
 
+/* ── Mobile hamburger menu ── */
+function initMobileMenu() {
+  const header  = document.getElementById('p-header');
+  const actions = header && header.querySelector('.p-header-actions');
+  const nav     = header && header.querySelector('.p-nav');
+  if (!header || !actions || !nav) return;
+
+  // Build hamburger button
+  const btn = document.createElement('button');
+  btn.className = 'p-hamburger';
+  btn.setAttribute('aria-label', 'Toggle menu');
+  btn.innerHTML = '<span></span><span></span><span></span>';
+  actions.prepend(btn);
+
+  // Build overlay + panel
+  const overlay = document.createElement('div');
+  overlay.className = 'p-mobile-menu';
+
+  // Collect nav links — handle both plain <a> and .p-nav-drop
+  let navHTML = '<div class="p-mobile-nav">';
+  nav.childNodes.forEach(node => {
+    if (node.nodeType !== 1) return;
+    if (node.classList.contains('p-nav-drop')) {
+      // Products with sub-links
+      const trigger = node.querySelector('.p-nav-drop-trigger');
+      const links   = node.querySelectorAll('.p-nav-drop-menu a');
+      if (trigger) {
+        navHTML += `<a href="${trigger.href}" class="${trigger.classList.contains('active') ? 'active' : ''}">${trigger.textContent.replace('▾','').trim()}</a>`;
+        navHTML += '<div class="p-mobile-sub">';
+        links.forEach(l => { navHTML += `<a href="${l.href}">${l.textContent.trim()}</a>`; });
+        navHTML += '</div>';
+      }
+    } else if (node.tagName === 'A') {
+      navHTML += `<a href="${node.href}" class="${node.classList.contains('active') ? 'active' : ''}">${node.textContent.trim()}</a>`;
+    }
+  });
+  navHTML += '</div>';
+
+  // Action buttons
+  const contactHref = (actions.querySelector('.p-contact-btn') || {}).href || '/contact';
+  const doctorHref  = (actions.querySelector('.p-doctor-btn') || {}).href  || '/doctor-portal';
+  navHTML += `
+    <div class="p-mobile-divider"></div>
+    <div class="p-mobile-actions">
+      <a href="${doctorHref}" class="p-doctor-btn-full">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2z"/><path d="M2 20c0-4 4-7 10-7s10 3 10 7"/><path d="M17 13v4m-2-2h4"/></svg>
+        Doctor Portal
+      </a>
+      <a href="${contactHref}" class="p-contact-btn">Contact Us</a>
+    </div>`;
+
+  overlay.innerHTML = `<div class="p-mobile-menu-panel">${navHTML}</div>`;
+  document.body.appendChild(overlay);
+
+  // Toggle
+  function open()  { btn.classList.add('open'); overlay.classList.add('open'); document.body.style.overflow='hidden'; }
+  function close() { btn.classList.remove('open'); overlay.classList.remove('open'); document.body.style.overflow=''; }
+
+  btn.addEventListener('click', () => overlay.classList.contains('open') ? close() : open());
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+  // Close on link click
+  overlay.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   initHeader(); initScrollReveal(); initCounters();
-  initHeroGSAP(); initMagnetic();
+  initHeroGSAP(); initMagnetic(); initMobileMenu();
   setTimeout(initTilt,120);
   if(document.getElementById('hero-canvas')&&typeof THREE!=='undefined') initMolecularNetwork();
 });
