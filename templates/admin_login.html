@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Admin Login | Tunes Pharma</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 60%, var(--navy-700) 100%);
+      min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
+    }
+    body::before {
+      content: ''; position: fixed; inset: 0;
+      background: radial-gradient(ellipse at 60% 40%, rgba(30,111,241,0.14) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .admin-wrap { width: 100%; max-width: 420px; position: relative; z-index: 1; }
+    .admin-brand { text-align: center; margin-bottom: 28px; }
+    .admin-brand img { height: 52px; filter: brightness(0) invert(1); margin-bottom: 10px; }
+    .admin-brand p { color: rgba(255,255,255,.4); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; }
+    .admin-card { background: white; border-radius: var(--radius-xl); padding: 44px 36px; box-shadow: 0 32px 80px rgba(0,0,0,.35); }
+    .admin-card h2 { font-family: 'Playfair Display', serif; font-size: 1.7rem; color: var(--navy-900); margin-bottom: 4px; text-align: center; }
+    .admin-card > p { color: var(--gray-400); font-size: .82rem; text-align: center; margin-bottom: 28px; }
+    .flash-error {
+      background: rgba(220,38,38,.08); border: 1px solid rgba(220,38,38,.25);
+      border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 18px;
+      color: #dc2626; font-size: .83rem;
+    }
+    .admin-submit {
+      width: 100%; padding: 14px; border: none; cursor: pointer;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
+      color: white; font-size: 14px; font-weight: 600;
+      font-family: 'Poppins', sans-serif;
+      transition: all .3s; box-shadow: 0 4px 20px rgba(15,30,45,.25); margin-top: 6px;
+    }
+    .admin-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(15,30,45,.32); background: linear-gradient(135deg, var(--blue-500), var(--navy-700)); }
+    .back-link { text-align: center; margin-top: 20px; }
+    .back-link a { color: rgba(255,255,255,.4); font-size: .8rem; text-decoration: none; }
+    .back-link a:hover { color: rgba(255,255,255,.7); }
+  </style>
+</head>
+<body>
+<div class="admin-wrap">
+  <div class="admin-brand">
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma"></a>
+    <p>Admin Portal</p>
+  </div>
+  <div class="admin-card">
+    <h2>Admin Sign In</h2>
+    <p>Restricted access — authorised personnel only</p>
+    {% if error %}<div class="flash-error">{{ error }}</div>{% endif %}
+    <form method="POST">
+      <div class="p-form-group">
+        <label>Admin Password</label>
+        <input type="password" name="password" placeholder="Enter admin password" required autocomplete="current-password">
+      </div>
+      <button type="submit" class="admin-submit">Access Admin Panel →</button>
+    </form>
+  </div>
+  <div class="back-link"><a href="/">← Back to website</a></div>
+</div>
+</body>
+</html>

@@ -113,22 +113,26 @@
       {% endfor %}
     {% endwith %}
 
+    {% if error %}
+      <div class="flash-error">{{ error }}</div>
+    {% endif %}
+
     <form method="POST">
       <div class="p-form-group">
-        <label>Email Address</label>
-        <input type="email" name="email" placeholder="doctor@hospital.com" required>
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Your assigned username" required autocomplete="username">
       </div>
       <div class="p-form-group">
         <label>Password</label>
-        <input type="password" name="password" placeholder="Enter your password" required>
+        <input type="password" name="password" placeholder="Enter your password" required autocomplete="current-password">
       </div>
       <button type="submit" class="portal-submit">Sign In to Portal →</button>
     </form>
 
-    <div class="portal-divider"><span>New to the portal?</span></div>
+    <div class="portal-divider"><span>Not registered?</span></div>
 
     <div class="portal-footer-link">
-      <p>Don't have an account? <a href="/contact">Contact us to register</a></p>
+      <p>Contact <a href="/contact">Tunes Pharma</a> to get your login credentials</p>
     </div>
 
     <div class="portal-benefits">

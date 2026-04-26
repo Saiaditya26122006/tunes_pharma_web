@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Admin — Doctors | Tunes Pharma</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { background: #f5f7fb; font-family: 'Poppins', sans-serif; }
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-sidebar {
+      width: 220px; background: var(--navy-900); flex-shrink: 0;
+      display: flex; flex-direction: column; padding: 28px 0;
+      position: sticky; top: 0; height: 100vh;
+    }
+    .admin-sidebar .brand { padding: 0 24px 28px; border-bottom: 1px solid rgba(255,255,255,.08); margin-bottom: 16px; }
+    .admin-sidebar .brand img { height: 36px; filter: brightness(0) invert(1); }
+    .admin-sidebar .brand p { color: rgba(255,255,255,.35); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; margin-top: 4px; }
+    .admin-nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 24px; color: rgba(255,255,255,.55); font-size: .85rem; font-weight: 500; transition: all .2s;
+    }
+    .admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,.07); color: white; }
+    .admin-nav a.active { border-right: 3px solid var(--blue-500); }
+    .admin-nav a span { font-size: 1rem; }
+    .admin-sidebar .logout-link { margin-top: auto; padding: 0 16px; }
+    .admin-sidebar .logout-link a {
+      display: block; text-align: center; padding: 10px;
+      border-radius: 8px; border: 1px solid rgba(220,38,38,.3);
+      color: rgba(220,38,38,.8); font-size: .82rem; font-weight: 600; transition: all .2s;
+    }
+    .admin-sidebar .logout-link a:hover { background: rgba(220,38,38,.1); color: #ef4444; }
+    .admin-main { flex: 1; padding: 40px; overflow-y: auto; }
+    .admin-page-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--navy-900); margin-bottom: 6px; }
+    .admin-page-sub { color: var(--gray-500); font-size: .88rem; margin-bottom: 32px; }
+
+    /* Add doctor form */
+    .add-card {
+      background: white; border-radius: var(--radius-lg); padding: 32px;
+      border: 1px solid rgba(15,30,45,.07); box-shadow: var(--shadow-sm); margin-bottom: 36px;
+    }
+    .add-card h3 { font-size: 1rem; font-weight: 600; color: var(--navy-800); margin-bottom: 20px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: .78rem; font-weight: 600; color: var(--navy-700); }
+    .form-group input, .form-group select {
+      padding: 10px 14px; border-radius: 10px;
+      border: 1.5px solid rgba(15,30,45,.12); font-size: .86rem;
+      font-family: 'Poppins', sans-serif; outline: none; transition: border-color .2s;
+    }
+    .form-group input:focus { border-color: var(--blue-500); }
+    .add-btn {
+      margin-top: 18px; padding: 12px 28px; border-radius: var(--radius-full);
+      background: var(--navy-800); color: white; border: none;
+      font-size: .88rem; font-weight: 600; font-family: 'Poppins', sans-serif;
+      cursor: pointer; transition: all .2s;
+    }
+    .add-btn:hover { background: var(--blue-500); transform: translateY(-1px); }
+    .req-note { font-size: .72rem; color: var(--gray-400); margin-top: 4px; }
+
+    /* Doctors table */
+    .doctors-card {
+      background: white; border-radius: var(--radius-lg);
+      border: 1px solid rgba(15,30,45,.07); box-shadow: var(--shadow-sm); overflow: hidden;
+    }
+    .doctors-card-head {
+      padding: 20px 24px; border-bottom: 1px solid rgba(15,30,45,.07);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .doctors-card-head h3 { font-size: 1rem; font-weight: 600; color: var(--navy-800); }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      padding: 12px 20px; text-align: left; font-size: .72rem; font-weight: 700;
+      letter-spacing: .06em; text-transform: uppercase; color: var(--gray-400);
+      border-bottom: 1px solid rgba(15,30,45,.07); background: rgba(15,30,45,.02);
+    }
+    tbody td { padding: 14px 20px; font-size: .84rem; border-bottom: 1px solid rgba(15,30,45,.05); vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: rgba(30,111,241,.02); }
+
+    .avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--navy-700), var(--blue-500));
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-size: .82rem; font-weight: 700;
+    }
+    .doc-name-cell { display: flex; align-items: center; gap: 12px; }
+    .doc-info h4 { font-size: .88rem; font-weight: 600; color: var(--navy-800); }
+    .doc-info p  { font-size: .75rem; color: var(--gray-400); }
+
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: var(--radius-full);
+      font-size: .72rem; font-weight: 700;
+    }
+    .status-pill.active   { background: rgba(16,185,129,.1); color: #059669; }
+    .status-pill.inactive { background: rgba(239,68,68,.1);  color: #dc2626; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    .action-row { display: flex; gap: 6px; }
+    .toggle-btn, .delete-btn {
+      padding: 6px 14px; border-radius: 8px; font-size: .76rem; font-weight: 600;
+      cursor: pointer; font-family: 'Poppins', sans-serif; transition: all .2s;
+    }
+    .toggle-btn {
+      border: 1px solid rgba(30,111,241,.25); color: var(--blue-500);
+      background: rgba(30,111,241,.05);
+    }
+    .toggle-btn:hover { background: rgba(30,111,241,.12); }
+    .toggle-btn.deactivate {
+      border-color: rgba(251,191,36,.3); color: #d97706; background: rgba(251,191,36,.05);
+    }
+    .toggle-btn.deactivate:hover { background: rgba(251,191,36,.1); }
+    .delete-btn {
+      border: 1px solid rgba(220,38,38,.25); color: #ef4444; background: rgba(220,38,38,.05);
+    }
+    .delete-btn:hover { background: rgba(220,38,38,.1); }
+
+    .empty-row td { text-align: center; padding: 48px; color: var(--gray-400); font-size: .88rem; }
+
+    /* Password strength hint */
+    .pw-hint { font-size: .7rem; color: var(--gray-400); margin-top: 4px; }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="brand">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma">
+      <p>Admin Panel</p>
+    </div>
+    <nav class="admin-nav">
+      <a href="/admin/papers"><span>📄</span> Papers</a>
+      <a href="/admin/doctors" class="active"><span>👨‍⚕️</span> Doctors</a>
+      <a href="/" target="_blank"><span>🌐</span> View Website</a>
+    </nav>
+    <div class="logout-link"><a href="/admin-logout">Logout</a></div>
+  </aside>
+
+  <!-- Main -->
+  <main class="admin-main">
+    <h1 class="admin-page-title">Registered Doctors</h1>
+    <p class="admin-page-sub">Register doctors to give them portal access. They log in with their username and password.</p>
+
+    <!-- Add doctor form -->
+    <div class="add-card">
+      <h3>Register New Doctor</h3>
+      <form method="POST" action="/admin/doctors/add">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" name="name" placeholder="Dr. Ravi Kumar" required>
+          </div>
+          <div class="form-group">
+            <label>Username * <span class="req-note">(doctor uses this to log in)</span></label>
+            <input type="text" name="username" placeholder="drkumar" required autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label>Password *</label>
+            <input type="text" name="password" placeholder="Set a strong password" required autocomplete="new-password">
+            <span class="pw-hint">Share this securely with the doctor. It will be stored encrypted.</span>
+          </div>
+          <div class="form-group">
+            <label>Specialty</label>
+            <input type="text" name="specialty" placeholder="e.g. Diabetologist">
+          </div>
+          <div class="form-group">
+            <label>Hospital / Clinic</label>
+            <input type="text" name="hospital" placeholder="City Hospital, Guntur">
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" name="phone" placeholder="+91 99999 00000">
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="doctor@hospital.com">
+          </div>
+        </div>
+        <button type="submit" class="add-btn">Register Doctor →</button>
+      </form>
+    </div>
+
+    <!-- Doctors table -->
+    <div class="doctors-card">
+      <div class="doctors-card-head">
+        <h3>All Doctors</h3>
+        <span style="font-size:.8rem;color:var(--gray-400)">{{ doctors | length }} registered</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Doctor</th>
+            <th>Username</th>
+            <th>Hospital</th>
+            <th>Specialty</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if doctors %}
+            {% for d in doctors %}
+            <tr>
+              <td>
+                <div class="doc-name-cell">
+                  <div class="avatar">{{ d.name[0] | upper if d.name else '?' }}</div>
+                  <div class="doc-info">
+                    <h4>{{ d.name }}</h4>
+                    <p>{{ d.email or d.phone or '—' }}</p>
+                  </div>
+                </div>
+              </td>
+              <td style="font-family:monospace;color:var(--navy-700)">{{ d.username }}</td>
+              <td style="color:var(--gray-500)">{{ d.hospital or '—' }}</td>
+              <td style="color:var(--gray-500)">{{ d.specialty or '—' }}</td>
+              <td>
+                <span class="status-pill {{ 'active' if d.is_active else 'inactive' }}">
+                  <span class="status-dot"></span>
+                  {{ 'Active' if d.is_active else 'Inactive' }}
+                </span>
+              </td>
+              <td>
+                <div class="action-row">
+                  <form method="POST" action="/admin/doctors/toggle/{{ d.id }}">
+                    <button type="submit" class="toggle-btn {{ 'deactivate' if d.is_active else '' }}">
+                      {{ 'Deactivate' if d.is_active else 'Activate' }}
+                    </button>
+                  </form>
+                  <form method="POST" action="/admin/doctors/delete/{{ d.id }}" onsubmit="return confirm('Remove Dr. {{ d.name }}? This cannot be undone.')">
+                    <button type="submit" class="delete-btn">Remove</button>
+                  </form>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr class="empty-row"><td colspan="6">No doctors registered yet. Use the form above to add the first one.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+</body>
+</html>

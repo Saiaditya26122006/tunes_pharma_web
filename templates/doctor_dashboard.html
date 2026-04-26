@@ -3,188 +3,521 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Doctor Dashboard | Tunes Therapeutics Pvt. Ltd.</title>
+  <title>Doctor Dashboard | Tunes Pharma</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
   <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
   <style>
+    /* ── Dashboard header ── */
+    .dash-header { background: white; border-bottom: 1px solid rgba(15,30,45,.08); position: sticky; top: 0; z-index: 500; }
+    .dash-header-inner {
+      max-width: 1400px; margin: 0 auto; padding: 0 32px;
+      height: 68px; display: flex; align-items: center; gap: 24px;
+    }
+    .dash-logo { height: 44px; }
+    .dash-nav { display: flex; gap: 4px; margin-left: auto; }
+    .dash-nav a {
+      padding: 8px 16px; border-radius: 8px; font-size: 13.5px; font-weight: 500;
+      color: var(--navy-700); transition: all .2s;
+    }
+    .dash-nav a:hover, .dash-nav a.active { background: rgba(30,111,241,.08); color: var(--blue-500); }
+    .dash-actions { display: flex; align-items: center; gap: 12px; }
+
+    /* ── Notification bell ── */
+    .notif-wrap { position: relative; }
+    .notif-bell {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: rgba(15,30,45,.05); border: 1px solid rgba(15,30,45,.1);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all .2s; position: relative;
+    }
+    .notif-bell:hover { background: rgba(30,111,241,.08); border-color: rgba(30,111,241,.2); }
+    .notif-bell svg { width: 18px; height: 18px; color: var(--navy-700); }
+    .notif-badge {
+      position: absolute; top: -5px; right: -5px;
+      background: #ef4444; color: white; border-radius: 50%;
+      width: 18px; height: 18px; font-size: 10px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid white;
+    }
+    .notif-badge:empty, .notif-badge[data-count="0"] { display: none; }
+    .notif-dropdown {
+      position: absolute; top: calc(100% + 10px); right: 0;
+      width: 320px; background: white; border-radius: 14px;
+      border: 1px solid rgba(15,30,45,.09);
+      box-shadow: 0 20px 60px rgba(15,30,45,.15);
+      opacity: 0; visibility: hidden;
+      transform: translateY(-6px);
+      transition: all .22s ease; z-index: 600;
+    }
+    .notif-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+    .notif-dd-header {
+      padding: 16px 18px 12px; border-bottom: 1px solid rgba(15,30,45,.07);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .notif-dd-header h4 { font-size: .9rem; font-weight: 600; color: var(--navy-800); }
+    .notif-dd-header span { font-size: .75rem; color: var(--blue-500); font-weight: 600; cursor: pointer; }
+    .notif-item {
+      padding: 12px 18px; border-bottom: 1px solid rgba(15,30,45,.05);
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue-500); flex-shrink: 0; margin-top: 5px; }
+    .notif-item p { font-size: .82rem; color: var(--navy-700); font-weight: 500; line-height: 1.4; }
+    .notif-item time { font-size: .72rem; color: var(--gray-400); }
+    .notif-empty { padding: 24px 18px; text-align: center; color: var(--gray-400); font-size: .85rem; }
+
+    /* ── Logout btn ── */
+    .dash-logout-btn {
+      padding: 9px 18px; border-radius: var(--radius-full);
+      border: 1.5px solid rgba(220,38,38,.25); color: #ef4444;
+      background: rgba(220,38,38,.05); font-size: .82rem; font-weight: 600;
+      transition: all .2s; cursor: pointer;
+    }
+    .dash-logout-btn:hover { background: rgba(220,38,38,.1); border-color: #ef4444; }
+
+    /* ── Hero ── */
     .dash-hero {
       background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 55%, var(--navy-700) 100%);
-      padding: 100px 24px 50px; position: relative; overflow: hidden;
+      padding: 60px 32px 50px; position: relative; overflow: hidden;
     }
     .dash-hero::before {
       content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 70% 40%, rgba(30,111,241,0.14) 0%, transparent 55%);
+      background: radial-gradient(ellipse at 70% 40%, rgba(30,111,241,0.18) 0%, transparent 55%),
+                  radial-gradient(ellipse at 10% 80%, rgba(0,180,255,0.08) 0%, transparent 45%);
     }
-    .dash-hero-inner {
-      position: relative; z-index: 2; max-width: 1400px; margin: 0 auto;
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px;
+    .dash-hero-inner { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; }
+    .dash-hero-inner h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      color: white; font-weight: 700; margin-bottom: 6px;
     }
-    .dash-greet h1 {
-      font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem);
-      color: white; font-weight: 700; letter-spacing: -.01em; margin-bottom: 6px;
-    }
-    .dash-greet p { color: rgba(255,255,255,.55); font-size: .92rem; }
-    .dash-logout {
-      padding: 10px 22px; border-radius: var(--radius-full);
-      border: 1.5px solid rgba(255,255,255,.2); color: rgba(255,255,255,.7);
-      text-decoration: none; font-size: .85rem; font-weight: 500;
-      transition: all .25s; background: rgba(255,255,255,.05);
-    }
-    .dash-logout:hover { border-color: rgba(255,255,255,.5); color: white; background: rgba(255,255,255,.1); }
+    .dash-hero-inner p { color: rgba(255,255,255,.55); font-size: .92rem; }
 
-    /* Quick stat strip */
+    /* ── Stats ── */
     .dash-stats {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+      display: grid; grid-template-columns: repeat(3, 1fr);
       background: white; border-radius: var(--radius-lg);
       box-shadow: var(--shadow-md); border: 1px solid rgba(15,30,45,.07);
-      overflow: hidden; margin-bottom: 32px;
+      overflow: hidden; margin-bottom: 40px;
     }
-    @media (max-width: 640px) { .dash-stats { grid-template-columns: 1fr 1fr; } }
     .dash-stat { padding: 24px 20px; text-align: center; }
     .dash-stat + .dash-stat { border-left: 1px solid rgba(15,30,45,.06); }
     .dash-stat .num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--blue-500); }
     .dash-stat .lbl { font-size: .78rem; color: var(--gray-500); margin-top: 4px; }
 
-    /* Resource card */
-    .res-card { padding: 28px 26px; cursor: pointer; text-decoration: none; display: block; }
-    .res-card:hover .res-arrow { transform: translateX(4px); }
-    .res-card h3 { font-size: 1rem; font-weight: 600; color: var(--navy-800); margin: 12px 0 8px; }
-    .res-card p  { font-size: .85rem; color: var(--gray-500); line-height: 1.65; margin-bottom: 14px; }
-    .res-arrow { display: inline-flex; align-items: center; gap: 6px; color: var(--blue-500); font-size: .85rem; font-weight: 600; transition: transform .25s; }
+    /* ── Filter tabs ── */
+    .filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+    .filter-tab {
+      padding: 8px 18px; border-radius: var(--radius-full);
+      font-size: .82rem; font-weight: 600; cursor: pointer;
+      border: 1.5px solid rgba(15,30,45,.12); color: var(--gray-600);
+      background: white; transition: all .2s;
+    }
+    .filter-tab:hover { border-color: var(--blue-500); color: var(--blue-500); }
+    .filter-tab.active { background: var(--blue-500); border-color: var(--blue-500); color: white; }
 
-    /* Welcome banner */
-    .welcome-banner {
+    /* ── Paper cards ── */
+    .papers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+    .paper-card {
+      background: white; border-radius: var(--radius-lg);
+      border: 1px solid rgba(15,30,45,.07); padding: 26px 24px;
+      box-shadow: var(--shadow-sm); transition: all .25s;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .paper-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: rgba(30,111,241,.15); }
+    .paper-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .paper-tag {
+      display: inline-block; padding: 3px 10px; border-radius: var(--radius-full);
+      font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+    }
+    .paper-tag.diabetes  { background: rgba(239,68,68,.1);  color: #dc2626; }
+    .paper-tag.neuropathy{ background: rgba(139,92,246,.1); color: #7c3aed; }
+    .paper-tag.gastro    { background: rgba(16,185,129,.1); color: #059669; }
+    .paper-tag.general   { background: rgba(30,111,241,.1); color: var(--blue-500); }
+    .paper-tag.all       { background: rgba(15,30,45,.08);  color: var(--navy-600); }
+    .paper-type-icon { font-size: .8rem; color: var(--gray-400); margin-left: auto; }
+    .paper-card h3 { font-size: 1rem; font-weight: 600; color: var(--navy-800); line-height: 1.4; }
+    .paper-card p  { font-size: .84rem; color: var(--gray-500); line-height: 1.65; flex: 1; }
+    .paper-date { font-size: .72rem; color: var(--gray-400); }
+    .paper-link {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: auto;
+      padding: 9px 18px; border-radius: var(--radius-full);
+      background: var(--blue-500); color: white;
+      font-size: .82rem; font-weight: 600; transition: all .2s;
+    }
+    .paper-link:hover { background: var(--navy-800); }
+
+    /* Empty state */
+    .papers-empty {
+      grid-column: 1/-1; text-align: center; padding: 64px 24px;
+      color: var(--gray-400);
+    }
+    .papers-empty .icon { font-size: 3rem; margin-bottom: 16px; }
+    .papers-empty p { font-size: .92rem; }
+
+    /* ── AI Chat widget ── */
+    .ai-widget {
+      position: fixed; bottom: 28px; right: 28px; z-index: 1000;
+    }
+    .ai-toggle {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-500), var(--navy-700));
+      color: white; border: none; cursor: pointer;
+      box-shadow: 0 8px 28px rgba(30,111,241,.4);
+      display: flex; align-items: center; justify-content: center;
+      transition: all .3s; font-size: 1.4rem;
+    }
+    .ai-toggle:hover { transform: scale(1.08); box-shadow: 0 12px 36px rgba(30,111,241,.5); }
+    .ai-toggle .ai-badge {
+      position: absolute; top: -4px; right: -4px; width: 16px; height: 16px;
+      border-radius: 50%; background: #10b981; border: 2px solid white;
+    }
+    .ai-panel {
+      position: absolute; bottom: 70px; right: 0;
+      width: 360px; background: white; border-radius: 18px;
+      border: 1px solid rgba(15,30,45,.1);
+      box-shadow: 0 24px 72px rgba(15,30,45,.18);
+      display: flex; flex-direction: column;
+      opacity: 0; visibility: hidden; transform: translateY(12px) scale(.97);
+      transition: all .28s cubic-bezier(.34,1.56,.64,1);
+      overflow: hidden;
+    }
+    .ai-panel.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+    .ai-panel-header {
       background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
-      border-radius: var(--radius-lg); padding: 32px 36px; margin-bottom: 32px;
-      display: flex; align-items: center; justify-content: space-between; gap: 20px;
-      flex-wrap: wrap; position: relative; overflow: hidden;
+      padding: 16px 20px; display: flex; align-items: center; gap: 12px;
     }
-    .welcome-banner::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(circle at 80% 50%, rgba(30,111,241,.25), transparent 55%);
+    .ai-panel-header .ai-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(255,255,255,.15); display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
     }
-    .welcome-banner h3 {
-      font-family: 'Playfair Display', serif; font-size: 1.4rem; color: white;
-      margin-bottom: 6px; position: relative; z-index: 1;
+    .ai-panel-header h4 { color: white; font-size: .9rem; font-weight: 600; }
+    .ai-panel-header p  { color: rgba(255,255,255,.5); font-size: .72rem; }
+    .ai-close {
+      margin-left: auto; background: none; border: none;
+      color: rgba(255,255,255,.6); cursor: pointer; font-size: 1.2rem; padding: 4px;
     }
-    .welcome-banner p { color: rgba(255,255,255,.55); font-size: .88rem; position: relative; z-index: 1; }
+    .ai-messages {
+      flex: 1; overflow-y: auto; padding: 16px;
+      display: flex; flex-direction: column; gap: 10px;
+      max-height: 320px; min-height: 200px;
+    }
+    .ai-msg, .user-msg {
+      max-width: 85%; padding: 10px 14px; border-radius: 12px;
+      font-size: .84rem; line-height: 1.55;
+    }
+    .ai-msg {
+      background: rgba(30,111,241,.07); color: var(--navy-800);
+      border-radius: 4px 12px 12px 12px; align-self: flex-start;
+    }
+    .user-msg {
+      background: var(--blue-500); color: white;
+      border-radius: 12px 4px 12px 12px; align-self: flex-end;
+    }
+    .ai-typing {
+      display: flex; gap: 4px; padding: 10px 14px;
+      background: rgba(30,111,241,.07); border-radius: 4px 12px 12px 12px;
+      align-self: flex-start; width: fit-content;
+    }
+    .ai-typing span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--blue-500); animation: aiTyping 1.2s infinite;
+    }
+    .ai-typing span:nth-child(2) { animation-delay: .2s; }
+    .ai-typing span:nth-child(3) { animation-delay: .4s; }
+    @keyframes aiTyping { 0%,60%,100%{ opacity:.3; transform:translateY(0); } 30%{ opacity:1; transform:translateY(-4px); } }
+    .ai-input-row {
+      padding: 12px 14px; border-top: 1px solid rgba(15,30,45,.07);
+      display: flex; gap: 8px;
+    }
+    .ai-input {
+      flex: 1; padding: 10px 14px; border-radius: var(--radius-full);
+      border: 1.5px solid rgba(15,30,45,.12); font-size: .84rem;
+      font-family: 'Poppins', sans-serif; outline: none;
+      transition: border-color .2s;
+    }
+    .ai-input:focus { border-color: var(--blue-500); }
+    .ai-send {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--blue-500); color: white; border: none;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all .2s; flex-shrink: 0;
+    }
+    .ai-send:hover { background: var(--navy-800); }
+    .ai-send svg { width: 16px; height: 16px; }
   </style>
 </head>
 <body>
 {% include 'partials/loading.html' %}
 
-<!-- Dashboard header -->
-<header class="p-header" id="p-header">
-  <div class="p-header-inner">
-    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics" class="p-logo"></a>
-    <nav class="p-nav">
-      <a href="/">Home</a>
+<!-- ── Header ── -->
+<header class="dash-header">
+  <div class="dash-header-inner">
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma" class="dash-logo"></a>
+    <nav class="dash-nav">
       <a href="/doctor-dashboard" class="active">Dashboard</a>
-      <a href="/product-catalog">Products</a>
-      <a href="/research">Research</a>
+      <a href="/doctor-dashboard#papers">Research Library</a>
       <a href="/contact">Contact MR</a>
     </nav>
-    <div class="p-header-actions">
-      <a href="/doctor-portal" class="p-ai-btn" style="background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.3);color:#dc2626">Logout</a>
+    <div class="dash-actions">
+      <!-- Notification bell -->
+      <div class="notif-wrap">
+        <button class="notif-bell" id="notifBtn" aria-label="Notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="notif-badge" id="notifBadge">{{ notif_count if notif_count > 0 else '' }}</span>
+        </button>
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-dd-header">
+            <h4>Notifications</h4>
+            <span id="markAllRead">Mark all read</span>
+          </div>
+          {% if notifications %}
+            {% for n in notifications %}
+            <div class="notif-item">
+              <div class="notif-dot"></div>
+              <div>
+                <p>New paper: <strong>{{ n.papers.title if n.papers else 'Research Update' }}</strong></p>
+                <time>{{ n.created_at[:10] if n.created_at else '' }}</time>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="notif-empty">You're all caught up ✓</div>
+          {% endif %}
+        </div>
+      </div>
+      <a href="/doctor-logout" class="dash-logout-btn">Logout</a>
     </div>
   </div>
 </header>
 
-<!-- ── HERO ── -->
+<!-- ── Hero ── -->
 <section class="dash-hero">
   <div class="dash-hero-inner">
-    <div class="dash-greet">
-      <div class="p-hero-badge" style="margin-bottom:14px;display:inline-flex"><span class="dot"></span>Healthcare Professional Portal</div>
-      <h1>Welcome, Doctor 👋</h1>
-      <p>Access clinical resources, samples, and Tunes Therapeutics product intelligence</p>
-    </div>
-    <a href="/doctor-portal" class="dash-logout">← Logout</a>
+    <div class="p-hero-badge" style="margin-bottom:14px;display:inline-flex"><span class="dot"></span>Healthcare Professional Portal</div>
+    <h1>Welcome, Dr. {{ doctor_name }} 👋</h1>
+    <p>Access clinical research, product intelligence, and your AI medical assistant</p>
   </div>
 </section>
 
-<section class="p-section p-section-light">
+<!-- ── Main ── -->
+<section class="p-section p-section-light" id="papers">
   <div class="p-container">
 
-    <!-- Stats strip -->
+    <!-- Stats -->
     <div class="dash-stats p-reveal">
       <div class="dash-stat">
-        <div class="num">8+</div>
-        <div class="lbl">Products Available</div>
+        <div class="num">{{ papers | length }}</div>
+        <div class="lbl">Papers Available</div>
       </div>
       <div class="dash-stat">
-        <div class="num">12</div>
-        <div class="lbl">Published Studies</div>
+        <div class="num">{{ notif_count }}</div>
+        <div class="lbl">New Updates</div>
       </div>
       <div class="dash-stat">
-        <div class="num">5</div>
-        <div class="lbl">CME Resources</div>
-      </div>
-      <div class="dash-stat">
-        <div class="num">24h</div>
-        <div class="lbl">MR Response Time</div>
+        <div class="num">4</div>
+        <div class="lbl">Therapy Areas</div>
       </div>
     </div>
 
-    <!-- Welcome banner -->
-    <div class="welcome-banner p-reveal">
-      <div>
-        <h3>New: RESGABA-DLX Clinical Data Available</h3>
-        <p>Phase-3 clinical study results for RESGABA-DLX in diabetic neuropathy now published. Download the full report.</p>
-      </div>
-      <a href="/research" class="p-btn p-btn-primary" style="position:relative;z-index:1;white-space:nowrap">Read Study →</a>
+    <!-- Section header -->
+    <div class="p-section-header p-reveal" style="margin-bottom:24px">
+      <span class="p-section-tag">Research Library</span>
+      <h2 class="p-section-title">Clinical Papers &amp; Resources</h2>
+      <div class="p-divider"></div>
     </div>
 
-    <!-- Resource cards -->
-    <div class="p-grid-3">
-      <a href="/product-catalog" class="res-card p-card p-reveal p-delay-1" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">📋</div>
-        <h3>Product Information</h3>
-        <p>Detailed product sheets, composition, indications, dosage guidelines and full clinical metadata for every SKU.</p>
-        <span class="res-arrow">View Products <span>→</span></span>
-      </a>
-      <a href="/research" class="res-card p-card p-reveal p-delay-2" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">📄</div>
-        <h3>Clinical Studies</h3>
-        <p>Download peer-reviewed research papers, Phase-2/3 trial data, and scientific publications from our R&D team.</p>
-        <span class="res-arrow">View Research <span>→</span></span>
-      </a>
-      <a href="/contact" class="res-card p-card p-reveal p-delay-3" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">💊</div>
-        <h3>Sample Requests</h3>
-        <p>Request product samples for patient evaluation trials. Our team processes sample requests within 48 hours.</p>
-        <span class="res-arrow">Request Samples <span>→</span></span>
-      </a>
-      <a href="/research" class="res-card p-card p-reveal p-delay-4" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">📚</div>
-        <h3>CME Resources</h3>
-        <p>Access Continuing Medical Education materials, therapy-area training modules, and clinical decision tools.</p>
-        <span class="res-arrow">View CMEs <span>→</span></span>
-      </a>
-      <a href="/contact" class="res-card p-card p-reveal p-delay-5" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">📞</div>
-        <h3>Medical Representative</h3>
-        <p>Connect directly with your assigned Tunes MR for product inquiries, detailing visits, and in-clinic demos.</p>
-        <span class="res-arrow">Contact MR <span>→</span></span>
-      </a>
-      <a href="/products" class="res-card p-card p-reveal p-delay-6" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">📥</div>
-        <h3>Download Materials</h3>
-        <p>Download product brochures, prescribing information leaflets, and promotional materials for clinic use.</p>
-        <span class="res-arrow">Browse Materials <span>→</span></span>
-      </a>
+    <!-- Filter tabs -->
+    <div class="filter-tabs p-reveal">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="diabetes">Diabetology</button>
+      <button class="filter-tab" data-filter="neuropathy">Neuropathy</button>
+      <button class="filter-tab" data-filter="gastro">Gastroenterology</button>
+      <button class="filter-tab" data-filter="general">General Medicine</button>
     </div>
+
+    <!-- Papers grid -->
+    <div class="papers-grid" id="papersGrid">
+      {% if papers %}
+        {% for paper in papers %}
+        <div class="paper-card p-reveal" data-area="{{ paper.therapy_area or 'all' }}">
+          <div class="paper-meta">
+            <span class="paper-tag {{ paper.therapy_area or 'all' }}">
+              {% if paper.therapy_area == 'diabetes' %}Diabetology
+              {% elif paper.therapy_area == 'neuropathy' %}Neuropathy
+              {% elif paper.therapy_area == 'gastro' %}Gastroenterology
+              {% elif paper.therapy_area == 'general' %}General Medicine
+              {% else %}General{% endif %}
+            </span>
+            <span class="paper-type-icon">
+              {% if paper.content_type == 'pdf' %}📄 PDF
+              {% elif paper.content_type == 'doc' %}📝 DOC
+              {% else %}🔗 Link{% endif %}
+            </span>
+          </div>
+          <h3>{{ paper.title }}</h3>
+          {% if paper.description %}<p>{{ paper.description }}</p>{% endif %}
+          <time class="paper-date">{{ paper.created_at[:10] if paper.created_at else '' }}</time>
+          <a href="{{ paper.file_url }}" target="_blank" rel="noopener" class="paper-link">
+            {% if paper.content_type == 'link' %}Open Resource{% else %}Download{% endif %} →
+          </a>
+        </div>
+        {% endfor %}
+      {% else %}
+        <div class="papers-empty">
+          <div class="icon">📚</div>
+          <p>No papers uploaded yet.<br>Check back soon — your administrator will publish resources here.</p>
+        </div>
+      {% endif %}
+    </div>
+
   </div>
 </section>
 
 {% include 'partials/footer.html' %}
+
+<!-- ── AI Chat widget ── -->
+<div class="ai-widget">
+  <div class="ai-panel" id="aiPanel">
+    <div class="ai-panel-header">
+      <div class="ai-avatar">🤖</div>
+      <div>
+        <h4>Medical AI Assistant</h4>
+        <p>Ask about papers, drugs, clinical guidelines</p>
+      </div>
+      <button class="ai-close" id="aiClose">×</button>
+    </div>
+    <div class="ai-messages" id="aiMessages">
+      <div class="ai-msg">Hello Dr. {{ doctor_name }}! I can help you understand research papers and answer clinical questions. How can I assist you?</div>
+    </div>
+    <div class="ai-input-row">
+      <input class="ai-input" id="aiInput" type="text" placeholder="Ask anything…" autocomplete="off">
+      <button class="ai-send" id="aiSend">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+  <button class="ai-toggle" id="aiToggle" style="position:relative">
+    🤖
+    <span class="ai-badge"></span>
+  </button>
+</div>
+
+<script>
+// ── Notification bell ──
+(function () {
+  var btn  = document.getElementById('notifBtn');
+  var drop = document.getElementById('notifDropdown');
+  var mark = document.getElementById('markAllRead');
+  var badge= document.getElementById('notifBadge');
+
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    drop.classList.toggle('open');
+  });
+  document.addEventListener('click', function () { drop.classList.remove('open'); });
+
+  if (mark) {
+    mark.addEventListener('click', function () {
+      fetch('/doctor/notifications/read', { method: 'POST', headers: { 'Content-Type': 'application/json' } })
+        .then(function () {
+          badge.textContent = '';
+          badge.style.display = 'none';
+          drop.querySelectorAll('.notif-dot').forEach(function (d) { d.style.background = '#d1d5db'; });
+          mark.style.display = 'none';
+        });
+    });
+  }
+})();
+
+// ── Paper filter tabs ──
+(function () {
+  var tabs  = document.querySelectorAll('.filter-tab');
+  var cards = document.querySelectorAll('#papersGrid .paper-card');
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      tabs.forEach(function (t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      var filter = tab.dataset.filter;
+      cards.forEach(function (card) {
+        card.style.display = (filter === 'all' || card.dataset.area === filter) ? '' : 'none';
+      });
+    });
+  });
+})();
+
+// ── AI Chat ──
+(function () {
+  var toggle   = document.getElementById('aiToggle');
+  var panel    = document.getElementById('aiPanel');
+  var closeBtn = document.getElementById('aiClose');
+  var input    = document.getElementById('aiInput');
+  var send     = document.getElementById('aiSend');
+  var messages = document.getElementById('aiMessages');
+  var history  = [];
+
+  function togglePanel() { panel.classList.toggle('open'); }
+  toggle.addEventListener('click', togglePanel);
+  closeBtn.addEventListener('click', function () { panel.classList.remove('open'); });
+
+  function addMsg(text, role) {
+    var div = document.createElement('div');
+    div.className = role === 'user' ? 'user-msg' : 'ai-msg';
+    div.textContent = text;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+    return div;
+  }
+
+  function showTyping() {
+    var div = document.createElement('div');
+    div.className = 'ai-typing';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    div.id = 'typingIndicator';
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+  function removeTyping() {
+    var t = document.getElementById('typingIndicator');
+    if (t) t.remove();
+  }
+
+  function sendMessage() {
+    var text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    addMsg(text, 'user');
+    history.push({ role: 'user', content: text });
+    showTyping();
+    send.disabled = true;
+
+    fetch('/doctor/ai-chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text, history: history.slice(-10) })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      removeTyping();
+      addMsg(data.reply, 'ai');
+      history.push({ role: 'assistant', content: data.reply });
+      send.disabled = false;
+    })
+    .catch(function () {
+      removeTyping();
+      addMsg('Something went wrong. Please try again.', 'ai');
+      send.disabled = false;
+    });
+  }
+
+  send.addEventListener('click', sendMessage);
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter') sendMessage(); });
+})();
+</script>
 </body>
 </html>

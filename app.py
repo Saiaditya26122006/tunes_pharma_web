@@ -1,5 +1,14 @@
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, jsonify, flash
+from functools import wraps
+from werkzeug.security import generate_password_hash, check_password_hash
 import os
+import tempfile
+import uuid as uuid_lib
+
+try:
+    from supabase_client import supabase as sb
+except Exception:
+    sb = None
 
 app = Flask(__name__)
 # Use /tmp for uploads — works both locally and on Vercel serverless
@@ -394,18 +403,243 @@ def stockist_locator():
                          lang=lang,
                          t=translations.get(lang, translations['en']))
 
+# ── Auth decorators ─────────────────────────────────────────
+def doctor_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if 'doctor_id' not in session:
+            return redirect('/doctor-portal')
+        return f(*args, **kwargs)
+    return decorated
+
+def admin_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if not session.get('is_admin'):
+            return redirect('/admin')
+        return f(*args, **kwargs)
+    return decorated
+
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'tunesadmin2024')
+
+# ── Doctor Portal ────────────────────────────────────────────
 @app.route('/doctor-portal', methods=['GET', 'POST'])
 def doctor_portal():
     lang = session.get('language', 'en')
+    if 'doctor_id' in session:
+        return redirect('/doctor-dashboard')
+    error = None
     if request.method == 'POST':
-        # Simple login check (in production, use proper authentication)
-        email = request.form.get('email')
-        password = request.form.get('password')
-        # For demo purposes, any email/password works
-        if email and password:
-            return render_template('doctor_dashboard.html', doctor_email=email, lang=lang, t=translations.get(lang, translations['en']))
-    
-    return render_template('doctor_portal.html', lang=lang, t=translations.get(lang, translations['en']))
+        username = request.form.get('username', '').strip()
+        password = request.form.get('password', '')
+        if sb:
+            result = sb.table('doctors').select('*').eq('username', username).eq('is_active', True).execute()
+            if result.data and check_password_hash(result.data[0]['password_hash'], password):
+                doc = result.data[0]
+                session['doctor_id'] = doc['id']
+                session['doctor_name'] = doc['name']
+                return redirect('/doctor-dashboard')
+            error = 'Invalid username or password.'
+        else:
+            if username and password:
+                session['doctor_id'] = 'demo'
+                session['doctor_name'] = username.title()
+                return redirect('/doctor-dashboard')
+            error = 'Please enter your credentials.'
+    return render_template('doctor_portal.html', error=error, lang=lang, t=translations.get(lang, translations['en']))
+
+@app.route('/doctor-logout')
+def doctor_logout():
+    session.pop('doctor_id', None)
+    session.pop('doctor_name', None)
+    return redirect('/doctor-portal')
+
+@app.route('/doctor-dashboard')
+@doctor_required
+def doctor_dashboard():
+    lang = session.get('language', 'en')
+    papers, notifications, notif_count = [], [], 0
+    doctor_id = session.get('doctor_id')
+    if sb and doctor_id != 'demo':
+        papers = (sb.table('papers').select('*').order('created_at', desc=True).execute()).data or []
+        n = (sb.table('notifications')
+               .select('*, papers(title, therapy_area)')
+               .eq('doctor_id', doctor_id)
+               .eq('is_read', False)
+               .order('created_at', desc=True)
+               .limit(10)
+               .execute()).data or []
+        notifications = n
+        notif_count = len(n)
+    return render_template('doctor_dashboard.html',
+                           doctor_name=session.get('doctor_name', 'Doctor'),
+                           papers=papers,
+                           notifications=notifications,
+                           notif_count=notif_count,
+                           lang=lang)
+
+@app.route('/doctor/notifications/read', methods=['POST'])
+@doctor_required
+def mark_notifications_read():
+    doctor_id = session.get('doctor_id')
+    if sb and doctor_id != 'demo':
+        sb.table('notifications').update({'is_read': True}).eq('doctor_id', doctor_id).execute()
+    return jsonify({'ok': True})
+
+@app.route('/doctor/ai-chat', methods=['POST'])
+@doctor_required
+def doctor_ai_chat():
+    data = request.get_json() or {}
+    message = data.get('message', '').strip()
+    history = data.get('history', [])
+    if not message:
+        return jsonify({'ok': False, 'reply': 'Please type a message.'})
+
+    anthropic_key = os.getenv('ANTHROPIC_API_KEY')
+    if anthropic_key:
+        try:
+            import anthropic
+            ai = anthropic.Anthropic(api_key=anthropic_key)
+            messages = history[-10:] + [{"role": "user", "content": message}]
+            resp = ai.messages.create(
+                model="claude-opus-4-7",
+                max_tokens=1024,
+                system=(
+                    "You are a medical AI assistant for Tunes Pharma (A Division of Brinda Medicals). "
+                    "You help registered doctors understand research papers, clinical guidelines, drug interactions, "
+                    "dosage information, and pharmaceutical data. Be professional, concise and evidence-based. "
+                    "Therapy areas: Diabetology, Neuropathy, Gastroenterology, General Medicine."
+                ),
+                messages=messages
+            )
+            return jsonify({'ok': True, 'reply': resp.content[0].text})
+        except Exception as e:
+            pass
+
+    return jsonify({
+        'ok': True,
+        'placeholder': True,
+        'reply': (
+            "The AI assistant is being configured and will be live very soon. "
+            "For clinical queries, please contact your Tunes Pharma medical representative."
+        )
+    })
+
+# ── Admin Panel ──────────────────────────────────────────────
+@app.route('/admin', methods=['GET', 'POST'])
+def admin_login():
+    if session.get('is_admin'):
+        return redirect('/admin/papers')
+    error = None
+    if request.method == 'POST':
+        if request.form.get('password', '') == ADMIN_PASSWORD:
+            session['is_admin'] = True
+            return redirect('/admin/papers')
+        error = 'Incorrect password.'
+    return render_template('admin_login.html', error=error)
+
+@app.route('/admin-logout')
+def admin_logout():
+    session.pop('is_admin', None)
+    return redirect('/admin')
+
+@app.route('/admin/papers', methods=['GET'])
+@admin_required
+def admin_papers():
+    papers = []
+    if sb:
+        papers = (sb.table('papers').select('*').order('created_at', desc=True).execute()).data or []
+    return render_template('admin_papers.html', papers=papers)
+
+@app.route('/admin/papers/upload', methods=['POST'])
+@admin_required
+def admin_upload_paper():
+    title       = request.form.get('title', '').strip()
+    description = request.form.get('description', '').strip()
+    therapy     = request.form.get('therapy_area', 'all')
+    ctype       = request.form.get('content_type', 'link')
+    link_url    = request.form.get('link_url', '').strip()
+    file        = request.files.get('file')
+    file_url    = link_url
+
+    if file and file.filename and sb:
+        ext   = os.path.splitext(file.filename)[1].lower()
+        fname = f"{uuid_lib.uuid4()}{ext}"
+        tmp   = tempfile.mktemp(suffix=ext)
+        file.save(tmp)
+        with open(tmp, 'rb') as f:
+            sb.storage.from_('papers').upload(fname, f, {'content-type': file.content_type})
+        file_url = sb.storage.from_('papers').get_public_url(fname)
+        ctype = 'pdf' if ext == '.pdf' else 'doc'
+        try:
+            os.remove(tmp)
+        except Exception:
+            pass
+
+    if title and file_url and sb:
+        result = sb.table('papers').insert({
+            'title': title, 'description': description,
+            'content_type': ctype, 'file_url': file_url,
+            'therapy_area': therapy,
+        }).execute()
+        if result.data:
+            paper_id = result.data[0]['id']
+            doctors  = (sb.table('doctors').select('id').eq('is_active', True).execute()).data or []
+            if doctors:
+                sb.table('notifications').insert(
+                    [{'doctor_id': d['id'], 'paper_id': paper_id} for d in doctors]
+                ).execute()
+    return redirect('/admin/papers')
+
+@app.route('/admin/papers/delete/<paper_id>', methods=['POST'])
+@admin_required
+def admin_delete_paper(paper_id):
+    if sb:
+        sb.table('papers').delete().eq('id', paper_id).execute()
+    return redirect('/admin/papers')
+
+@app.route('/admin/doctors', methods=['GET'])
+@admin_required
+def admin_doctors():
+    doctors = []
+    if sb:
+        doctors = (sb.table('doctors').select('*').order('created_at', desc=True).execute()).data or []
+    return render_template('admin_doctors.html', doctors=doctors)
+
+@app.route('/admin/doctors/add', methods=['POST'])
+@admin_required
+def admin_add_doctor():
+    name      = request.form.get('name', '').strip()
+    username  = request.form.get('username', '').strip()
+    password  = request.form.get('password', '').strip()
+    email     = request.form.get('email', '').strip()
+    phone     = request.form.get('phone', '').strip()
+    hospital  = request.form.get('hospital', '').strip()
+    specialty = request.form.get('specialty', '').strip()
+    if name and username and password and sb:
+        sb.table('doctors').insert({
+            'name': name, 'username': username,
+            'password_hash': generate_password_hash(password),
+            'email': email, 'phone': phone,
+            'hospital': hospital, 'specialty': specialty,
+        }).execute()
+    return redirect('/admin/doctors')
+
+@app.route('/admin/doctors/toggle/<doctor_id>', methods=['POST'])
+@admin_required
+def admin_toggle_doctor(doctor_id):
+    if sb:
+        doc = (sb.table('doctors').select('is_active').eq('id', doctor_id).execute()).data
+        if doc:
+            sb.table('doctors').update({'is_active': not doc[0]['is_active']}).eq('id', doctor_id).execute()
+    return redirect('/admin/doctors')
+
+@app.route('/admin/doctors/delete/<doctor_id>', methods=['POST'])
+@admin_required
+def admin_delete_doctor(doctor_id):
+    if sb:
+        sb.table('doctors').delete().eq('id', doctor_id).execute()
+    return redirect('/admin/doctors')
 
 @app.route('/regulatory-compliance')
 def regulatory_compliance():

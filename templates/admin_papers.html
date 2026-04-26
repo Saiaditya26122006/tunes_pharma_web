@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Admin — Papers | Tunes Pharma</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { background: #f5f7fb; font-family: 'Poppins', sans-serif; }
+
+    /* ── Admin sidebar layout ── */
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-sidebar {
+      width: 220px; background: var(--navy-900); flex-shrink: 0;
+      display: flex; flex-direction: column; padding: 28px 0;
+      position: sticky; top: 0; height: 100vh;
+    }
+    .admin-sidebar .brand {
+      padding: 0 24px 28px; border-bottom: 1px solid rgba(255,255,255,.08);
+      margin-bottom: 16px;
+    }
+    .admin-sidebar .brand img { height: 36px; filter: brightness(0) invert(1); }
+    .admin-sidebar .brand p { color: rgba(255,255,255,.35); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; margin-top: 4px; }
+    .admin-nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 24px; color: rgba(255,255,255,.55); font-size: .85rem; font-weight: 500;
+      transition: all .2s;
+    }
+    .admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,.07); color: white; }
+    .admin-nav a.active { border-right: 3px solid var(--blue-500); }
+    .admin-nav a span { font-size: 1rem; }
+    .admin-sidebar .logout-link {
+      margin-top: auto; padding: 0 16px;
+    }
+    .admin-sidebar .logout-link a {
+      display: block; text-align: center; padding: 10px;
+      border-radius: 8px; border: 1px solid rgba(220,38,38,.3);
+      color: rgba(220,38,38,.8); font-size: .82rem; font-weight: 600;
+      transition: all .2s;
+    }
+    .admin-sidebar .logout-link a:hover { background: rgba(220,38,38,.1); color: #ef4444; }
+
+    /* ── Main content ── */
+    .admin-main { flex: 1; padding: 40px; overflow-y: auto; }
+    .admin-page-title {
+      font-family: 'Playfair Display', serif; font-size: 1.8rem;
+      color: var(--navy-900); margin-bottom: 6px;
+    }
+    .admin-page-sub { color: var(--gray-500); font-size: .88rem; margin-bottom: 32px; }
+
+    /* ── Upload card ── */
+    .upload-card {
+      background: white; border-radius: var(--radius-lg); padding: 32px;
+      border: 1px solid rgba(15,30,45,.07); box-shadow: var(--shadow-sm);
+      margin-bottom: 36px;
+    }
+    .upload-card h3 { font-size: 1rem; font-weight: 600; color: var(--navy-800); margin-bottom: 20px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .form-group label { font-size: .8rem; font-weight: 600; color: var(--navy-700); }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 10px 14px; border-radius: 10px;
+      border: 1.5px solid rgba(15,30,45,.12); font-size: .88rem;
+      font-family: 'Poppins', sans-serif; outline: none; transition: border-color .2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--blue-500); }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+
+    /* Type toggle */
+    .type-toggle { display: flex; gap: 8px; margin-bottom: 16px; }
+    .type-btn {
+      padding: 8px 18px; border-radius: var(--radius-full);
+      border: 1.5px solid rgba(15,30,45,.12); font-size: .82rem; font-weight: 600;
+      cursor: pointer; background: white; color: var(--gray-600); transition: all .2s;
+    }
+    .type-btn.active { background: var(--blue-500); border-color: var(--blue-500); color: white; }
+
+    /* Drop zone */
+    .drop-zone {
+      border: 2px dashed rgba(30,111,241,.3); border-radius: 12px;
+      padding: 32px; text-align: center; cursor: pointer; transition: all .2s;
+      background: rgba(30,111,241,.03);
+    }
+    .drop-zone:hover, .drop-zone.drag { border-color: var(--blue-500); background: rgba(30,111,241,.07); }
+    .drop-zone .icon { font-size: 2rem; margin-bottom: 8px; }
+    .drop-zone p { font-size: .85rem; color: var(--gray-500); }
+    .drop-zone input[type="file"] { display: none; }
+
+    .upload-btn {
+      padding: 12px 28px; border-radius: var(--radius-full);
+      background: var(--blue-500); color: white;
+      border: none; font-size: .88rem; font-weight: 600;
+      font-family: 'Poppins', sans-serif; cursor: pointer; transition: all .2s;
+    }
+    .upload-btn:hover { background: var(--navy-800); transform: translateY(-1px); }
+
+    /* ── Papers table ── */
+    .papers-table-card {
+      background: white; border-radius: var(--radius-lg);
+      border: 1px solid rgba(15,30,45,.07); box-shadow: var(--shadow-sm); overflow: hidden;
+    }
+    .papers-table-head {
+      padding: 20px 24px; border-bottom: 1px solid rgba(15,30,45,.07);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .papers-table-head h3 { font-size: 1rem; font-weight: 600; color: var(--navy-800); }
+    .papers-count { font-size: .8rem; color: var(--gray-400); }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      padding: 12px 20px; text-align: left; font-size: .75rem;
+      font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+      color: var(--gray-400); border-bottom: 1px solid rgba(15,30,45,.07);
+      background: rgba(15,30,45,.02);
+    }
+    tbody td { padding: 14px 20px; font-size: .85rem; border-bottom: 1px solid rgba(15,30,45,.05); vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: rgba(30,111,241,.03); }
+    .badge {
+      display: inline-block; padding: 3px 10px; border-radius: var(--radius-full);
+      font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+    }
+    .badge.pdf      { background: rgba(239,68,68,.1);   color: #dc2626; }
+    .badge.doc      { background: rgba(139,92,246,.1);  color: #7c3aed; }
+    .badge.link     { background: rgba(30,111,241,.1);  color: var(--blue-500); }
+    .badge.diabetes { background: rgba(239,68,68,.1);   color: #dc2626; }
+    .badge.neuropathy{background: rgba(139,92,246,.1);  color: #7c3aed; }
+    .badge.gastro   { background: rgba(16,185,129,.1);  color: #059669; }
+    .badge.general  { background: rgba(30,111,241,.1);  color: var(--blue-500); }
+    .badge.all      { background: rgba(15,30,45,.08);   color: var(--navy-600); }
+    .delete-btn {
+      padding: 6px 14px; border-radius: 8px;
+      border: 1px solid rgba(220,38,38,.25); color: #ef4444;
+      background: rgba(220,38,38,.05); font-size: .78rem; font-weight: 600;
+      cursor: pointer; font-family: 'Poppins', sans-serif; transition: all .2s;
+    }
+    .delete-btn:hover { background: rgba(220,38,38,.12); border-color: #ef4444; }
+    .empty-row td { text-align: center; padding: 48px; color: var(--gray-400); font-size: .88rem; }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="brand">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma">
+      <p>Admin Panel</p>
+    </div>
+    <nav class="admin-nav">
+      <a href="/admin/papers" class="active"><span>📄</span> Papers</a>
+      <a href="/admin/doctors"><span>👨‍⚕️</span> Doctors</a>
+      <a href="/" target="_blank"><span>🌐</span> View Website</a>
+    </nav>
+    <div class="logout-link">
+      <a href="/admin-logout">Logout</a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="admin-main">
+    <h1 class="admin-page-title">Research Papers</h1>
+    <p class="admin-page-sub">Upload papers, PDFs, docs, or links. All active doctors will be notified instantly.</p>
+
+    <!-- Upload form -->
+    <div class="upload-card">
+      <h3>Upload New Paper / Resource</h3>
+      <form method="POST" action="/admin/papers/upload" enctype="multipart/form-data" id="uploadForm">
+
+        <div class="form-row">
+          <div class="form-group" style="grid-column:1/-1">
+            <label>Title *</label>
+            <input type="text" name="title" placeholder="e.g. RESGABA-DLX Phase-3 Clinical Study" required>
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label>Description</label>
+            <textarea name="description" placeholder="Brief summary of the paper or resource…"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Therapy Area</label>
+            <select name="therapy_area">
+              <option value="all">All Areas</option>
+              <option value="diabetes">Diabetology</option>
+              <option value="neuropathy">Neuropathy</option>
+              <option value="gastro">Gastroenterology</option>
+              <option value="general">General Medicine</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Content Type</label>
+            <select name="content_type" id="contentTypeSelect">
+              <option value="link">External Link</option>
+              <option value="pdf">PDF File</option>
+              <option value="doc">DOC File</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Link input -->
+        <div id="linkSection" class="form-group">
+          <label>URL / Link *</label>
+          <input type="url" name="link_url" placeholder="https://pubmed.ncbi.nlm.nih.gov/...">
+        </div>
+
+        <!-- File upload -->
+        <div id="fileSection" style="display:none; margin-bottom:16px">
+          <label style="font-size:.8rem;font-weight:600;color:var(--navy-700);display:block;margin-bottom:6px">File *</label>
+          <div class="drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <input type="file" name="file" id="fileInput" accept=".pdf,.doc,.docx">
+            <div class="icon">📂</div>
+            <p id="dropText">Click to browse or drag &amp; drop your file here</p>
+          </div>
+        </div>
+
+        <button type="submit" class="upload-btn">Upload &amp; Notify Doctors →</button>
+      </form>
+    </div>
+
+    <!-- Papers table -->
+    <div class="papers-table-card">
+      <div class="papers-table-head">
+        <h3>All Papers</h3>
+        <span class="papers-count">{{ papers | length }} total</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Therapy Area</th>
+            <th>Type</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if papers %}
+            {% for p in papers %}
+            <tr>
+              <td style="max-width:280px">
+                <a href="{{ p.file_url }}" target="_blank" style="color:var(--navy-800);font-weight:500">{{ p.title }}</a>
+                {% if p.description %}
+                  <div style="font-size:.75rem;color:var(--gray-400);margin-top:2px">{{ p.description[:60] }}{% if p.description|length > 60 %}…{% endif %}</div>
+                {% endif %}
+              </td>
+              <td><span class="badge {{ p.therapy_area or 'all' }}">{{ p.therapy_area or 'All' }}</span></td>
+              <td><span class="badge {{ p.content_type }}">{{ p.content_type | upper }}</span></td>
+              <td style="color:var(--gray-400);white-space:nowrap">{{ p.created_at[:10] if p.created_at else '—' }}</td>
+              <td>
+                <form method="POST" action="/admin/papers/delete/{{ p.id }}" onsubmit="return confirm('Delete this paper?')">
+                  <button type="submit" class="delete-btn">Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr class="empty-row"><td colspan="5">No papers uploaded yet. Use the form above to add the first one.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<script>
+// Toggle link vs file input based on content type
+(function () {
+  var sel  = document.getElementById('contentTypeSelect');
+  var link = document.getElementById('linkSection');
+  var file = document.getElementById('fileSection');
+  sel.addEventListener('change', function () {
+    var isFile = sel.value === 'pdf' || sel.value === 'doc';
+    link.style.display = isFile ? 'none' : '';
+    file.style.display = isFile ? '' : 'none';
+    link.querySelector('input').required = !isFile;
+  });
+})();
+
+// Drag & drop feedback
+(function () {
+  var zone  = document.getElementById('dropZone');
+  var input = document.getElementById('fileInput');
+  var text  = document.getElementById('dropText');
+  if (!zone) return;
+  zone.addEventListener('dragover', function (e) { e.preventDefault(); zone.classList.add('drag'); });
+  zone.addEventListener('dragleave', function () { zone.classList.remove('drag'); });
+  zone.addEventListener('drop', function (e) {
+    e.preventDefault(); zone.classList.remove('drag');
+    if (e.dataTransfer.files[0]) {
+      input.files = e.dataTransfer.files;
+      text.textContent = e.dataTransfer.files[0].name;
+    }
+  });
+  input.addEventListener('change', function () {
+    if (input.files[0]) text.textContent = input.files[0].name;
+  });
+})();
+</script>
+</body>
+</html>
