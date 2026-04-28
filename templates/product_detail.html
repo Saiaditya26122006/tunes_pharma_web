@@ -6,83 +6,439 @@
   <title>{{ product.name }} | Tunes Therapeutics Pvt. Ltd.</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
   <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
+
   <style>
-    .pd-hero {
-      background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 55%, var(--navy-700) 100%);
-      padding: 140px 24px 70px; position: relative; overflow: hidden;
-      text-align: center; color: white;
-    }
-    .pd-hero::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 50% 60%, rgba(30,111,241,0.14) 0%, transparent 60%);
-    }
+  /* ── RESET EXTRAS ── */
+  *, *::before, *::after { box-sizing: border-box; }
 
-    /* Detail split */
-    .pd-split { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
-    @media (max-width: 768px) { .pd-split { grid-template-columns: 1fr; } }
+  /* ── HERO ── */
+  .pd-hero {
+    min-height: 100vh;
+    background: #050e1d;
+    position: relative; overflow: hidden;
+    display: flex; align-items: center;
+    padding: 120px 0 80px;
+  }
+  .pd-hero-canvas {
+    position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  }
+  .pd-hero-gradient {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 50%, rgba(30,111,241,.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 30%, rgba(0,200,255,.10) 0%, transparent 55%),
+      radial-gradient(ellipse 50% 70% at 60% 80%, rgba(99,102,241,.08) 0%, transparent 50%);
+  }
+  /* Animated mesh lines */
+  .pd-mesh {
+    position: absolute; inset: 0; z-index: 0; opacity: .06;
+    background-image:
+      linear-gradient(rgba(30,111,241,.8) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(30,111,241,.8) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: mesh-drift 20s linear infinite;
+  }
+  @keyframes mesh-drift {
+    from { transform: translate(0,0); }
+    to   { transform: translate(60px,60px); }
+  }
 
-    /* Image panel */
-    .pd-img-wrap {
-      position: sticky; top: 100px;
-      border-radius: var(--radius-lg); overflow: hidden;
-      box-shadow: var(--shadow-xl);
-      background: linear-gradient(135deg, #f0f4f8 0%, #e8edf5 100%);
-    }
-    .pd-img-wrap img {
-      width: 100%; display: block; object-fit: contain;
-      padding: 20px; min-height: 320px;
-      transition: transform .5s var(--ease-smooth);
-    }
-    .pd-img-wrap:hover img { transform: scale(1.05); }
-    .pd-img-placeholder {
-      min-height: 380px; background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
-      display: flex; align-items: center; justify-content: center; font-size: 5rem; position: relative;
-    }
-    .pd-img-placeholder::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(circle at 30% 40%, rgba(30,111,241,.25), transparent 60%);
-    }
-    .pd-packing-badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(30,111,241,0.08); border: 1px solid rgba(30,111,241,0.2);
-      border-radius: var(--radius-full); padding: 6px 16px;
-      font-size: .78rem; font-weight: 600; color: var(--blue-600);
-      margin-bottom: 16px;
-    }
+  .pd-hero-inner {
+    position: relative; z-index: 2;
+    max-width: 1300px; margin: 0 auto; padding: 0 40px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+  }
 
-    /* Info panel */
-    .pd-info-section {
-      background: #f8fafc; border-radius: var(--radius-md); padding: 20px 22px;
-      border-left: 4px solid var(--blue-500); margin-bottom: 14px;
-      transition: all .3s var(--ease-smooth);
-    }
-    .pd-info-section:hover { background: #f0f4ff; transform: translateX(4px); }
-    .pd-info-section h4 { font-size: .75rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: .08em; color: var(--gray-400); margin-bottom: 6px; }
-    .pd-info-section p  { font-size: .92rem; color: var(--navy-800); line-height: 1.7; }
+  /* ── LEFT: 3D image card ── */
+  .pd-img-stage {
+    perspective: 1200px;
+    position: relative;
+  }
+  .pd-img-3d {
+    position: relative;
+    transform-style: preserve-3d;
+    border-radius: 28px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.12);
+    box-shadow:
+      0 0 0 1px rgba(30,111,241,.2),
+      0 30px 80px rgba(0,0,0,.5),
+      0 0 120px rgba(30,111,241,.12);
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow .4s ease;
+  }
+  .pd-img-3d:hover {
+    box-shadow:
+      0 0 0 1px rgba(30,111,241,.5),
+      0 40px 100px rgba(0,0,0,.6),
+      0 0 160px rgba(30,111,241,.25);
+  }
+  .pd-img-3d img {
+    width: 100%; display: block;
+    object-fit: contain; padding: 40px;
+    min-height: 380px;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,.4));
+    transition: transform .5s cubic-bezier(.22,1,.36,1);
+  }
+  .pd-img-3d:hover img { transform: scale(1.04) translateY(-6px); }
 
-    /* Price badge */
-    .pd-price {
-      display: inline-block; padding: 12px 28px; border-radius: var(--radius-full);
-      background: linear-gradient(135deg, var(--blue-500), var(--navy-700));
-      color: white; font-size: 1.3rem; font-weight: 700;
-      box-shadow: 0 6px 20px rgba(30,111,241,.3); margin: 16px 0;
-    }
+  /* Glow orb behind image */
+  .pd-img-glow {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(30,111,241,.25), transparent);
+    pointer-events: none;
+  }
 
-    /* Breadcrumb */
-    .pd-breadcrumb {
-      font-size: .82rem; color: rgba(255,255,255,.5); margin-bottom: 16px;
-      display: flex; gap: 8px; align-items: center; justify-content: center;
-    }
-    .pd-breadcrumb a { color: rgba(255,255,255,.5); text-decoration: none; }
-    .pd-breadcrumb a:hover { color: white; }
-    .pd-breadcrumb span { opacity: .4; }
+  /* Floating labels */
+  .pd-float-badge {
+    position: absolute;
+    background: rgba(255,255,255,.95);
+    border-radius: 14px;
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.2), 0 0 0 1px rgba(255,255,255,.3);
+    font-size: .78rem; font-weight: 700; color: #0f1e2d;
+    backdrop-filter: blur(12px);
+    white-space: nowrap;
+  }
+  .pd-float-badge .badge-icon {
+    width: 32px; height: 32px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+  }
+  .pd-float-badge-1 {
+    top: -18px; right: -18px;
+    animation: float-a 4s ease-in-out infinite;
+  }
+  .pd-float-badge-2 {
+    bottom: 30px; left: -22px;
+    animation: float-b 5s ease-in-out infinite;
+  }
+  @keyframes float-a {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-10px) rotate(1deg); }
+  }
+  @keyframes float-b {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(8px) rotate(-1deg); }
+  }
+
+  /* Orbiting dots */
+  .pd-orbit {
+    position: absolute; inset: -30px;
+    border: 1px dashed rgba(30,111,241,.25);
+    border-radius: 50%;
+    animation: orbit-spin 20s linear infinite;
+    pointer-events: none;
+  }
+  .pd-orbit::after {
+    content: '';
+    position: absolute; top: 50%; left: -5px;
+    width: 10px; height: 10px;
+    background: #1e6ff1; border-radius: 50%;
+    box-shadow: 0 0 12px #1e6ff1;
+    transform: translateY(-50%);
+  }
+  @keyframes orbit-spin { to { transform: rotate(360deg); } }
+
+  /* ── RIGHT: hero info ── */
+  .pd-hero-info { color: white; }
+
+  .pd-breadcrumb {
+    display: flex; align-items: center; gap: 8px;
+    font-size: .78rem; color: rgba(255,255,255,.4);
+    margin-bottom: 24px;
+  }
+  .pd-breadcrumb a { color: rgba(255,255,255,.4); text-decoration: none; transition: color .2s; }
+  .pd-breadcrumb a:hover { color: rgba(255,255,255,.9); }
+  .pd-breadcrumb span { opacity: .4; }
+
+  .pd-cat-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 16px; border-radius: 99px;
+    font-size: .7rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; margin-bottom: 18px;
+    border: 1px solid rgba(30,111,241,.4);
+    background: rgba(30,111,241,.15);
+    color: #60a5fa;
+  }
+  .pd-cat-pill::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: #60a5fa;
+    box-shadow: 0 0 6px #60a5fa;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  @keyframes pulse-dot {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: .5; transform: scale(1.4); }
+  }
+
+  .pd-hero-name {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.4rem,4.5vw,3.8rem);
+    font-weight: 700; line-height: 1.1;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,.75) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .pd-hero-desc {
+    font-size: 1rem; color: rgba(255,255,255,.58);
+    line-height: 1.85; margin-bottom: 32px;
+    max-width: 480px;
+  }
+
+  /* Quick-stat row */
+  .pd-stats-row {
+    display: flex; gap: 0;
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 16px; overflow: hidden;
+    margin-bottom: 32px;
+  }
+  .pd-stat {
+    flex: 1; padding: 18px 20px;
+    border-right: 1px solid rgba(255,255,255,.08);
+    text-align: center;
+  }
+  .pd-stat:last-child { border-right: none; }
+  .pd-stat-val {
+    font-size: .9rem; font-weight: 700; color: #fff;
+    margin-bottom: 3px;
+  }
+  .pd-stat-lbl {
+    font-size: .62rem; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; color: rgba(255,255,255,.35);
+  }
+
+  .pd-hero-actions {
+    display: flex; gap: 12px; flex-wrap: wrap;
+  }
+  .pd-btn-primary {
+    padding: 14px 32px; border-radius: 99px;
+    background: linear-gradient(135deg, #1e6ff1, #0ea5e9);
+    color: white; font-weight: 700; font-size: .9rem;
+    text-decoration: none; border: none; cursor: pointer;
+    box-shadow: 0 8px 28px rgba(30,111,241,.4);
+    transition: transform .3s ease, box-shadow .3s ease;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .pd-btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(30,111,241,.5); }
+  .pd-btn-ghost {
+    padding: 14px 32px; border-radius: 99px;
+    background: transparent; color: white; font-weight: 700; font-size: .9rem;
+    text-decoration: none; border: 1px solid rgba(255,255,255,.2); cursor: pointer;
+    transition: all .3s ease;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .pd-btn-ghost:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.4); }
+
+  /* ── DETAIL SECTION ── */
+  .pd-detail-section {
+    background: #f5f7fc;
+    padding: 100px 0;
+  }
+
+  /* Tabs */
+  .pd-tabs {
+    display: flex; gap: 0; margin-bottom: 56px;
+    background: white; border-radius: 16px;
+    border: 1px solid #e8eef6;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(15,30,45,.06);
+    width: fit-content; max-width: 100%;
+  }
+  .pd-tab {
+    padding: 14px 28px; font-size: .85rem; font-weight: 600;
+    color: #64748b; cursor: pointer; border: none; background: none;
+    font-family: 'Poppins', sans-serif;
+    position: relative; transition: color .25s ease;
+    white-space: nowrap;
+  }
+  .pd-tab.active { color: #1e6ff1; }
+  .pd-tab.active::after {
+    content: '';
+    position: absolute; bottom: 0; left: 16px; right: 16px;
+    height: 3px; border-radius: 3px 3px 0 0;
+    background: #1e6ff1;
+  }
+  .pd-tab:hover:not(.active) { color: #334155; background: #f8fafc; }
+
+  .pd-tab-content { display: none; }
+  .pd-tab-content.active { display: block; }
+
+  /* ── INFO GRID ── */
+  .pd-info-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .pd-info-card {
+    background: white; border-radius: 18px; padding: 24px 26px;
+    border: 1px solid #eef2f8;
+    box-shadow: 0 2px 12px rgba(15,30,45,.05);
+    transition: transform .3s ease, box-shadow .3s ease;
+    position: relative; overflow: hidden;
+  }
+  .pd-info-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #1e6ff1, #0ea5e9);
+    opacity: 0; transition: opacity .3s ease;
+  }
+  .pd-info-card:hover { transform: translateY(-3px); box-shadow: 0 10px 32px rgba(15,30,45,.10); }
+  .pd-info-card:hover::before { opacity: 1; }
+  .pd-info-card-label {
+    font-size: .65rem; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: #94a3b8; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .pd-info-card-label svg { width: 14px; height: 14px; color: #1e6ff1; }
+  .pd-info-card-val {
+    font-size: .92rem; color: #0f1e2d; line-height: 1.7; font-weight: 500;
+  }
+  .pd-info-card.full { grid-column: 1 / -1; }
+
+  /* ── COMPOSITION BREAKDOWN ── */
+  .pd-composition-section { }
+  .pd-ingr-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+    gap: 20px; margin-top: 8px;
+  }
+  .pd-ingr-card {
+    background: white; border-radius: 20px; padding: 28px 24px;
+    border: 1px solid #eef2f8;
+    box-shadow: 0 4px 20px rgba(15,30,45,.06);
+    position: relative; overflow: hidden;
+    transition: transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s ease;
+  }
+  .pd-ingr-card:hover { transform: translateY(-6px) scale(1.01); box-shadow: 0 16px 48px rgba(15,30,45,.12); }
+  .pd-ingr-card-num {
+    position: absolute; top: 20px; right: 20px;
+    font-size: 3.5rem; font-weight: 800; line-height: 1;
+    color: rgba(30,111,241,.06); font-family: 'Playfair Display', serif;
+    pointer-events: none; user-select: none;
+  }
+  .pd-ingr-dot {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px; font-size: 1.4rem;
+  }
+  .pd-ingr-card:nth-child(1) .pd-ingr-dot { background: rgba(16,185,129,.12); }
+  .pd-ingr-card:nth-child(2) .pd-ingr-dot { background: rgba(30,111,241,.12); }
+  .pd-ingr-card:nth-child(3) .pd-ingr-dot { background: rgba(245,158,11,.12); }
+  .pd-ingr-card:nth-child(4) .pd-ingr-dot { background: rgba(99,102,241,.12); }
+  .pd-ingr-name { font-weight: 700; font-size: .95rem; color: #0f1e2d; margin-bottom: 4px; }
+  .pd-ingr-dose { font-size: .78rem; color: #1e6ff1; font-weight: 600; margin-bottom: 10px; }
+  .pd-ingr-role { font-size: .82rem; color: #64748b; line-height: 1.6; }
+
+  /* ── TRUST BADGES ── */
+  .pd-trust-grid {
+    display: grid; grid-template-columns: repeat(4,1fr); gap: 16px;
+  }
+  .pd-trust-card {
+    background: white; border-radius: 20px; padding: 28px 20px;
+    text-align: center; border: 1px solid #eef2f8;
+    box-shadow: 0 4px 20px rgba(15,30,45,.05);
+    transition: transform .4s ease, box-shadow .4s ease;
+    cursor: default;
+  }
+  .pd-trust-card:hover { transform: translateY(-6px) scale(1.02); box-shadow: 0 16px 48px rgba(15,30,45,.12); }
+  .pd-trust-icon {
+    width: 64px; height: 64px; border-radius: 20px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; margin: 0 auto 16px;
+  }
+  .pd-trust-card:nth-child(1) .pd-trust-icon { background: linear-gradient(135deg,rgba(16,185,129,.15),rgba(16,185,129,.05)); }
+  .pd-trust-card:nth-child(2) .pd-trust-icon { background: linear-gradient(135deg,rgba(30,111,241,.15),rgba(30,111,241,.05)); }
+  .pd-trust-card:nth-child(3) .pd-trust-icon { background: linear-gradient(135deg,rgba(245,158,11,.15),rgba(245,158,11,.05)); }
+  .pd-trust-card:nth-child(4) .pd-trust-icon { background: linear-gradient(135deg,rgba(99,102,241,.15),rgba(99,102,241,.05)); }
+  .pd-trust-title { font-weight: 700; font-size: .9rem; color: #0f1e2d; margin-bottom: 6px; }
+  .pd-trust-sub   { font-size: .78rem; color: #94a3b8; line-height: 1.5; }
+
+  /* ── SECTION LABEL ── */
+  .pd-section-label {
+    font-size: .7rem; font-weight: 700; letter-spacing: .18em;
+    text-transform: uppercase; color: #1e6ff1;
+    margin-bottom: 10px; display: block;
+  }
+  .pd-section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem,2.5vw,2.2rem); font-weight: 700;
+    color: #0f1e2d; margin-bottom: 8px;
+  }
+  .pd-section-sub { font-size: .9rem; color: #64748b; margin-bottom: 40px; line-height: 1.7; }
+
+  /* ── CTA STRIP ── */
+  .pd-cta-strip {
+    background: linear-gradient(135deg,#0f1e2d,#1a3a5c);
+    border-radius: 28px; padding: 56px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 32px; flex-wrap: wrap;
+    position: relative; overflow: hidden;
+    margin-top: 80px;
+  }
+  .pd-cta-strip::before {
+    content: '';
+    position: absolute; top: -40%; right: -10%;
+    width: 400px; height: 400px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(30,111,241,.25), transparent 70%);
+    pointer-events: none;
+  }
+  .pd-cta-strip-text h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem; color: white; margin-bottom: 8px;
+  }
+  .pd-cta-strip-text p { font-size: .9rem; color: rgba(255,255,255,.55); }
+  .pd-cta-strip-actions { display: flex; gap: 12px; flex-shrink: 0; }
+
+  /* ── SCROLL PROGRESS ── */
+  .pd-scroll-progress {
+    position: fixed; top: 0; left: 0; right: 0;
+    height: 3px; background: rgba(30,111,241,.15);
+    z-index: 9999; pointer-events: none;
+  }
+  .pd-scroll-progress-bar {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, #1e6ff1, #0ea5e9);
+    transition: width .05s linear;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width:1024px) {
+    .pd-hero-inner { grid-template-columns: 1fr; gap: 60px; }
+    .pd-img-stage  { max-width: 440px; margin: 0 auto; }
+    .pd-trust-grid { grid-template-columns: repeat(2,1fr); }
+  }
+  @media (max-width:700px) {
+    .pd-hero-inner { padding: 0 20px; }
+    .pd-info-grid  { grid-template-columns: 1fr; }
+    .pd-trust-grid { grid-template-columns: 1fr 1fr; }
+    .pd-tabs       { overflow-x: auto; scrollbar-width: none; }
+    .pd-cta-strip  { padding: 36px 24px; flex-direction: column; }
+    .pd-stats-row  { flex-wrap: wrap; }
+    .pd-stat       { flex: 1 0 40%; }
+  }
+
+  /* Reveal animation helpers */
+  .pd-reveal { opacity: 0; transform: translateY(28px); }
+  .pd-reveal-left  { opacity: 0; transform: translateX(-28px); }
+  .pd-reveal-right { opacity: 0; transform: translateX(28px); }
   </style>
 </head>
 <body>
+
+<!-- Scroll progress bar -->
+<div class="pd-scroll-progress"><div class="pd-scroll-progress-bar" id="scrollBar"></div></div>
+
 {% include 'partials/loading.html' %}
 
 <header class="p-header" id="p-header">
@@ -93,170 +449,479 @@
       <a href="/about">About</a>
       <a href="/products" class="active">Products</a>
       <a href="/services">Services</a>
-      <a href="/research">Research</a>
+      <a href="/research">Market Insights</a>
       <a href="/Gallery">Gallery</a>
-      <a href="/contact">Contact</a>
     </nav>
     <div class="p-header-actions">
-      <a href="/Pharmaintel_ai" class="p-ai-btn">Pharmaintel AI</a>
+      <a href="/doctor-portal" class="p-doctor-btn" title="Doctor Portal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2z"/><path d="M2 20c0-4 4-7 10-7s10 3 10 7"/><path d="M17 13v4m-2-2h4"/></svg>
+      </a>
+      <a href="/contact" class="p-contact-btn">Contact Us</a>
     </div>
   </div>
 </header>
 
-<!-- ── HERO ── -->
+<!-- ══════════════════════════════════════
+     HERO
+══════════════════════════════════════ -->
 <section class="pd-hero">
-  <div style="position:relative;z-index:2;max-width:700px;margin:0 auto">
-    <div class="pd-breadcrumb">
-      <a href="/">Home</a><span>›</span>
-      <a href="/products">Products</a><span>›</span>
-      <span style="color:rgba(255,255,255,.8)">{{ product.name }}</span>
-    </div>
-    <span class="p-badge p-badge-blue" style="margin-bottom:16px;display:inline-block">{{ product.get('category', 'Pharmaceutical') }}</span>
-    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.2rem,5vw,3.4rem);font-weight:700;margin-bottom:14px;letter-spacing:-.02em">{{ product.name }}</h1>
-    <p style="color:rgba(255,255,255,.65);font-size:1rem;line-height:1.8;max-width:560px;margin:0 auto">{{ product.get('description', 'Premium pharmaceutical solution by Tunes Therapeutics Pvt. Ltd.') }}</p>
-  </div>
-</section>
+  <canvas class="pd-hero-canvas" id="pdCanvas"></canvas>
+  <div class="pd-hero-gradient"></div>
+  <div class="pd-mesh"></div>
 
-<!-- ── DETAIL ── -->
-<section class="p-section p-section-light">
-  <div class="p-container">
-    <div class="pd-split">
+  <div class="pd-hero-inner">
 
-      <!-- Image -->
-      <div class="p-reveal-left">
-        <div class="pd-img-wrap">
-          {% if product.get('image') %}
-            <img src="{{ url_for('static', filename='images/' ~ product.image) }}"
-                 alt="{{ product.name }}"
-                 onerror="this.parentElement.innerHTML='<div class=\'pd-img-placeholder\'><span style=\'position:relative;z-index:1\'>💊</span></div>'">
-          {% else %}
-            <div class="pd-img-placeholder"><span style="position:relative;z-index:1">💊</span></div>
-          {% endif %}
-        </div>
+    <!-- LEFT: 3D product card -->
+    <div class="pd-img-stage" id="imgStage">
+      <div class="pd-orbit" style="animation-duration:18s"></div>
+      <div class="pd-orbit" style="inset:-55px;animation-duration:28s;animation-direction:reverse;border-style:dotted;opacity:.4"></div>
 
-        <!-- Packing info -->
-        {% if product.get('packing') %}
-        <div style="margin-top:16px;text-align:center">
-          <span class="pd-packing-badge">📦 {{ product.packing }}</span>
-        </div>
-        {% endif %}
-
-        <!-- Trust badges -->
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
-          <div class="p-card" style="padding:14px;text-align:center">
-            <div style="font-size:1.4rem;margin-bottom:5px">✅</div>
-            <div style="font-size:.75rem;font-weight:600;color:var(--navy-800)">DCGI Approved</div>
-          </div>
-          <div class="p-card" style="padding:14px;text-align:center">
-            <div style="font-size:1.4rem;margin-bottom:5px">🏭</div>
-            <div style="font-size:.75rem;font-weight:600;color:var(--navy-800)">WHO-GMP Certified</div>
-          </div>
-          <div class="p-card" style="padding:14px;text-align:center">
-            <div style="font-size:1.4rem;margin-bottom:5px">🔬</div>
-            <div style="font-size:.75rem;font-weight:600;color:var(--navy-800)">Clinically Tested</div>
-          </div>
-          <div class="p-card" style="padding:14px;text-align:center">
-            <div style="font-size:1.4rem;margin-bottom:5px">🌡️</div>
-            <div style="font-size:.75rem;font-weight:600;color:var(--navy-800)">Quality Assured</div>
-          </div>
-        </div>
-
-        {% if product.get('manufacturer') %}
-        <div class="p-card" style="padding:14px;margin-top:12px;text-align:center">
-          <div style="font-size:.7rem;color:var(--gray-400);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">Manufactured by</div>
-          <div style="font-size:.85rem;font-weight:600;color:var(--navy-800)">{{ product.manufacturer }}</div>
-        </div>
+      <div class="pd-img-3d" id="img3d" data-tilt data-tilt-max="12" data-tilt-speed="600" data-tilt-glare data-tilt-max-glare="0.15">
+        <div class="pd-img-glow"></div>
+        {% if product.get('image') %}
+          <img src="{{ url_for('static', filename='images/' ~ product.image) }}"
+               alt="{{ product.name }}"
+               onerror="this.style.minHeight='360px';this.style.display='flex';this.outerHTML='<div style=\'min-height:360px;display:flex;align-items:center;justify-content:center;font-size:5rem\'>💊</div>'">
+        {% else %}
+          <div style="min-height:360px;display:flex;align-items:center;justify-content:center;font-size:5rem">💊</div>
         {% endif %}
       </div>
 
-      <!-- Info -->
-      <div class="p-reveal-right">
-        {% if product.get('features') %}
-        <div style="margin-bottom:4px">
-          <span style="background:rgba(30,111,241,0.08);border:1px solid rgba(30,111,241,0.2);border-radius:var(--radius-full);padding:6px 16px;font-size:.8rem;font-weight:600;color:var(--blue-600)">{{ product.features }}</span>
+      <!-- Floating badge 1 -->
+      <div class="pd-float-badge pd-float-badge-1">
+        <div class="pd-float-badge-icon" style="background:rgba(16,185,129,.15);border-radius:10px;padding:8px">✅</div>
+        <div>
+          <div style="font-size:.7rem;color:#10b981;font-weight:700">DCGI Approved</div>
+          <div style="font-size:.65rem;color:#64748b">Certified &amp; Compliant</div>
+        </div>
+      </div>
+      <!-- Floating badge 2 -->
+      <div class="pd-float-badge pd-float-badge-2">
+        <div style="background:rgba(30,111,241,.15);border-radius:10px;padding:8px">🏭</div>
+        <div>
+          <div style="font-size:.7rem;color:#1e6ff1;font-weight:700">WHO-GMP</div>
+          <div style="font-size:.65rem;color:#64748b">Certified Manufacturing</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: hero info -->
+    <div class="pd-hero-info" id="heroInfo">
+      <div class="pd-breadcrumb">
+        <a href="/">Home</a><span>›</span>
+        <a href="/products">Products</a><span>›</span>
+        <span style="color:rgba(255,255,255,.7)">{{ product.name }}</span>
+      </div>
+
+      <div class="pd-cat-pill">{{ product.get('category', 'Pharmaceutical') }}</div>
+
+      <h1 class="pd-hero-name">{{ product.name }}</h1>
+      <p class="pd-hero-desc">{{ product.get('description', 'A premium pharmaceutical formulation by Tunes Therapeutics Pvt. Ltd., designed for superior patient outcomes.') }}</p>
+
+      <!-- Quick stats -->
+      <div class="pd-stats-row">
+        {% if product.get('schedule') %}
+        <div class="pd-stat">
+          <div class="pd-stat-val">Sch. {{ product.schedule }}</div>
+          <div class="pd-stat-lbl">Schedule</div>
         </div>
         {% endif %}
-
-        {% if product.description %}
-        <div class="pd-info-section">
-          <h4>Description</h4>
-          <p>{{ product.description }}</p>
+        {% if product.get('packing') %}
+        <div class="pd-stat">
+          <div class="pd-stat-val">{{ product.packing }}</div>
+          <div class="pd-stat-lbl">Packing</div>
         </div>
         {% endif %}
+        {% if product.get('manufacturer') %}
+        <div class="pd-stat">
+          <div class="pd-stat-val" style="font-size:.78rem">{{ product.manufacturer | truncate(20) }}</div>
+          <div class="pd-stat-lbl">Manufacturer</div>
+        </div>
+        {% endif %}
+        <div class="pd-stat">
+          <div class="pd-stat-val">GMP</div>
+          <div class="pd-stat-lbl">Certified</div>
+        </div>
+      </div>
 
-        {% if product.get('composition') %}
-        <div class="pd-info-section">
-          <h4>Composition</h4>
-          <p>{{ product.composition }}</p>
+      <div class="pd-hero-actions">
+        <a href="/online-ordering" class="pd-btn-primary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+          Order Now
+        </a>
+        <a href="/contact" class="pd-btn-ghost">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.36C1.61 2.18 2.54 1 3.72 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.69a16 16 0 0 0 6 6l1.06-1.06a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Request Sample
+        </a>
+      </div>
+
+      <a href="/products" style="display:inline-flex;align-items:center;gap:6px;margin-top:20px;font-size:.8rem;color:rgba(255,255,255,.35);text-decoration:none;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,.7)'" onmouseout="this.style.color='rgba(255,255,255,.35)'">
+        ← Back to all products
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════
+     DETAIL TABS SECTION
+══════════════════════════════════════ -->
+<section class="pd-detail-section">
+  <div class="p-container">
+
+    <!-- Tabs -->
+    <div class="pd-tabs pd-reveal" id="pdTabs">
+      <button class="pd-tab active" onclick="switchTab('overview',this)">Overview</button>
+      <button class="pd-tab" onclick="switchTab('composition',this)">Composition</button>
+      <button class="pd-tab" onclick="switchTab('clinical',this)">Clinical Info</button>
+      <button class="pd-tab" onclick="switchTab('compliance',this)">Compliance</button>
+    </div>
+
+    <!-- Overview tab -->
+    <div class="pd-tab-content active" id="tab-overview">
+      <div class="pd-info-grid">
+
+        {% if product.get('description') %}
+        <div class="pd-info-card full pd-reveal">
+          <div class="pd-info-card-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Description
+          </div>
+          <div class="pd-info-card-val">{{ product.description }}</div>
         </div>
         {% endif %}
 
         {% if product.get('indication') %}
-        <div class="pd-info-section">
-          <h4>Indication</h4>
-          <p>{{ product.indication }}</p>
+        <div class="pd-info-card pd-reveal">
+          <div class="pd-info-card-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Indication
+          </div>
+          <div class="pd-info-card-val">{{ product.indication }}</div>
         </div>
         {% endif %}
 
         {% if product.get('benefits') %}
-        <div class="pd-info-section">
-          <h4>Key Benefits</h4>
-          <p>{{ product.benefits }}</p>
+        <div class="pd-info-card pd-reveal">
+          <div class="pd-info-card-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            Key Benefits
+          </div>
+          <div class="pd-info-card-val">{{ product.benefits }}</div>
         </div>
         {% endif %}
 
         {% if product.get('how_to_use') %}
-        <div class="pd-info-section">
-          <h4>How to Use</h4>
-          <p>{{ product.how_to_use }}</p>
+        <div class="pd-info-card pd-reveal">
+          <div class="pd-info-card-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Dosage / How to Use
+          </div>
+          <div class="pd-info-card-val">{{ product.how_to_use }}</div>
         </div>
         {% endif %}
 
-        {% if product.get('side_effects') %}
-        <div class="pd-info-section" style="border-left-color:rgba(201,169,110,.7)">
-          <h4>Side Effects</h4>
-          <p>{{ product.side_effects }}</p>
+        {% if product.get('features') %}
+        <div class="pd-info-card pd-reveal">
+          <div class="pd-info-card-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            Features
+          </div>
+          <div class="pd-info-card-val">{{ product.features }}</div>
         </div>
         {% endif %}
 
         {% if product.get('storage') %}
-        <div class="pd-info-section">
-          <h4>Storage</h4>
-          <p>{{ product.storage }}</p>
+        <div class="pd-info-card pd-reveal">
+          <div class="pd-info-card-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            Storage
+          </div>
+          <div class="pd-info-card-val">{{ product.storage }}</div>
         </div>
         {% endif %}
 
-        {% if product.get('schedule') %}
-        <div class="pd-info-section">
-          <h4>Drug Schedule</h4>
-          <p>Schedule {{ product.schedule }} — Prescription only</p>
+      </div>
+    </div>
+
+    <!-- Composition tab -->
+    <div class="pd-tab-content" id="tab-composition">
+      <span class="pd-section-label">Active Ingredients</span>
+      <h2 class="pd-section-title">Composition Breakdown</h2>
+      <p class="pd-section-sub">Each ingredient is carefully selected and clinically validated for synergistic therapeutic outcomes.</p>
+
+      {% if product.get('composition') %}
+      <div class="pd-info-card full pd-reveal" style="margin-bottom:32px">
+        <div class="pd-info-card-label">Full Composition</div>
+        <div class="pd-info-card-val" style="font-size:1rem;font-weight:600;color:#1e6ff1">{{ product.composition }}</div>
+      </div>
+      {% endif %}
+
+      <div class="pd-ingr-grid">
+        <!-- Ingredient cards — generated from composition string if available, else generic -->
+        {% set comp = product.get('composition','') %}
+        {% set icons = ['🧪','💊','🔬','⚗️'] %}
+        {% set parts = comp.split('+') if '+' in comp else [comp or product.name] %}
+        {% for part in parts %}
+        {% set trimmed = part.strip() %}
+        <div class="pd-ingr-card pd-reveal">
+          <div class="pd-ingr-card-num">{{ loop.index }}</div>
+          <div class="pd-ingr-dot">{{ icons[(loop.index0) % 4] }}</div>
+          <div class="pd-ingr-name">{{ trimmed }}</div>
+          <div class="pd-ingr-role">
+            {% if 'Metformin' in trimmed %}Reduces hepatic glucose production and improves insulin sensitivity.
+            {% elif 'Glimepiride' in trimmed %}Stimulates pancreatic insulin secretion as a sulfonylurea.
+            {% elif 'Pioglitazone' in trimmed %}Reduces insulin resistance via PPAR-γ agonism in adipose tissue.
+            {% elif 'Pregabalin' in trimmed %}Modulates calcium channels to reduce neuropathic pain signalling.
+            {% elif 'Mecobalamin' in trimmed or 'Methylcobalamin' in trimmed %}Supports myelin sheath regeneration and nerve function.
+            {% elif 'Nortriptyline' in trimmed %}Tricyclic antidepressant that modulates pain perception pathways.
+            {% elif 'Duloxetine' in trimmed %}SNRI that targets central sensitization and mood stabilisation.
+            {% elif 'Voglibose' in trimmed %}Alpha-glucosidase inhibitor slowing post-prandial glucose absorption.
+            {% elif 'Rabeprazole' in trimmed %}Proton pump inhibitor suppressing gastric acid secretion.
+            {% elif 'Domperidone' in trimmed %}Prokinetic agent improving gastric emptying and motility.
+            {% elif 'Acetylcysteine' in trimmed or 'NAC' in trimmed %}Precursor to glutathione, a primary cellular antioxidant.
+            {% elif 'Taurine' in trimmed %}Amino acid supporting liver function and metabolic processes.
+            {% else %}Active pharmaceutical ingredient contributing to therapeutic effect.
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Clinical Info tab -->
+    <div class="pd-tab-content" id="tab-clinical">
+      <div class="pd-info-grid">
+
+        {% if product.get('indication') %}
+        <div class="pd-info-card full pd-reveal">
+          <div class="pd-info-card-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Clinical Indication
+          </div>
+          <div class="pd-info-card-val">{{ product.indication }}</div>
         </div>
         {% endif %}
 
-        <div style="display:flex;gap:12px;margin-top:28px;flex-wrap:wrap">
-          <a href="/online-ordering" class="p-btn p-btn-primary" style="flex:1;text-align:center">Order Now →</a>
-          <a href="/contact" class="p-btn p-btn-navy" style="flex:1;text-align:center">Request Sample</a>
+        {% if product.get('how_to_use') %}
+        <div class="pd-info-card pd-reveal">
+          <div class="pd-info-card-label">Dosage &amp; Administration</div>
+          <div class="pd-info-card-val">{{ product.how_to_use }}</div>
         </div>
-        <a href="/products" style="display:block;text-align:center;margin-top:16px;font-size:.85rem;color:var(--gray-400);text-decoration:none">← Back to all products</a>
-      </div>
-    </div>
-  </div>
-</section>
+        {% endif %}
 
-<!-- ── RELATED CTA ── -->
-<section class="p-section p-section-sm p-section-white" style="text-align:center">
-  <div class="p-container">
-    <div class="p-reveal">
-      <h2 class="p-section-title" style="margin-bottom:12px">Explore More Products</h2>
-      <p class="p-section-subtitle" style="margin:0 auto 28px">Discover the full Tunes Therapeutics portfolio across all therapeutic categories.</p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <a href="/product-catalog" class="p-btn p-btn-blue">Browse Catalog</a>
-        <a href="/products" class="p-btn p-btn-navy">Product Showcase</a>
+        {% if product.get('side_effects') %}
+        <div class="pd-info-card pd-reveal" style="border-top-color:#f59e0b !important">
+          <div class="pd-info-card-label" style="color:#d97706">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Side Effects
+          </div>
+          <div class="pd-info-card-val">{{ product.side_effects }}</div>
+        </div>
+        {% endif %}
+
+        {% if product.get('contraindications') %}
+        <div class="pd-info-card pd-reveal" style="border-top-color:#ef4444 !important">
+          <div class="pd-info-card-label" style="color:#dc2626">Contraindications</div>
+          <div class="pd-info-card-val">{{ product.contraindications }}</div>
+        </div>
+        {% endif %}
+
+        {% if product.get('drug_interactions') %}
+        <div class="pd-info-card full pd-reveal">
+          <div class="pd-info-card-label">Drug Interactions</div>
+          <div class="pd-info-card-val">{{ product.drug_interactions }}</div>
+        </div>
+        {% endif %}
+
+        {% if not product.get('side_effects') and not product.get('how_to_use') %}
+        <div class="pd-info-card full pd-reveal">
+          <div class="pd-info-card-label">Clinical Use</div>
+          <div class="pd-info-card-val">For detailed clinical information, prescribing information, and patient counselling guidance, please contact our medical affairs team or refer to the product insert.</div>
+        </div>
+        {% endif %}
+
       </div>
     </div>
+
+    <!-- Compliance tab -->
+    <div class="pd-tab-content" id="tab-compliance">
+      <span class="pd-section-label">Quality &amp; Regulatory</span>
+      <h2 class="pd-section-title">Compliance Standards</h2>
+      <p class="pd-section-sub">Every product meets stringent national and international pharmaceutical quality standards.</p>
+
+      <div class="pd-trust-grid pd-reveal">
+        <div class="pd-trust-card">
+          <div class="pd-trust-icon">✅</div>
+          <div class="pd-trust-title">DCGI Approved</div>
+          <div class="pd-trust-sub">Approved by Drug Controller General of India under Schedule H regulations.</div>
+        </div>
+        <div class="pd-trust-card">
+          <div class="pd-trust-icon">🏭</div>
+          <div class="pd-trust-title">WHO-GMP Certified</div>
+          <div class="pd-trust-sub">Manufacturing partners hold WHO-GMP certification ensuring global quality standards.</div>
+        </div>
+        <div class="pd-trust-card">
+          <div class="pd-trust-icon">🔬</div>
+          <div class="pd-trust-title">Clinically Tested</div>
+          <div class="pd-trust-sub">Formulations backed by clinical evidence for safety and therapeutic efficacy.</div>
+        </div>
+        <div class="pd-trust-card">
+          <div class="pd-trust-icon">🛡️</div>
+          <div class="pd-trust-title">Quality Assured</div>
+          <div class="pd-trust-sub">Rigorous QC testing at every stage from raw material to finished product.</div>
+        </div>
+      </div>
+
+      {% if product.get('manufacturer') %}
+      <div class="pd-info-card full pd-reveal" style="margin-top:24px">
+        <div class="pd-info-card-label">Manufactured By</div>
+        <div class="pd-info-card-val" style="font-size:1rem;font-weight:600">{{ product.manufacturer }}</div>
+      </div>
+      {% endif %}
+
+      {% if product.get('schedule') %}
+      <div class="pd-info-card full pd-reveal" style="margin-top:16px">
+        <div class="pd-info-card-label">Drug Schedule</div>
+        <div class="pd-info-card-val">Schedule {{ product.schedule }} — Prescription only medication. To be sold by retail on the prescription of a Registered Medical Practitioner only.</div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- CTA Strip -->
+    <div class="pd-cta-strip pd-reveal">
+      <div class="pd-cta-strip-text" style="position:relative;z-index:1">
+        <h3>Ready to prescribe {{ product.name }}?</h3>
+        <p>Contact our field team for samples, pricing, and territory availability.</p>
+      </div>
+      <div class="pd-cta-strip-actions" style="position:relative;z-index:1">
+        <a href="/online-ordering" class="pd-btn-primary">Order Now</a>
+        <a href="/contact" class="pd-btn-ghost">Contact Team</a>
+      </div>
+    </div>
+
   </div>
 </section>
 
 {% include 'partials/footer.html' %}
+
+<script>
+/* ── Scroll progress bar ── */
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  document.getElementById('scrollBar').style.width = Math.min(pct, 100) + '%';
+});
+
+/* ── Tab switching ── */
+function switchTab(id, btn) {
+  document.querySelectorAll('.pd-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.pd-tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+  // Re-trigger reveals inside newly visible tab
+  triggerReveals();
+}
+
+/* ── GSAP scroll reveals ── */
+function triggerReveals() {
+  if (typeof gsap === 'undefined') return;
+  gsap.utils.toArray('.pd-reveal:not(.revealed)').forEach((el, i) => {
+    gsap.to(el, {
+      opacity: 1, y: 0,
+      duration: 0.7, delay: i * 0.08,
+      ease: 'power3.out',
+      onComplete: () => el.classList.add('revealed')
+    });
+  });
+  gsap.utils.toArray('.pd-reveal-left:not(.revealed)').forEach((el, i) => {
+    gsap.to(el, { opacity: 1, x: 0, duration: 0.8, delay: i * 0.1, ease: 'power3.out', onComplete: () => el.classList.add('revealed') });
+  });
+  gsap.utils.toArray('.pd-reveal-right:not(.revealed)').forEach((el, i) => {
+    gsap.to(el, { opacity: 1, x: 0, duration: 0.8, delay: i * 0.1, ease: 'power3.out', onComplete: () => el.classList.add('revealed') });
+  });
+}
+
+window.addEventListener('load', () => {
+  /* Hero entrance */
+  if (typeof gsap !== 'undefined') {
+    gsap.registerPlugin(ScrollTrigger);
+
+    gsap.from('#imgStage', { opacity: 0, x: -60, duration: 1.1, ease: 'power3.out', delay: 0.3 });
+    gsap.from('#heroInfo > *', {
+      opacity: 0, y: 30, stagger: 0.1, duration: 0.9, ease: 'power3.out', delay: 0.4
+    });
+
+    /* Scroll-triggered reveals */
+    ScrollTrigger.create({
+      trigger: '.pd-detail-section',
+      onEnter: triggerReveals,
+      onEnterBack: triggerReveals,
+    });
+  }
+});
+
+/* ── Canvas particle field ── */
+(function() {
+  const canvas = document.getElementById('pdCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+
+  function resize() {
+    W = canvas.width  = canvas.offsetWidth;
+    H = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  class Particle {
+    constructor() { this.reset(); }
+    reset() {
+      this.x = Math.random() * W;
+      this.y = Math.random() * H;
+      this.r = Math.random() * 2 + 0.5;
+      this.vx = (Math.random() - .5) * .4;
+      this.vy = (Math.random() - .5) * .4;
+      this.alpha = Math.random() * .4 + .1;
+    }
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(100,160,255,${this.alpha})`;
+      ctx.fill();
+      this.x += this.vx; this.y += this.vy;
+      if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+    }
+  }
+
+  for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+  /* Draw connecting lines */
+  function drawLines() {
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i+1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        if (dist < 100) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = `rgba(30,111,241,${(1 - dist/100) * 0.12})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+    drawLines();
+    particles.forEach(p => p.draw());
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+</script>
 </body>
 </html>
