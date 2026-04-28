@@ -511,67 +511,277 @@
 </section>
 
 <!-- ── COMPANY JOURNEY ── -->
-<section class="p-section p-section-dark">
+<section class="journey-section p-reveal">
   <div class="p-container">
-    <div class="p-grid-2" style="gap:64px">
-      <div class="p-reveal-left">
-        <span class="p-section-tag">Our Journey</span>
-        <h2 class="p-section-title">Milestones &amp; Growth</h2>
-        <div class="p-divider gold"></div>
-        <p style="color:rgba(255,255,255,.58);line-height:1.85;margin-bottom:40px">From a vision rooted in quality pharmaceutical care to a growing presence across multiple Indian states, our journey reflects our commitment to excellence at every stage.</p>
-        <div class="p-timeline">
-          <div class="p-timeline-item p-reveal">
-            <div class="p-timeline-dot"></div>
-            <div class="p-timeline-year">Oct 2021</div>
-            <h4 style="color:white">Foundation</h4>
-            <p>Tunes Pharma (A Division of Brinda Medicals) incorporated in Guntur, Andhra Pradesh with an initial capital of ₹15 lakhs and a clear mission for quality, affordable pharma.</p>
-          </div>
-          <div class="p-timeline-item p-reveal p-delay-1">
-            <div class="p-timeline-dot"></div>
-            <div class="p-timeline-year">2022</div>
-            <h4 style="color:white">Product Launch</h4>
-            <p>Launch of the Ecoglim series (diabetes management), RESGABA-NT (neuropathy), NACTaid (metabolic support) and RABISHIR-DSR (gastro) — entering the AP and Telangana markets.</p>
-          </div>
-          <div class="p-timeline-item p-reveal p-delay-2">
-            <div class="p-timeline-dot"></div>
-            <div class="p-timeline-year">2023</div>
-            <h4 style="color:white">Market Expansion</h4>
-            <p>Launched in 4 districts with a focused KOL strategy — engaging 20 key opinion leaders per district to build prescription base and brand trust.</p>
-          </div>
-          <div class="p-timeline-item p-reveal p-delay-3">
-            <div class="p-timeline-dot"></div>
-            <div class="p-timeline-year">2024–25</div>
-            <h4 style="color:white">Growing Traction</h4>
-            <p>Achieved real commercial turnover as an early-stage startup with zero investor funding: ₹1.48L (Oct-24) → ₹2.78L (Nov-24) → ₹0.93L (Dec-24) → ₹1.25L (Jan-25) — proving the model organically.</p>
-          </div>
-          <div class="p-timeline-item p-reveal p-delay-4">
-            <div class="p-timeline-dot"></div>
-            <div class="p-timeline-year">2025+</div>
-            <h4 style="color:white">PAN India Vision</h4>
-            <p>Targeting PAN India presence — expanding beyond AP and Telangana, diversifying product portfolio across Cardiology, Diabetology, Nephrology and General Medicine.</p>
-          </div>
-        </div>
-      </div>
-      <div class="p-reveal-right" style="display:flex;flex-direction:column;gap:20px;padding-top:80px">
-        <div class="p-card p-card-glass p-reveal" data-tilt style="padding:28px">
-          <div class="p-icon p-icon-gold" style="margin-bottom:14px">🏭</div>
-          <h4 style="color:white;margin-bottom:8px">GMP Certified Manufacturing</h4>
-          <p style="color:rgba(255,255,255,.62);font-size:.88rem;line-height:1.7">WHO-GMP certified facilities ensuring the highest standards of pharmaceutical manufacturing and quality control.</p>
-        </div>
-        <div class="p-card p-card-glass p-reveal p-delay-1" data-tilt style="padding:28px">
-          <div class="p-icon p-icon-gold" style="margin-bottom:14px">📋</div>
-          <h4 style="color:white;margin-bottom:8px">DCGI Approved Products</h4>
-          <p style="color:rgba(255,255,255,.62);font-size:.88rem;line-height:1.7">All formulations carry DCGI approval and comply with Schedule H regulations of the Drugs and Cosmetics Act.</p>
-        </div>
-        <div class="p-card p-card-glass p-reveal p-delay-2" data-tilt style="padding:28px">
-          <div class="p-icon p-icon-gold" style="margin-bottom:14px">🎓</div>
-          <h4 style="color:white;margin-bottom:8px">Expert Leadership</h4>
-          <p style="color:rgba(255,255,255,.62);font-size:.88rem;line-height:1.7">Founder Talluri Damodar progressed from Medical Representative → Area Business Manager → Regional Head → Zonal Sales Manager across top-10 pharma companies. Co-directed by Usha Rekha Talluri, bringing complementary expertise in healthcare operations.</p>
-        </div>
-      </div>
+    <div class="p-section-header center p-reveal">
+      <span class="p-section-tag">Our Journey</span>
+      <h2 class="p-section-title" style="color:var(--navy-900)">Milestones &amp; Growth</h2>
+      <div class="p-divider center"></div>
+      <p class="p-section-subtitle">From a vision rooted in quality pharmaceutical care to a growing presence across India — every milestone reflects our commitment to excellence.</p>
     </div>
+
+    <!-- Infographic path -->
+    <div class="journey-infographic">
+      <!-- SVG winding path -->
+      <svg class="journey-svg" viewBox="0 0 1100 340" preserveAspectRatio="xMidYMid meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path class="journey-path" d="M 100 230 C 180 230 180 110 280 110 C 380 110 380 230 480 230 C 580 230 580 110 680 110 C 780 110 780 230 880 230 C 960 230 980 130 1000 110" stroke="#d0d8e8" stroke-width="2.5" stroke-dasharray="8 6" stroke-linecap="round"/>
+      </svg>
+
+      <!-- Steps -->
+      <div class="journey-steps">
+
+        <!-- Step 1 — bottom row -->
+        <div class="journey-step journey-step-bottom p-reveal">
+          <div class="journey-node journey-node-green">
+            <div class="journey-node-ring"></div>
+            <div class="journey-node-inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/></svg>
+            </div>
+          </div>
+          <div class="journey-label journey-label-below">
+            <div class="journey-year">Oct 2021</div>
+            <div class="journey-title">Foundation</div>
+            <p class="journey-desc">Tunes Pharma incorporated in Guntur, AP with ₹15L capital and a mission for quality, affordable pharma.</p>
+          </div>
+        </div>
+
+        <!-- Step 2 — top row -->
+        <div class="journey-step journey-step-top p-reveal p-delay-1">
+          <div class="journey-label journey-label-above">
+            <div class="journey-year">2022</div>
+            <div class="journey-title">Product Launch</div>
+            <p class="journey-desc">Launched Ecoglim, RESGABA-NT, NACTaid &amp; RABISHIR-DSR — entering AP &amp; Telangana markets.</p>
+          </div>
+          <div class="journey-node journey-node-teal">
+            <div class="journey-node-ring"></div>
+            <div class="journey-node-inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 — bottom row -->
+        <div class="journey-step journey-step-bottom p-reveal p-delay-2">
+          <div class="journey-node journey-node-blue-light">
+            <div class="journey-node-ring"></div>
+            <div class="journey-node-inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+            </div>
+          </div>
+          <div class="journey-label journey-label-below">
+            <div class="journey-year">2023</div>
+            <div class="journey-title">Market Expansion</div>
+            <p class="journey-desc">Launched in 4 districts, engaging 20+ KOLs per district to build prescription base and brand trust.</p>
+          </div>
+        </div>
+
+        <!-- Step 4 — top row -->
+        <div class="journey-step journey-step-top p-reveal p-delay-3">
+          <div class="journey-label journey-label-above">
+            <div class="journey-year">2024–25</div>
+            <div class="journey-title">Growing Traction</div>
+            <p class="journey-desc">Organic commercial turnover: ₹1.48L → ₹2.78L → proving the model with zero investor funding.</p>
+          </div>
+          <div class="journey-node journey-node-blue-dark">
+            <div class="journey-node-ring"></div>
+            <div class="journey-node-inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5 — bottom row -->
+        <div class="journey-step journey-step-bottom p-reveal p-delay-4">
+          <div class="journey-node journey-node-purple">
+            <div class="journey-node-ring"></div>
+            <div class="journey-node-inner">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/><path d="M2 12h2M20 12h2M12 2v2M12 20v2"/></svg>
+            </div>
+          </div>
+          <div class="journey-label journey-label-below">
+            <div class="journey-year">2025+</div>
+            <div class="journey-title">PAN India Vision</div>
+            <p class="journey-desc">Expanding beyond AP &amp; Telangana across Cardiology, Diabetology, Nephrology and General Medicine.</p>
+          </div>
+        </div>
+
+      </div><!-- /.journey-steps -->
+
+      <!-- Paper plane -->
+      <div class="journey-plane">
+        <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M36 4L4 18l12 4 4 12 4-10 12-20z" stroke="#1e6ff1" stroke-width="1.8" stroke-linejoin="round"/>
+          <path d="M16 22l6-6" stroke="#1e6ff1" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div><!-- /.journey-infographic -->
   </div>
 </section>
+
+<style>
+/* ── JOURNEY INFOGRAPHIC ── */
+.journey-section {
+  background: #f5f7fc;
+  padding: 80px 0 100px;
+}
+
+.journey-infographic {
+  position: relative;
+  margin-top: 60px;
+  min-height: 380px;
+}
+
+/* SVG path behind everything */
+.journey-svg {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%; max-width: 1100px;
+  height: 340px;
+  pointer-events: none;
+}
+.journey-path {
+  animation: dash-flow 3s linear infinite;
+  stroke-dashoffset: 0;
+}
+@keyframes dash-flow {
+  to { stroke-dashoffset: -28; }
+}
+
+/* Steps row */
+.journey-steps {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 2;
+  padding: 0 20px;
+  max-width: 1060px;
+  margin: 0 auto;
+  height: 380px;
+}
+
+/* Each step column */
+.journey-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  max-width: 180px;
+}
+
+.journey-step-bottom {
+  justify-content: flex-end;
+  padding-bottom: 20px;
+}
+.journey-step-top {
+  justify-content: flex-start;
+  padding-top: 20px;
+}
+
+/* Node circle */
+.journey-node {
+  position: relative;
+  width: 88px; height: 88px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.10);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: default;
+}
+.journey-node:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.16);
+}
+
+/* Gradient arc ring */
+.journey-node-ring {
+  position: absolute; inset: -5px;
+  border-radius: 50%;
+  border: 4px solid transparent;
+  background-clip: padding-box;
+}
+.journey-node-green  .journey-node-ring { box-shadow: 0 0 0 4px transparent; border: 4px solid transparent; background: conic-gradient(#4caf50 0deg 270deg, transparent 270deg) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask-composite: exclude; }
+.journey-node-teal   .journey-node-ring { background: conic-gradient(#00bcd4 0deg 270deg, transparent 270deg) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask-composite: exclude; }
+.journey-node-blue-light .journey-node-ring { background: conic-gradient(#2196f3 0deg 270deg, transparent 270deg) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask-composite: exclude; }
+.journey-node-blue-dark  .journey-node-ring { background: conic-gradient(#1565c0 0deg 270deg, transparent 270deg) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask-composite: exclude; }
+.journey-node-purple .journey-node-ring { background: conic-gradient(#7b1fa2 0deg 270deg, transparent 270deg) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask-composite: exclude; }
+
+/* Inner icon */
+.journey-node-inner {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+}
+.journey-node-green      .journey-node-inner { color: #4caf50; }
+.journey-node-teal       .journey-node-inner { color: #00bcd4; }
+.journey-node-blue-light .journey-node-inner { color: #2196f3; }
+.journey-node-blue-dark  .journey-node-inner { color: #1565c0; }
+.journey-node-purple     .journey-node-inner { color: #7b1fa2; }
+.journey-node-inner svg  { width: 100%; height: 100%; }
+
+/* Label */
+.journey-label {
+  text-align: center;
+  max-width: 160px;
+}
+.journey-label-below { margin-top: 16px; }
+.journey-label-above { margin-bottom: 16px; }
+
+.journey-year {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--blue-500);
+  margin-bottom: 4px;
+}
+.journey-title {
+  font-size: 0.95rem; font-weight: 700;
+  color: var(--navy-900); margin-bottom: 6px;
+  line-height: 1.2;
+}
+.journey-desc {
+  font-size: 0.75rem; color: var(--gray-500);
+  line-height: 1.65; margin: 0;
+}
+
+/* Paper plane */
+.journey-plane {
+  position: absolute;
+  top: 14px; right: 0;
+  width: 48px; height: 48px;
+  animation: plane-fly 3s ease-in-out infinite alternate;
+}
+@keyframes plane-fly {
+  from { transform: translate(0,0) rotate(-8deg); }
+  to   { transform: translate(6px,-8px) rotate(0deg); }
+}
+
+/* ── Mobile ── */
+@media (max-width: 900px) {
+  .journey-svg { display: none; }
+  .journey-infographic { min-height: auto; }
+  .journey-steps {
+    flex-direction: column;
+    height: auto; gap: 32px;
+    padding: 0;
+  }
+  .journey-step,
+  .journey-step-top,
+  .journey-step-bottom {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 100%;
+    padding: 0;
+  }
+  .journey-label-above { margin-bottom: 0; margin-top: 12px; order: 2; }
+  .journey-label-below { margin-top: 12px; }
+  .journey-plane { display: none; }
+  .journey-step { border-left: 3px solid #e2e8f0; padding-left: 20px; align-items: flex-start; }
+  .journey-step-top .journey-node,
+  .journey-step-bottom .journey-node { margin-bottom: 12px; }
+}
+</style>
 
 <!-- ── CTA ── -->
 <section class="p-section p-section-sm p-section-light" style="text-align:center">
