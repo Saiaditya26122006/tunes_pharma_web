@@ -630,6 +630,26 @@
         </div>
         {% endif %}
 
+        {% if product.get('how_it_works') %}
+        <div class="pd-info-card full pd-reveal">
+          <div class="pd-info-card-label">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            How It Works
+          </div>
+          <div class="pd-info-card-val">{{ product.how_it_works }}</div>
+        </div>
+        {% endif %}
+
+        {% if product.get('quick_tips') %}
+        <div class="pd-info-card full pd-reveal" style="background:linear-gradient(135deg,rgba(30,111,241,.04),rgba(14,165,233,.04));border-color:rgba(30,111,241,.15)">
+          <div class="pd-info-card-label" style="color:#1e6ff1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Quick Tips
+          </div>
+          <div class="pd-info-card-val">{{ product.quick_tips }}</div>
+        </div>
+        {% endif %}
+
         {% if product.get('storage') %}
         <div class="pd-info-card pd-reveal">
           <div class="pd-info-card-label">
@@ -637,6 +657,16 @@
             Storage
           </div>
           <div class="pd-info-card-val">{{ product.storage }}</div>
+        </div>
+        {% endif %}
+
+        {% if product.get('mrp') or product.get('therapeutic_class') %}
+        <div class="pd-info-card pd-reveal">
+          <div class="pd-info-card-label">Product Details</div>
+          <div class="pd-info-card-val">
+            {% if product.get('mrp') %}<strong>MRP:</strong> {{ product.mrp }}<br>{% endif %}
+            {% if product.get('therapeutic_class') %}<strong>Therapeutic Class:</strong> {{ product.therapeutic_class }}{% endif %}
+          </div>
         </div>
         {% endif %}
 
@@ -730,6 +760,16 @@
         <div class="pd-info-card full pd-reveal">
           <div class="pd-info-card-label">Drug Interactions</div>
           <div class="pd-info-card-val">{{ product.drug_interactions }}</div>
+        </div>
+        {% endif %}
+
+        {% if product.get('safety_advice') %}
+        <div class="pd-info-card full pd-reveal" style="background:linear-gradient(135deg,rgba(245,158,11,.04),rgba(239,68,68,.04));border-color:rgba(245,158,11,.2)">
+          <div class="pd-info-card-label" style="color:#d97706">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            Safety Advice &amp; Warnings
+          </div>
+          <div class="pd-info-card-val">{{ product.safety_advice }}</div>
         </div>
         {% endif %}
 
