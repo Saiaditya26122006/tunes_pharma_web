@@ -64,31 +64,106 @@
     .feat-card h3 { font-size: 1.1rem; font-weight: 600; color: var(--navy-800); margin-bottom: 10px; }
     .feat-card p  { font-size: .88rem; color: var(--gray-500); line-height: 1.75; }
 
-    /* Product slider */
-    .prod-slider {
-      display: flex; gap: 24px;
-      overflow-x: auto; padding: 10px 4px 28px;
-      scroll-snap-type: x mandatory;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(255,255,255,.2) transparent;
+    /* ── PRODUCT CARDS ── */
+    .prod-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 12px;
     }
-    .prod-slider::-webkit-scrollbar { height: 5px; }
-    .prod-slider::-webkit-scrollbar-thumb { background: rgba(255,255,255,.2); border-radius: 4px; }
-    .prod-slide {
-      flex: 0 0 340px;
-      scroll-snap-align: center;
-      border-radius: var(--radius-lg);
+    .prod-card {
+      position: relative;
+      border-radius: 20px;
       overflow: hidden;
-      background: var(--glass-white);
-      border: 1px solid var(--glass-border);
-      transition: all .4s var(--ease-smooth);
       cursor: pointer;
+      background: #0d1e30;
+      transition: transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s ease;
+      box-shadow: 0 4px 24px rgba(0,0,0,.35);
     }
-    .prod-slide:hover { transform: translateY(-10px) scale(1.02); background: var(--glass-white-hover); border-color: var(--glass-border-hover); }
-    .prod-slide-img  { width: 100%; height: 220px; object-fit: cover; }
-    .prod-slide-body { padding: 22px; }
-    .prod-slide-body h3 { color: white; font-size: 1.1rem; margin-bottom: 8px; }
-    .prod-slide-body p  { color: rgba(255,255,255,.68); font-size: .87rem; line-height: 1.7; }
+    .prod-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 48px rgba(0,0,0,.5);
+    }
+    /* Image */
+    .prod-card-img {
+      width: 100%; height: 240px;
+      object-fit: cover;
+      display: block;
+      transition: transform .6s ease;
+    }
+    .prod-card:hover .prod-card-img { transform: scale(1.06); }
+
+    /* Full-height gradient overlay */
+    .prod-card-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(
+        to bottom,
+        transparent 30%,
+        rgba(5,15,30,.55) 55%,
+        rgba(5,15,30,.92) 100%
+      );
+      pointer-events: none;
+    }
+
+    /* Therapy tag — top-left */
+    .prod-card-tag {
+      position: absolute; top: 16px; left: 16px;
+      font-size: .65rem; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 5px 11px; border-radius: 99px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,.18);
+      color: #fff;
+    }
+    .prod-card-tag.diabetes   { background: rgba(34,197,94,.25);  border-color: rgba(34,197,94,.4); }
+    .prod-card-tag.antioxidant{ background: rgba(99,102,241,.25); border-color: rgba(99,102,241,.4); }
+    .prod-card-tag.neuro      { background: rgba(251,146,60,.25);  border-color: rgba(251,146,60,.4); }
+    .prod-card-tag.gastro     { background: rgba(20,184,166,.25);  border-color: rgba(20,184,166,.4); }
+
+    /* Bottom content */
+    .prod-card-body {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 20px 22px 22px;
+    }
+    .prod-card-body h3 {
+      color: #fff; font-size: 1.1rem; font-weight: 700;
+      margin-bottom: 6px; line-height: 1.2;
+    }
+    .prod-card-body p {
+      color: rgba(255,255,255,.68); font-size: .82rem;
+      line-height: 1.65; margin-bottom: 14px;
+    }
+
+    /* Explore link */
+    .prod-card-cta {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .78rem; font-weight: 600; color: #fff;
+      text-decoration: none;
+      opacity: 0; transform: translateY(6px);
+      transition: opacity .3s ease, transform .3s ease, gap .3s ease;
+    }
+    .prod-card:hover .prod-card-cta { opacity: 1; transform: translateY(0); }
+    .prod-card-cta svg { width: 14px; height: 14px; transition: transform .3s ease; }
+    .prod-card-cta:hover svg { transform: translateX(3px); }
+
+    /* Left accent bar on hover */
+    .prod-card::before {
+      content: '';
+      position: absolute; left: 0; top: 0;
+      width: 3px; height: 100%;
+      background: linear-gradient(to bottom, #1e6ff1, rgba(30,111,241,0));
+      opacity: 0; transition: opacity .4s ease;
+      z-index: 2;
+    }
+    .prod-card:hover::before { opacity: 1; }
+
+    @media(max-width:900px){
+      .prod-grid { grid-template-columns: repeat(2,1fr); }
+    }
+    @media(max-width:540px){
+      .prod-grid { grid-template-columns: 1fr; }
+      .prod-card-img { height: 200px; }
+    }
 
     /* Mission section */
     .mission-text h2 {
@@ -305,39 +380,68 @@
       </div>
       <a href="/products" class="p-btn p-btn-outline p-reveal" style="flex-shrink:0">View All Products →</a>
     </div>
-    <div class="prod-slider">
-      <div class="prod-slide p-reveal p-delay-1" onclick="window.location.href='/products/ecoglim-mv1'">
-        <img src="{{ url_for('static', filename='images/p1.jpg') }}" alt="Ecoglim MV1" class="prod-slide-img" onerror="this.style.background='#1a2f45';this.alt='Product'">
-        <div class="prod-slide-body">
-          <span class="p-badge p-badge-blue" style="margin-bottom:10px">Diabetes Management</span>
+    <div class="prod-grid">
+
+      <!-- Ecoglim MV1 -->
+      <div class="prod-card p-reveal p-delay-1" onclick="window.location.href='/products/ecoglim-mv1'">
+        <img src="{{ url_for('static', filename='images/p1.jpg') }}" alt="Ecoglim MV1" class="prod-card-img" onerror="this.style.background='#0d1e30'">
+        <div class="prod-card-overlay"></div>
+        <span class="prod-card-tag diabetes">Diabetes Management</span>
+        <div class="prod-card-body">
           <h3>Ecoglim MV1</h3>
-          <p>Advanced diabetes management with multi-vitamin complex for enhanced glycemic control and patient care.</p>
+          <p>Advanced diabetes management with multi-vitamin complex for enhanced glycemic control.</p>
+          <a class="prod-card-cta">
+            Explore
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
         </div>
       </div>
-      <div class="prod-slide p-reveal p-delay-2" onclick="window.location.href='/products/nactaid'">
-        <img src="{{ url_for('static', filename='images/p2.jpg') }}" alt="NACTAID" class="prod-slide-img" onerror="this.style.background='#1a2f45';this.alt='Product'">
-        <div class="prod-slide-body">
-          <span class="p-badge p-badge-blue" style="margin-bottom:10px">Antioxidant Support</span>
+
+      <!-- NACTAID -->
+      <div class="prod-card p-reveal p-delay-2" onclick="window.location.href='/products/nactaid'">
+        <img src="{{ url_for('static', filename='images/p2.jpg') }}" alt="NACTAID" class="prod-card-img" onerror="this.style.background='#0d1e30'">
+        <div class="prod-card-overlay"></div>
+        <span class="prod-card-tag antioxidant">Antioxidant Support</span>
+        <div class="prod-card-body">
           <h3>NACTAID</h3>
-          <p>N-Acetylcysteine + Taurine combination offering antioxidant and metabolic support for better patient outcomes.</p>
+          <p>N-Acetylcysteine + Taurine combination for antioxidant and metabolic support.</p>
+          <a class="prod-card-cta">
+            Explore
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
         </div>
       </div>
-      <div class="prod-slide p-reveal p-delay-3" onclick="window.location.href='/products/resgaba-nt'">
-        <img src="{{ url_for('static', filename='images/product_images.jpg') }}" alt="RESGABA-NT" class="prod-slide-img" onerror="this.style.background='#1a2f45';this.alt='Product'">
-        <div class="prod-slide-body">
-          <span class="p-badge p-badge-blue" style="margin-bottom:10px">Neuropathic Pain</span>
+
+      <!-- RESGABA Series -->
+      <div class="prod-card p-reveal p-delay-3" onclick="window.location.href='/products/resgaba-nt'">
+        <img src="{{ url_for('static', filename='images/product_images.jpg') }}" alt="RESGABA-NT" class="prod-card-img" onerror="this.style.background='#0d1e30'">
+        <div class="prod-card-overlay"></div>
+        <span class="prod-card-tag neuro">Neuropathic Pain</span>
+        <div class="prod-card-body">
           <h3>RESGABA Series</h3>
-          <p>Precision formulations for neuropathic pain management with proven clinical efficacy and safety.</p>
+          <p>Precision formulations for neuropathic pain with proven clinical efficacy and safety.</p>
+          <a class="prod-card-cta">
+            Explore
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
         </div>
       </div>
-      <div class="prod-slide p-reveal p-delay-4" onclick="window.location.href='/products/rabishir-dsr'">
-        <img src="{{ url_for('static', filename='images/product_images.jpg') }}" alt="RABISHIR-DSR" class="prod-slide-img" onerror="this.style.background='#1a2f45';this.alt='Product'">
-        <div class="prod-slide-body">
-          <span class="p-badge p-badge-blue" style="margin-bottom:10px">Gastrointestinal</span>
+
+      <!-- RABISHIR-DSR -->
+      <div class="prod-card p-reveal p-delay-4" onclick="window.location.href='/products/rabishir-dsr'">
+        <img src="{{ url_for('static', filename='images/product_images.jpg') }}" alt="RABISHIR-DSR" class="prod-card-img" onerror="this.style.background='#0d1e30'">
+        <div class="prod-card-overlay"></div>
+        <span class="prod-card-tag gastro">Gastrointestinal</span>
+        <div class="prod-card-body">
           <h3>RABISHIR-DSR</h3>
-          <p>Dual-action GI therapy combining acid suppression with enhanced gastric motility for optimal outcomes.</p>
+          <p>Dual-action GI therapy combining acid suppression with enhanced gastric motility.</p>
+          <a class="prod-card-cta">
+            Explore
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
         </div>
       </div>
+
     </div>
   </div>
 </section>
