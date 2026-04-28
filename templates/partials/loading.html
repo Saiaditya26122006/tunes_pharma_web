@@ -1,100 +1,328 @@
 <style>
+  /* ═══════════════════════════════════════════════════════
+     TUNES PHARMA — STORY LOADER
+     Story sequence (runs while website loads in background):
+       1. C-capsule & D-capsule slide in from sides, stop with gap
+       2. ECG heartbeat traces left-to-right through both shapes
+       3. Sun rays burst upward from above the gap
+       4. Brand name & tagline fade in
+       5. ECG loops continuously until page is ready, then fades out
+  ═══════════════════════════════════════════════════════ */
+
   .tp-loader {
     position: fixed; inset: 0;
-    background: #05101A;
+    background: radial-gradient(ellipse at 50% 46%, #08192e 0%, #030c18 100%);
     z-index: 9999;
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
+    transition: opacity 0.7s ease, visibility 0.7s ease;
   }
   .tp-loader.fade-out { opacity: 0; visibility: hidden; }
 
-  /* Logo circle */
-  .tp-logo {
-    width: 88px; height: 88px; border-radius: 50%;
-    background: #fff;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    position: relative;
-    animation: tpLogoIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.1s both;
-  }
-  .tp-logo img { width: 62px; height: auto; display: block; }
-
-  /* Single ripple ring */
-  .tp-ripple {
-    position: absolute; inset: -4px; border-radius: 50%;
-    border: 1.5px solid rgba(201,169,110,0.6);
-    animation: tpRipple 1.6s ease-out 0.5s infinite;
+  /* subtle center glow behind logo */
+  .tl-glow-bg {
+    position: absolute;
+    width: 320px; height: 180px;
+    border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(30,111,241,0.08) 0%, transparent 70%);
+    pointer-events: none;
   }
 
-  /* Brand text block */
-  .tp-text {
-    margin-top: 24px; text-align: center;
-    animation: tpTextIn 0.45s ease 0.5s both;
+  /* ── Phase 1: Capsule slides ── */
+  .tl-cap-left  { animation: tl-capL 0.65s cubic-bezier(0.34,1.2,0.64,1) 0.1s both; }
+  .tl-cap-right { animation: tl-capR 0.65s cubic-bezier(0.34,1.2,0.64,1) 0.12s both; }
+  @keyframes tl-capL {
+    from { transform: translateX(-180px); opacity: 0; }
+    to   { transform: translateX(0);      opacity: 1; }
   }
-  .tp-name {
+  @keyframes tl-capR {
+    from { transform: translateX(180px);  opacity: 0; }
+    to   { transform: translateX(0);      opacity: 1; }
+  }
+
+  /* connector wires appear when capsules meet */
+  .tl-wires {
+    opacity: 0;
+    animation: tl-wireIn 0.2s ease-out 0.78s forwards;
+  }
+  @keyframes tl-wireIn { to { opacity: 1; } }
+
+  /* ── Phase 2: ECG first trace ── */
+  .tl-ecg {
+    stroke-dasharray: 510;
+    stroke-dashoffset: 510;
+    animation: tl-ecgTrace 1.05s cubic-bezier(0.4,0,0.35,1) 0.82s forwards;
+  }
+  @keyframes tl-ecgTrace { to { stroke-dashoffset: 0; } }
+
+  /* ECG continuous pulse loop — JS adds this class after first trace */
+  .tl-ecg-loop {
+    animation: tl-ecgPulse 2.5s ease-in-out 0s infinite !important;
+  }
+  @keyframes tl-ecgPulse {
+    0%   { stroke-dashoffset: 510; opacity: 0.12; }
+    36%  { stroke-dashoffset: 0;   opacity: 1; }
+    62%  { stroke-dashoffset: 0;   opacity: 1; }
+    88%  { stroke-dashoffset: 0;   opacity: 0.45; }
+    100% { stroke-dashoffset: 510; opacity: 0.12; }
+  }
+
+  /* ── Phase 3: Sun rays (revealed by SMIL clip — see SVG defs) ── */
+
+  /* ── Phase 4: Brand text ── */
+  .tl-brand {
+    margin-top: 26px;
+    text-align: center;
+    opacity: 0;
+    animation: tl-textIn 0.55s ease-out 2.45s forwards;
+  }
+  .tl-brand-name {
     font-family: 'Playfair Display', Georgia, serif;
-    font-size: 1.55rem; font-weight: 700;
-    color: #fff; letter-spacing: 0.04em;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.025em;
     line-height: 1;
   }
-  .tp-tag {
+  .tl-brand-tag {
     margin-top: 8px;
-    font-size: 0.65rem; font-weight: 700;
-    letter-spacing: 0.24em; text-transform: uppercase;
-    color: rgba(201,169,110,0.75);
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: rgba(245, 178, 22, 0.82);
   }
-
-  /* Slim progress bar */
-  .tp-bar {
-    position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
-    background: linear-gradient(90deg,
-      transparent, #1E6FF1 30%, #C9A96E 60%, transparent);
-    transform: scaleX(0); transform-origin: left;
-    animation: tpBar 1.8s cubic-bezier(0.4,0,0.2,1) 0.1s forwards;
-  }
-
-  @keyframes tpLogoIn {
-    from { opacity: 0; transform: scale(0.8); }
-    to   { opacity: 1; transform: scale(1); }
-  }
-  @keyframes tpRipple {
-    from { transform: scale(1); opacity: 0.7; }
-    to   { transform: scale(2.2); opacity: 0; }
-  }
-  @keyframes tpTextIn {
-    from { opacity: 0; transform: translateY(10px); }
+  @keyframes tl-textIn {
+    from { opacity: 0; transform: translateY(9px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  @keyframes tpBar { to { transform: scaleX(1); } }
+
+  /* mobile: scale down slightly */
+  @media (max-width: 380px) {
+    .tl-svg { width: 270px !important; height: 172px !important; }
+  }
 </style>
 
 <div class="tp-loader" id="globalLoading">
-  <div class="tp-logo">
-    <div class="tp-ripple"></div>
-    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma">
+  <div class="tl-glow-bg"></div>
+
+  <!--
+    SVG viewBox: 340 × 220
+    Logo composition:
+      Left C-shape  : x=36–148, y=98–154 (cx≈92, cy=126)
+      Right D-oval  : cx=222, cy=126, rx=44, ry=28 → x=178–266
+      Gap           : x=154 to x=174 (~20 px visible between nub edges)
+      ECG baseline  : y=126
+      R-spike peak  : y=62 (64px above baseline, well above both caps)
+      S-dip trough  : y=172 (46px below baseline, below both caps)
+      Sun-ray center: (153, 83) — above the gap
+  -->
+  <svg class="tl-svg"
+       viewBox="0 0 340 220"
+       width="340" height="216"
+       style="display:block;overflow:visible"
+       xmlns="http://www.w3.org/2000/svg">
+
+    <defs>
+      <!-- Mask to carve the C-opening from the left pill -->
+      <mask id="tl-c-mask">
+        <!-- Full outer pill = white (visible) -->
+        <rect x="36" y="98" width="112" height="56" rx="28" fill="white"/>
+        <!-- Inner C-cutout = black (removed) — open on right side -->
+        <rect x="64" y="114" width="84" height="26" fill="black"/>
+      </mask>
+
+      <!-- Growing-circle clip that reveals the sun rays -->
+      <clipPath id="tl-sun-clip">
+        <circle cx="153" cy="83" r="0">
+          <animate attributeName="r"
+            from="0" to="78"
+            begin="1.93s" dur="0.46s"
+            fill="freeze"
+            calcMode="spline"
+            keyTimes="0;1"
+            keySplines="0.22 0.6 0.36 1"/>
+        </circle>
+      </clipPath>
+    </defs>
+
+    <!-- ══ PHASE 3: SUN RAYS (behind capsules, revealed by clip) ══ -->
+    <!--
+      9 triangular rays fanning from -68° to +68° from vertical.
+      Each polygon: base 2 pts at cy=83 ± 3.5 x, tip above.
+      All rotated around (153, 83) using SVG rotate(deg, 153, 83).
+    -->
+    <g clip-path="url(#tl-sun-clip)">
+      <!-- outermost left -->
+      <polygon points="149.5,83 153,42 156.5,83"
+               transform="rotate(-68, 153, 83)" fill="#F3B018" opacity="0.88"/>
+      <polygon points="149.5,83 153,40 156.5,83"
+               transform="rotate(-50, 153, 83)" fill="#F5BA1A"/>
+      <polygon points="149,83 153,38 157,83"
+               transform="rotate(-32, 153, 83)" fill="#F7C420"/>
+      <polygon points="149,83 153,37 157,83"
+               transform="rotate(-16, 153, 83)" fill="#F9CD26"/>
+      <!-- center ray — tallest -->
+      <polygon points="148.5,83 153,34 157.5,83"
+               transform="rotate(0, 153, 83)"   fill="#FFD730"/>
+      <polygon points="149,83 153,37 157,83"
+               transform="rotate(16, 153, 83)"  fill="#F9CD26"/>
+      <polygon points="149,83 153,38 157,83"
+               transform="rotate(32, 153, 83)"  fill="#F7C420"/>
+      <polygon points="149.5,83 153,40 156.5,83"
+               transform="rotate(50, 153, 83)"  fill="#F5BA1A"/>
+      <!-- outermost right -->
+      <polygon points="149.5,83 153,42 156.5,83"
+               transform="rotate(68, 153, 83)"  fill="#F3B018" opacity="0.88"/>
+    </g>
+
+    <!-- ══ PHASE 1: LEFT C-CAPSULE (slides in from left) ══ -->
+    <g class="tl-cap-left">
+      <!-- Main C-body: masked pill with right-side hollow cutout -->
+      <rect x="36" y="98" width="112" height="56" rx="28"
+            fill="#1954A5" mask="url(#tl-c-mask)"/>
+
+      <!-- Specular highlight on top wall of C -->
+      <path d="M 148 100 L 68 100 Q 44 100 42 114 L 42 118 Q 44 105 68 105 L 148 105 Z"
+            fill="rgba(255,255,255,0.14)"/>
+      <!-- Specular on bottom wall -->
+      <path d="M 148 149 L 68 149 Q 44 149 42 138 L 42 142 Q 44 152 68 152 L 148 152 Z"
+            fill="rgba(0,0,0,0.1)"/>
+
+      <!-- Right-side connecting nub (the pin sticking toward the gap) -->
+      <circle cx="153" cy="126" r="7.5" fill="#1954A5"/>
+      <circle cx="153" cy="126" r="4"   fill="rgba(255,255,255,0.15)"/>
+    </g>
+
+    <!-- ══ PHASE 1: RIGHT D-CAPSULE (slides in from right) ══ -->
+    <g class="tl-cap-right">
+      <!-- Main oval body -->
+      <ellipse cx="222" cy="126" rx="44" ry="28" fill="#1E6FBF"/>
+
+      <!-- Specular top highlight -->
+      <ellipse cx="218" cy="113" rx="30" ry="9.5" fill="rgba(255,255,255,0.14)"/>
+      <!-- Specular bottom shadow -->
+      <ellipse cx="218" cy="140" rx="28" ry="7"   fill="rgba(0,0,0,0.08)"/>
+
+      <!-- Left-side connecting nub -->
+      <circle cx="178" cy="126" r="7.5" fill="#1E6FBF"/>
+      <circle cx="178" cy="126" r="4"   fill="rgba(255,255,255,0.15)"/>
+    </g>
+
+    <!-- ══ CONNECTOR WIRES — appear when capsules meet ══ -->
+    <!-- Two thin horizontal lines bridging the gap between the two nubs -->
+    <g class="tl-wires">
+      <line x1="153" y1="119" x2="178" y2="119"
+            stroke="#5da4d6" stroke-width="1.8" stroke-linecap="round"/>
+      <line x1="153" y1="133" x2="178" y2="133"
+            stroke="#5da4d6" stroke-width="1.8" stroke-linecap="round"/>
+    </g>
+
+    <!-- ══ PHASE 2: ECG HEARTBEAT LINE ══ -->
+    <!--
+      Trace path (left→right):
+        Flat baseline inside C  → P-wave bump → baseline
+        → Q dip → R spike (y=62, well above caps)
+        → S dip (y=172, below caps) → baseline
+        → through gap (x=153–178) → T-wave hump → flat through D-oval
+    -->
+    <path class="tl-ecg" id="tl-ecg-path"
+      d="M 50 126
+         L 96 126
+         L 101 118 L 106 126
+         L 116 126
+         L 121 131
+         L 136 62
+         L 144 172
+         L 153 126
+         L 165 126
+         L 172 107 L 180 126
+         L 266 126"
+      stroke="#E8192C"
+      stroke-width="2.6"
+      fill="none"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+
+    <!-- subtle red glow behind ECG spike for depth -->
+    <path
+      d="M 121 131 L 136 62 L 144 172 L 153 126"
+      stroke="rgba(232,25,44,0.18)"
+      stroke-width="8"
+      fill="none"
+      stroke-linecap="round"
+      stroke-linejoin="round"/>
+
+  </svg>
+
+  <!-- ══ PHASE 4: BRAND TEXT ══ -->
+  <div class="tl-brand">
+    <div class="tl-brand-name">Tunes Therapeutics</div>
+    <div class="tl-brand-tag">Retunes the Health</div>
   </div>
-  <div class="tp-text">
-    <div class="tp-name">Tunes Pharma</div>
-    <div class="tp-tag">Retunes the Health</div>
-  </div>
-  <div class="tp-bar"></div>
 </div>
 
 <script>
-  (function () {
-    function hide() {
-      var el = document.getElementById('globalLoading');
-      if (!el) return;
-      setTimeout(function () {
-        el.classList.add('fade-out');
-        setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 520);
-      }, 1600);
-    }
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', hide);
-    } else {
-      hide();
-    }
-  })();
+(function () {
+  /*
+    Dismiss logic:
+    - Minimum display = ANIM_FIRST ms (one full story cycle)
+    - If page loads faster: wait for ANIM_FIRST before dismissing
+    - If page loads slower: ECG loops continuously; dismiss when both ready
+    - Hard cap: MAX_WAIT ms regardless of page state
+  */
+  var ANIM_FIRST = 3000;
+  var MAX_WAIT   = 16000;
+
+  var pageReady = (document.readyState === 'complete');
+  var animDone  = false;
+  var dismissed = false;
+
+  function dismiss() {
+    if (dismissed) return;
+    dismissed = true;
+    var el = document.getElementById('globalLoading');
+    if (!el) return;
+    el.classList.add('fade-out');
+    setTimeout(function () {
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+    }, 720);
+  }
+
+  function tryDismiss() {
+    if (pageReady && animDone) dismiss();
+  }
+
+  /* Switch ECG to continuous loop after first trace completes (~1.87s) */
+  setTimeout(function () {
+    var ecg = document.getElementById('tl-ecg-path');
+    if (ecg) ecg.classList.add('tl-ecg-loop');
+  }, 1900);
+
+  /* Mark first animation cycle complete */
+  setTimeout(function () {
+    animDone = true;
+    tryDismiss();
+  }, ANIM_FIRST);
+
+  /* Hard-cap safety */
+  setTimeout(dismiss, MAX_WAIT);
+
+  /* Page-ready detection */
+  function onPageReady() {
+    if (pageReady) return;
+    pageReady = true;
+    tryDismiss();
+  }
+
+  if (pageReady) {
+    /* Already loaded — will dismiss once animDone */
+  } else {
+    window.addEventListener('load', onPageReady);
+    /* DOMContentLoaded + small delay as secondary signal */
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(onPageReady, 400);
+    });
+  }
+})();
 </script>
