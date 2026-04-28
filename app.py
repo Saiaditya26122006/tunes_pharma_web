@@ -134,7 +134,8 @@ products_data = {
         "schedule": "H",
         "packing": "10×10 Tablets (Alu-Alu)",
         "mrp": "₹7.78/Tablet SR",
-        "therapeutic_class": "ANTI DIABETIC"
+        "therapeutic_class": "ANTI DIABETIC",
+        "buy_1mg": "https://www.1mg.com/drugs/ecoglim-mv-1mg-500mg-0.2mg-tablet-sr-725563"
     },
     "ecoglim-mv2": {
         "name": "Ecoglim MV 2mg/500mg/0.2mg Tablet SR",
@@ -157,7 +158,8 @@ products_data = {
         "schedule": "H",
         "packing": "10×10 Tablets (Alu-Alu)",
         "mrp": "₹8.50/Tablet SR",
-        "therapeutic_class": "ANTI DIABETIC"
+        "therapeutic_class": "ANTI DIABETIC",
+        "buy_1mg": "https://www.1mg.com/drugs/ecoglim-mv-2mg-500mg-0.2mg-tablet-sr-725565"
     },
     "ecoglim-mp1": {
         "name": "Ecoglim MP 1mg/500mg/15mg Tablet SR",
@@ -180,7 +182,8 @@ products_data = {
         "schedule": "H",
         "packing": "10×10 Tablets (Alu-Alu)",
         "mrp": "₹3.89/Tablet SR",
-        "therapeutic_class": "ANTI DIABETIC"
+        "therapeutic_class": "ANTI DIABETIC",
+        "buy_1mg": "https://www.1mg.com/drugs/ecoglim-mp-1mg-500mg-15mg-tablet-sr-725567"
     },
     "ecoglim-mp2": {
         "name": "Ecoglim MP 2mg/500mg/15mg Tablet SR",
@@ -203,7 +206,8 @@ products_data = {
         "schedule": "H",
         "packing": "10×10 Tablets (Alu-Alu)",
         "mrp": "₹4.50/Tablet SR",
-        "therapeutic_class": "ANTI DIABETIC"
+        "therapeutic_class": "ANTI DIABETIC",
+        "buy_1mg": "https://www.1mg.com/drugs/ecoglim-mp-2mg-500mg-15mg-tablet-sr-725568"
     },
     "nactaid": {
         "name": "Nactaid 500mg/150mg Tablet",
@@ -226,7 +230,8 @@ products_data = {
         "schedule": "H",
         "packing": "10×10 Tablets (Alu-Alu)",
         "mrp": "₹8.64/Tablet",
-        "therapeutic_class": "UROLOGY"
+        "therapeutic_class": "UROLOGY",
+        "buy_1mg": "https://www.1mg.com/drugs/nactaid-500mg-150mg-tablet-725571"
     },
     "resgaba-nt": {
         "name": "Resgaba NT 75mg/10mg/1500mcg Tablet",
@@ -249,7 +254,8 @@ products_data = {
         "schedule": "H",
         "packing": "10×10 Tablets (Alu-Alu)",
         "mrp": "₹12.1/Tablet",
-        "therapeutic_class": "NEURO CNS"
+        "therapeutic_class": "NEURO CNS",
+        "buy_1mg": "https://www.1mg.com/drugs/resgaba-nt-75mg-10mg-1500mcg-tablet-725572"
     },
     "resgaba-dlx": {
         "name": "RESGABA-DLX",
@@ -288,7 +294,8 @@ products_data = {
         "schedule": "H",
         "packing": "10×10 Capsules (Alu-Alu)",
         "mrp": "₹8.48/Capsule SR",
-        "therapeutic_class": "GASTRO INTESTINAL"
+        "therapeutic_class": "GASTRO INTESTINAL",
+        "buy_1mg": "https://www.1mg.com/drugs/rabishir-d-30mg-20mg-capsule-sr-725562"
     }
 }
 
