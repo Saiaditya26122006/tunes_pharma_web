@@ -268,20 +268,27 @@ products_data = {
         "packing": "10×10 Capsules (Alu-Alu)"
     },
     "rabishir-dsr": {
-        "name": "RABISHIR-DSR",
-        "description": "RABISHIR-DSR is a dual-release capsule combining Rabeprazole (proton pump inhibitor) with Domperidone SR (prokinetic) to provide superior acid suppression alongside improved gastric emptying and motility — addressing both acid-related and motility-related GI disorders.",
+        "name": "Rabishir D 30mg/20mg Capsule SR",
+        "description": "Rabishir D 30mg/20mg Capsule SR is a combination medicine used to treat gastroesophageal reflux disease (acid reflux). It works by relieving symptoms of acidity such as heartburn, stomach pain, or irritation. It also neutralizes the acid and promotes easy passage of gas to reduce stomach discomfort. Take it on an empty stomach in the dose and duration advised by your doctor. Continue taking it for as long as prescribed — stopping early may cause symptoms to return or worsen.",
         "image": "rabishir-dsr.jpg",
-        "features": "Rabeprazole 20mg + Domperidone 30mg SR",
-        "benefits": "Rabeprazole rapidly and potently suppresses gastric acid secretion; Domperidone SR enhances gastric motility, reduces nausea and prevents reflux — together providing long-lasting symptom relief.",
-        "manufacturer": "Tunes Therapeutics Pvt. Ltd.",
-        "category": "Gastro",
-        "composition": "Rabeprazole Sodium 20mg + Domperidone 30mg SR",
-        "indication": "GERD, gastritis, peptic ulcer disease, symptomatic GERD with nausea, functional dyspepsia",
-        "how_to_use": "Take one capsule 30 minutes before breakfast, or as directed by the physician. Swallow whole — do not crush.",
-        "side_effects": "Headache, diarrhoea, abdominal pain, dry mouth. Rarely: QT prolongation with Domperidone (avoid in cardiac patients).",
-        "storage": "Store below 30°C in a dry place. Protect from moisture.",
+        "features": "Dual-action GI relief — reduces stomach acid (Rabeprazole) and improves gastric motility (Domperidone SR)",
+        "composition": "Domperidone 30mg + Rabeprazole 20mg",
+        "category": "Gastrointestinal",
+        "indication": "Treatment of Gastroesophageal Reflux Disease (GERD / Acid Reflux). Also used in gastric and duodenal ulcers and functional dyspepsia with nausea.",
+        "benefits": "Gastroesophageal reflux disease (GERD) is a chronic condition where excess stomach acid flows back into the esophagus. Rabishir D reduces the amount of acid your stomach makes and relieves the pain associated with heartburn and acid reflux. Lifestyle changes that help: avoid trigger foods, eat smaller more frequent meals, lose weight if overweight, avoid eating within 3–4 hours of bedtime, and avoid spicy foods, coffee, tea, and chocolate. Taking cold milk and avoiding alcohol also enhances treatment effectiveness.",
+        "how_it_works": "Rabishir D 30mg/20mg Capsule SR is a combination of two medicines: Domperidone and Rabeprazole. Domperidone is a prokinetic which works on the upper digestive tract to increase the movement of the stomach and intestines, allowing food to move more easily through the stomach — controlling nausea and preventing reflux. Rabeprazole is a proton pump inhibitor (PPI) which works by reducing the amount of acid produced in the stomach, providing relief from acid-related indigestion and heartburn.",
+        "how_to_use": "Take this medicine in the dose and duration as advised by your doctor. Swallow it as a whole — do not chew, crush or break it. Rabishir D 30mg/20mg Capsule SR is to be taken on an empty stomach, preferably one hour before a meal (ideally in the morning). If you miss a dose, take it as soon as possible. However, if it is almost time for your next dose, skip the missed dose. Do not double the dose.",
+        "side_effects": "Flatulence, Back pain, Cough, Headache, Diarrhoea, Dizziness, Inflammation of the nose, Abdominal pain, Vomiting, Insomnia (difficulty sleeping), Nausea, Constipation, Nasal congestion (stuffy nose), Fundic gland polyps. Dry mouth may also occur due to Domperidone — drink plenty of water if this happens. Most side effects are mild, temporary and disappear as your body adjusts.",
+        "safety_advice": "Alcohol: CONSULT YOUR DOCTOR — It is not known whether it is safe to consume alcohol with this medicine; avoid alcohol as it can increase drowsiness. Pregnancy: UNSAFE — Highly unsafe during pregnancy; can cause serious harm to the unborn baby including birth defects and pregnancy loss; do not use if pregnant or planning pregnancy. Breastfeeding: UNSAFE — Unsafe during breastfeeding; data suggests the drug may cause toxicity to the baby. Driving: UNSAFE — May decrease alertness, affect vision, or cause sleepiness and dizziness; do not drive if these symptoms occur. Kidney: CAUTION — Use with caution in patients with severe kidney disease; dose adjustment may be needed. Liver: UNSAFE — Unsafe in patients with liver disease; not recommended in moderate and severe liver disease.",
+        "contraindications": "Do not use if you have known hypersensitivity to rabeprazole, domperidone, or any inactive ingredients. Caution in patients with underlying kidney or liver disease. Do not use if pregnant or breastfeeding.",
+        "drug_interactions": "Inform your healthcare provider about all other medicines you are taking, as some may interact with this medicine. Avoid alcohol. Inform your doctor if you have liver or kidney problems before starting treatment.",
+        "quick_tips": "Take one hour before the meal, preferably in the morning. It is a well-tolerated medicine and provides relief for a long time. Inform your doctor if you experience watery diarrhoea, fever, or persistent stomach pain. Inform your doctor if you do not feel better after 14 days — you may have another condition that needs attention. Long-term use can cause weak bones and deficiency of minerals such as magnesium — take adequate dietary calcium and magnesium or supplements as prescribed. Habit Forming: No.",
+        "storage": "Store below 30°C in a dry place away from direct sunlight. Keep out of reach of children.",
+        "manufacturer": "Tunes Pharma, No. 8-274, Gowtham Nagar, Ferozguda, Balanagar, Hyderabad – 500 011.",
         "schedule": "H",
-        "packing": "10×10 Capsules (Alu-Alu)"
+        "packing": "10×10 Capsules (Alu-Alu)",
+        "mrp": "₹8.48/Capsule SR",
+        "therapeutic_class": "GASTRO INTESTINAL"
     }
 }
 
