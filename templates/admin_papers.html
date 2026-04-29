@@ -128,6 +128,31 @@
     .badge.gastro   { background: rgba(16,185,129,.1);  color: #059669; }
     .badge.general  { background: rgba(30,111,241,.1);  color: var(--blue-500); }
     .badge.all      { background: rgba(15,30,45,.08);   color: var(--navy-600); }
+    .edit-btn {
+      padding: 6px 14px; border-radius: 8px;
+      border: 1px solid rgba(30,111,241,.25); color: var(--blue-500);
+      background: rgba(30,111,241,.05); font-size: .78rem; font-weight: 600;
+      cursor: pointer; font-family: 'Poppins', sans-serif; transition: all .2s;
+      margin-right: 6px;
+    }
+    .edit-btn:hover { background: rgba(30,111,241,.12); border-color: var(--blue-500); }
+    /* Edit modal */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(15,30,45,.55);
+      z-index: 1000; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: white; border-radius: 16px; padding: 36px; width: 520px; max-width: 95vw;
+      box-shadow: 0 20px 60px rgba(15,30,45,.2);
+    }
+    .modal-box h3 { font-size: 1.1rem; font-weight: 700; color: var(--navy-800); margin-bottom: 20px; }
+    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+    .modal-cancel {
+      padding: 10px 20px; border-radius: var(--radius-full); background: transparent;
+      border: 1.5px solid rgba(15,30,45,.15); font-size: .85rem; font-weight: 600;
+      cursor: pointer; font-family: 'Poppins', sans-serif;
+    }
     .delete-btn {
       padding: 6px 14px; border-radius: 8px;
       border: 1px solid rgba(220,38,38,.25); color: #ef4444;
@@ -245,8 +270,9 @@
               <td><span class="badge {{ p.therapy_area or 'all' }}">{{ p.therapy_area or 'All' }}</span></td>
               <td><span class="badge {{ p.content_type }}">{{ p.content_type | upper }}</span></td>
               <td style="color:var(--gray-400);white-space:nowrap">{{ p.created_at[:10] if p.created_at else '—' }}</td>
-              <td>
-                <form method="POST" action="/admin/papers/delete/{{ p.id }}" onsubmit="return confirm('Delete this paper?')">
+              <td style="white-space:nowrap">
+                <button class="edit-btn" onclick="openEdit('{{ p.id }}','{{ p.title|replace("'","\\'")|replace('"','\\"') }}','{{ (p.description or '')|replace("'","\\'")|replace('"','\\"') }}','{{ p.therapy_area or 'all' }}','{{ p.file_url or '' }}','{{ p.content_type or 'link' }}')">Edit</button>
+                <form method="POST" action="/admin/papers/delete/{{ p.id }}" onsubmit="return confirm('Delete this paper?')" style="display:inline">
                   <button type="submit" class="delete-btn">Delete</button>
                 </form>
               </td>
@@ -259,6 +285,59 @@
       </table>
     </div>
   </main>
+</div>
+
+<!-- Edit Paper Modal -->
+<div class="modal-overlay" id="editModal">
+  <div class="modal-box">
+    <h3>Edit Paper / Resource</h3>
+    <form method="POST" id="editForm" enctype="multipart/form-data">
+      <div class="form-group">
+        <label>Title *</label>
+        <input type="text" name="title" id="editTitle" required>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea name="description" id="editDescription"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Therapy Area</label>
+          <select name="therapy_area" id="editTherapy">
+            <option value="all">All Areas</option>
+            <option value="diabetes">Diabetology</option>
+            <option value="neuropathy">Neuropathy</option>
+            <option value="gastro">Gastroenterology</option>
+            <option value="general">General Medicine</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Content Type</label>
+          <select name="content_type" id="editContentType">
+            <option value="link">External Link</option>
+            <option value="pdf">PDF File</option>
+            <option value="doc">DOC File</option>
+          </select>
+        </div>
+      </div>
+      <div id="editLinkSection" class="form-group">
+        <label>URL / Link</label>
+        <input type="url" name="link_url" id="editLinkUrl" placeholder="https://…">
+      </div>
+      <div id="editFileSection" style="display:none; margin-bottom:16px">
+        <label style="font-size:.8rem;font-weight:600;color:var(--navy-700);display:block;margin-bottom:6px">Replace File (optional)</label>
+        <div class="drop-zone" onclick="document.getElementById('editFileInput').click()">
+          <input type="file" name="file" id="editFileInput" accept=".pdf,.doc,.docx">
+          <div class="icon">📂</div>
+          <p id="editDropText">Click to browse or drag &amp; drop a new file</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="modal-cancel" onclick="closeEdit()">Cancel</button>
+        <button type="submit" class="upload-btn">Save Changes →</button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script>
@@ -294,6 +373,35 @@
     if (input.files[0]) text.textContent = input.files[0].name;
   });
 })();
+
+// Edit modal
+function openEdit(id, title, description, therapy, fileUrl, contentType) {
+  document.getElementById('editForm').action = '/admin/papers/edit/' + id;
+  document.getElementById('editTitle').value = title;
+  document.getElementById('editDescription').value = description;
+  document.getElementById('editTherapy').value = therapy;
+  document.getElementById('editLinkUrl').value = fileUrl;
+  var ct = document.getElementById('editContentType');
+  ct.value = contentType;
+  var isFile = contentType === 'pdf' || contentType === 'doc';
+  document.getElementById('editLinkSection').style.display = isFile ? 'none' : '';
+  document.getElementById('editFileSection').style.display = isFile ? '' : 'none';
+  document.getElementById('editModal').classList.add('open');
+}
+function closeEdit() {
+  document.getElementById('editModal').classList.remove('open');
+}
+document.getElementById('editModal').addEventListener('click', function(e) {
+  if (e.target === this) closeEdit();
+});
+document.getElementById('editContentType').addEventListener('change', function() {
+  var isFile = this.value === 'pdf' || this.value === 'doc';
+  document.getElementById('editLinkSection').style.display = isFile ? 'none' : '';
+  document.getElementById('editFileSection').style.display = isFile ? '' : 'none';
+});
+document.getElementById('editFileInput').addEventListener('change', function() {
+  if (this.files[0]) document.getElementById('editDropText').textContent = this.files[0].name;
+});
 </script>
 </body>
 </html>

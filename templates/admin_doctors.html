@@ -145,6 +145,17 @@
     <h1 class="admin-page-title">Registered Doctors</h1>
     <p class="admin-page-sub">Register doctors to give them portal access. They log in with their username and password.</p>
 
+    <!-- Seed test data -->
+    <div style="background:rgba(30,111,241,.06);border:1.5px dashed rgba(30,111,241,.3);border-radius:12px;padding:16px 20px;margin-bottom:28px;display:flex;align-items:center;justify-content:space-between;flex-wrap:gap">
+      <div>
+        <strong style="font-size:.88rem;color:var(--navy-800)">Create Test Credentials</strong>
+        <p style="font-size:.78rem;color:var(--gray-500);margin:2px 0 0">Creates <code>testdoctor</code> / <code>test1234</code> + 2 sample papers for end-to-end testing.</p>
+      </div>
+      <form method="POST" action="/admin/seed-test" onsubmit="return confirm('Create test doctor + sample papers?')">
+        <button type="submit" style="padding:9px 20px;border-radius:var(--radius-full);background:var(--blue-500);color:white;border:none;font-size:.82rem;font-weight:600;cursor:pointer;font-family:'Poppins',sans-serif;">Seed Test Data</button>
+      </form>
+    </div>
+
     <!-- Add doctor form -->
     <div class="add-card">
       <h3>Register New Doctor</h3>

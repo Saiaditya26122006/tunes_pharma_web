@@ -589,6 +589,7 @@ def doctor_dashboard():
                            papers=papers,
                            notifications=notifications,
                            notif_count=notif_count,
+                           products=list(products_data.values()),
                            lang=lang)
 
 @app.route('/doctor/notifications/read', methods=['POST'])
@@ -718,12 +719,89 @@ def admin_upload_paper():
                         )
     return redirect('/admin/papers')
 
+@app.route('/admin/papers/<paper_id>', methods=['GET'])
+@admin_required
+def admin_get_paper(paper_id):
+    if sb:
+        result = sb.table('papers').select('*').eq('id', paper_id).execute()
+        if result.data:
+            return jsonify(result.data[0])
+    return jsonify({}), 404
+
+@app.route('/admin/papers/edit/<paper_id>', methods=['POST'])
+@admin_required
+def admin_edit_paper(paper_id):
+    title       = request.form.get('title', '').strip()
+    description = request.form.get('description', '').strip()
+    therapy     = request.form.get('therapy_area', 'all')
+    link_url    = request.form.get('link_url', '').strip()
+    file        = request.files.get('file')
+    if not (title and sb):
+        return redirect('/admin/papers')
+    update_data = {'title': title, 'description': description, 'therapy_area': therapy}
+    if file and file.filename:
+        ext   = os.path.splitext(file.filename)[1].lower()
+        fname = f"{uuid_lib.uuid4()}{ext}"
+        tmp   = tempfile.mktemp(suffix=ext)
+        file.save(tmp)
+        with open(tmp, 'rb') as f:
+            sb.storage.from_('papers').upload(fname, f, {'content-type': file.content_type})
+        update_data['file_url']      = sb.storage.from_('papers').get_public_url(fname)
+        update_data['content_type']  = 'pdf' if ext == '.pdf' else 'doc'
+        try:
+            os.remove(tmp)
+        except Exception:
+            pass
+    elif link_url:
+        update_data['file_url']     = link_url
+        update_data['content_type'] = 'link'
+    sb.table('papers').update(update_data).eq('id', paper_id).execute()
+    return redirect('/admin/papers')
+
 @app.route('/admin/papers/delete/<paper_id>', methods=['POST'])
 @admin_required
 def admin_delete_paper(paper_id):
     if sb:
         sb.table('papers').delete().eq('id', paper_id).execute()
     return redirect('/admin/papers')
+
+@app.route('/admin/seed-test', methods=['POST'])
+@admin_required
+def admin_seed_test():
+    """Create a test doctor and two sample papers for end-to-end testing."""
+    if not sb:
+        return '<p>Supabase not connected.</p><a href="/admin/doctors">Back</a>'
+    existing = (sb.table('doctors').select('id').eq('username', 'testdoctor').execute()).data
+    if not existing:
+        sb.table('doctors').insert({
+            'name': 'Dr. Test User',
+            'username': 'testdoctor',
+            'password_hash': generate_password_hash('test1234'),
+            'email': '', 'phone': '', 'hospital': 'Demo Hospital',
+            'specialty': 'General Medicine', 'is_active': True,
+        }).execute()
+    # Add sample papers if none exist
+    paper_count = (sb.table('papers').select('id', count='exact').execute()).count or 0
+    if paper_count == 0:
+        papers_to_insert = [
+            {'title': 'RESGABA-NT: Neuropathic Pain Management Guidelines',
+             'description': 'Clinical evidence summary for Pregabalin + Nortriptyline combination in diabetic peripheral neuropathy.',
+             'content_type': 'link', 'therapy_area': 'neuropathy',
+             'file_url': 'https://pubmed.ncbi.nlm.nih.gov/'},
+            {'title': 'Ecoglim MV1 — Glycaemic Control in T2DM',
+             'description': 'Phase III data supporting Glimepiride + Metformin + Voglibose in type 2 diabetes patients.',
+             'content_type': 'link', 'therapy_area': 'diabetes',
+             'file_url': 'https://pubmed.ncbi.nlm.nih.gov/'},
+        ]
+        result = sb.table('papers').insert(papers_to_insert).execute()
+        if result.data:
+            doctors = (sb.table('doctors').select('id').eq('is_active', True).execute()).data or []
+            if doctors:
+                notifs = [{'doctor_id': d['id'], 'paper_id': p['id']}
+                          for d in doctors for p in result.data]
+                if notifs:
+                    sb.table('notifications').insert(notifs).execute()
+    return redirect('/admin/doctors')
 
 @app.route('/admin/doctors', methods=['GET'])
 @admin_required

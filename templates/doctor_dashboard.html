@@ -378,6 +378,35 @@
   </div>
 </section>
 
+<!-- ── Products Quick Reference ── -->
+<section class="p-section" style="background:#f5f7fb" id="products-ref">
+  <div class="p-container">
+    <div class="p-section-header p-reveal" style="margin-bottom:24px">
+      <span class="p-section-tag">Tunes Pharma Portfolio</span>
+      <h2 class="p-section-title">Product Quick Reference</h2>
+      <div class="p-divider"></div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">
+      {% for product in products %}
+      <div style="background:white;border-radius:14px;padding:20px 22px;border:1px solid rgba(15,30,45,.08);box-shadow:0 2px 8px rgba(15,30,45,.05)">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
+          <h3 style="font-size:.95rem;font-weight:700;color:var(--navy-800);margin:0">{{ product.name }}</h3>
+          <span style="font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:99px;background:rgba(30,111,241,.1);color:var(--blue-500);white-space:nowrap;margin-left:8px">{{ product.category }}</span>
+        </div>
+        <p style="font-size:.78rem;color:var(--gray-500);margin:0 0 8px;line-height:1.5">{{ product.composition }}</p>
+        <p style="font-size:.75rem;color:var(--gray-400);margin:0 0 12px"><strong style="color:var(--navy-700)">Indication:</strong> {{ product.indication }}</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <a href="/products/{{ product.name | lower | replace(' ','-') }}" target="_blank" style="font-size:.75rem;font-weight:600;color:var(--blue-500);text-decoration:none">View Monograph →</a>
+          {% if product.buy_1mg %}
+          <a href="{{ product.buy_1mg }}" target="_blank" rel="noopener" style="font-size:.75rem;font-weight:600;color:#e84040;text-decoration:none">Buy on 1mg →</a>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
 {% include 'partials/footer.html' %}
 
 <!-- ── AI Chat widget ── -->
