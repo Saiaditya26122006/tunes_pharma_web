@@ -373,6 +373,10 @@
           <p>No papers uploaded yet.<br>Check back soon — your administrator will publish resources here.</p>
         </div>
       {% endif %}
+      <!-- shown by JS when a category filter has no matches -->
+      <div id="filterEmpty" style="display:none;grid-column:1/-1;text-align:center;padding:48px 0;color:var(--gray-400);font-size:.9rem">
+        No papers in this therapy area yet.
+      </div>
     </div>
 
   </div>
@@ -465,16 +469,22 @@
 
 // ── Paper filter tabs ──
 (function () {
-  var tabs  = document.querySelectorAll('.filter-tab');
-  var cards = document.querySelectorAll('#papersGrid .paper-card');
+  var tabs    = document.querySelectorAll('.filter-tab');
+  var cards   = document.querySelectorAll('#papersGrid .paper-card');
+  var emptyEl = document.getElementById('filterEmpty');
+
   tabs.forEach(function (tab) {
     tab.addEventListener('click', function () {
       tabs.forEach(function (t) { t.classList.remove('active'); });
       tab.classList.add('active');
       var filter = tab.dataset.filter;
+      var visible = 0;
       cards.forEach(function (card) {
-        card.style.display = (filter === 'all' || card.dataset.area === filter) ? '' : 'none';
+        var show = filter === 'all' || card.dataset.area === filter;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
       });
+      if (emptyEl) emptyEl.style.display = (cards.length > 0 && visible === 0) ? '' : 'none';
     });
   });
 })();

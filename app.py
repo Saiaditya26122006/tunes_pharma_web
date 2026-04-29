@@ -781,7 +781,7 @@ def admin_seed_test():
             'specialty': 'General Medicine', 'is_active': True,
         }).execute()
     # Add sample papers if none exist
-    paper_count = (sb.table('papers').select('id', count='exact').execute()).count or 0
+    paper_count = len((sb.table('papers').select('id').execute()).data or [])
     if paper_count == 0:
         papers_to_insert = [
             {'title': 'RESGABA-NT: Neuropathic Pain Management Guidelines',
