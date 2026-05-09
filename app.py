@@ -880,7 +880,8 @@ def admin_debug():
     # Supabase
     checks['supabase_url']  = '✅ Set' if os.getenv('SUPABASE_URL')         else '❌ Missing env var: SUPABASE_URL'
     checks['supabase_key']  = '✅ Set' if os.getenv('SUPABASE_SERVICE_KEY') else '❌ Missing env var: SUPABASE_SERVICE_KEY'
-    checks['supabase_conn'] = '✅ Connected' if sb else '❌ Not connected (check URL and key)'
+    from supabase_client import supabase_error as _sb_err
+    checks['supabase_conn'] = '✅ Connected' if sb else f'❌ Not connected: {_sb_err or "unknown error"}'
     # Gmail
     checks['gmail_user']    = '✅ Set' if os.getenv('GMAIL_USER')        else '❌ Missing env var: GMAIL_USER'
     checks['gmail_pass']    = '✅ Set' if os.getenv('GMAIL_APP_PASSWORD') else '❌ Missing env var: GMAIL_APP_PASSWORD'
