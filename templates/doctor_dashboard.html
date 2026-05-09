@@ -9,31 +9,146 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
   <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
   <style>
-    /* ── Dashboard header ── */
-    .dash-header { background: white; border-bottom: 1px solid rgba(15,30,45,.08); position: sticky; top: 0; z-index: 500; }
-    .dash-header-inner {
-      max-width: 1400px; margin: 0 auto; padding: 0 32px;
-      height: 68px; display: flex; align-items: center; gap: 24px;
+    /* ── Reset / Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f0f2f7;
+      min-height: 100vh;
+      display: flex;
     }
-    .dash-logo { height: 44px; }
-    .dash-nav { display: flex; gap: 4px; margin-left: auto; }
-    .dash-nav a {
-      padding: 8px 16px; border-radius: 8px; font-size: 13.5px; font-weight: 500;
-      color: var(--navy-700); transition: all .2s;
-    }
-    .dash-nav a:hover, .dash-nav a.active { background: rgba(30,111,241,.08); color: var(--blue-500); }
-    .dash-actions { display: flex; align-items: center; gap: 12px; }
 
-    /* ── Notification bell ── */
+    /* ══════════════════════════════════════
+       SIDEBAR
+    ══════════════════════════════════════ */
+    .sidebar {
+      width: 260px;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #0f1e2d 0%, #162840 60%, #1a3152 100%);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 200;
+      transition: transform .3s ease;
+      box-shadow: 4px 0 24px rgba(0,0,0,.18);
+    }
+
+    /* Brand */
+    .sb-brand {
+      padding: 28px 24px 24px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .sb-brand img { height: 40px; filter: brightness(0) invert(1); display: block; }
+    .sb-brand p { color: rgba(255,255,255,.35); font-size: .68rem; margin-top: 6px; letter-spacing: .05em; text-transform: uppercase; }
+
+    /* Doctor avatar block */
+    .sb-doctor {
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sb-avatar {
+      width: 42px; height: 42px; border-radius: 50%;
+      background: linear-gradient(135deg, #1e6ff1, #0ea5e9);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(30,111,241,.4);
+    }
+    .sb-doctor-name { font-size: .82rem; font-weight: 600; color: white; line-height: 1.3; }
+    .sb-doctor-role { font-size: .7rem; color: rgba(255,255,255,.4); }
+
+    /* Nav */
+    .sb-nav { flex: 1; padding: 16px 0; overflow-y: auto; }
+    .sb-nav-label {
+      font-size: .62rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+      color: rgba(255,255,255,.25); padding: 12px 24px 6px;
+    }
+    .sb-link {
+      display: flex; align-items: center; gap: 13px;
+      padding: 12px 24px; margin: 2px 10px; border-radius: 10px;
+      color: rgba(255,255,255,.58); font-size: .86rem; font-weight: 500;
+      cursor: pointer; transition: all .2s; border: none; background: none; width: calc(100% - 20px);
+      text-align: left;
+    }
+    .sb-link:hover { background: rgba(255,255,255,.07); color: rgba(255,255,255,.85); }
+    .sb-link.active {
+      background: linear-gradient(135deg, rgba(30,111,241,.3), rgba(30,111,241,.15));
+      color: #fff;
+      border: 1px solid rgba(30,111,241,.3);
+      box-shadow: 0 2px 12px rgba(30,111,241,.15);
+    }
+    .sb-link .sb-icon {
+      width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; background: rgba(255,255,255,.06);
+      transition: background .2s;
+    }
+    .sb-link.active .sb-icon { background: rgba(30,111,241,.35); }
+    .sb-link .sb-badge {
+      margin-left: auto; background: #ef4444; color: white; border-radius: 99px;
+      font-size: .65rem; font-weight: 700; padding: 2px 7px; line-height: 1.4;
+    }
+
+    /* Sidebar footer */
+    .sb-footer {
+      padding: 16px 10px;
+      border-top: 1px solid rgba(255,255,255,.07);
+    }
+    .sb-logout {
+      display: flex; align-items: center; gap: 13px;
+      padding: 11px 14px; border-radius: 10px;
+      color: rgba(239,68,68,.7); font-size: .85rem; font-weight: 600;
+      cursor: pointer; transition: all .2s;
+      border: 1px solid transparent; background: none; width: 100%;
+      text-align: left;
+    }
+    .sb-logout:hover { background: rgba(239,68,68,.1); border-color: rgba(239,68,68,.2); color: #ef4444; }
+    .sb-logout .sb-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; background: rgba(239,68,68,.1); }
+
+    /* Mobile toggle */
+    .sb-toggle {
+      display: none; position: fixed; top: 16px; left: 16px; z-index: 300;
+      width: 44px; height: 44px; border-radius: 10px;
+      background: #0f1e2d; border: none; cursor: pointer;
+      align-items: center; justify-content: center; flex-direction: column; gap: 5px;
+      box-shadow: 0 4px 16px rgba(0,0,0,.3);
+    }
+    .sb-toggle span { width: 22px; height: 2px; background: white; border-radius: 2px; transition: all .3s; }
+    .sb-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 190; }
+
+    /* ══════════════════════════════════════
+       MAIN LAYOUT
+    ══════════════════════════════════════ */
+    .main-wrap {
+      margin-left: 260px;
+      min-height: 100vh;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top bar */
+    .topbar {
+      background: white; border-bottom: 1px solid rgba(15,30,45,.08);
+      padding: 0 32px; height: 64px;
+      display: flex; align-items: center; gap: 16px;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 1px 8px rgba(15,30,45,.06);
+    }
+    .topbar-title { font-size: 1.05rem; font-weight: 700; color: #0f1e2d; flex: 1; }
+    .topbar-title span { font-weight: 400; color: #6b7280; }
+
+    /* Notification bell */
     .notif-wrap { position: relative; }
     .notif-bell {
       width: 40px; height: 40px; border-radius: 10px;
       background: rgba(15,30,45,.05); border: 1px solid rgba(15,30,45,.1);
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: all .2s; position: relative;
+      cursor: pointer; transition: all .2s;
     }
     .notif-bell:hover { background: rgba(30,111,241,.08); border-color: rgba(30,111,241,.2); }
-    .notif-bell svg { width: 18px; height: 18px; color: var(--navy-700); }
+    .notif-bell svg { width: 18px; height: 18px; color: #374151; }
     .notif-badge {
       position: absolute; top: -5px; right: -5px;
       background: #ef4444; color: white; border-radius: 50%;
@@ -41,14 +156,12 @@
       display: flex; align-items: center; justify-content: center;
       border: 2px solid white;
     }
-    .notif-badge:empty, .notif-badge[data-count="0"] { display: none; }
     .notif-dropdown {
       position: absolute; top: calc(100% + 10px); right: 0;
       width: 320px; background: white; border-radius: 14px;
       border: 1px solid rgba(15,30,45,.09);
       box-shadow: 0 20px 60px rgba(15,30,45,.15);
-      opacity: 0; visibility: hidden;
-      transform: translateY(-6px);
+      opacity: 0; visibility: hidden; transform: translateY(-6px);
       transition: all .22s ease; z-index: 600;
     }
     .notif-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
@@ -56,226 +169,172 @@
       padding: 16px 18px 12px; border-bottom: 1px solid rgba(15,30,45,.07);
       display: flex; align-items: center; justify-content: space-between;
     }
-    .notif-dd-header h4 { font-size: .9rem; font-weight: 600; color: var(--navy-800); }
-    .notif-dd-header span { font-size: .75rem; color: var(--blue-500); font-weight: 600; cursor: pointer; }
+    .notif-dd-header h4 { font-size: .9rem; font-weight: 600; color: #0f1e2d; }
+    .notif-dd-header span { font-size: .75rem; color: var(--blue-500,#1e6ff1); font-weight: 600; cursor: pointer; }
     .notif-item {
       padding: 12px 18px; border-bottom: 1px solid rgba(15,30,45,.05);
       display: flex; gap: 12px; align-items: flex-start;
     }
     .notif-item:last-child { border-bottom: none; }
-    .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue-500); flex-shrink: 0; margin-top: 5px; }
-    .notif-item p { font-size: .82rem; color: var(--navy-700); font-weight: 500; line-height: 1.4; }
-    .notif-item time { font-size: .72rem; color: var(--gray-400); }
-    .notif-empty { padding: 24px 18px; text-align: center; color: var(--gray-400); font-size: .85rem; }
+    .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--blue-500,#1e6ff1); flex-shrink: 0; margin-top: 5px; }
+    .notif-item p { font-size: .82rem; color: #374151; font-weight: 500; line-height: 1.4; }
+    .notif-item time { font-size: .72rem; color: #9ca3af; }
+    .notif-empty { padding: 24px 18px; text-align: center; color: #9ca3af; font-size: .85rem; }
 
-    /* ── Logout btn ── */
-    .dash-logout-btn {
-      padding: 9px 18px; border-radius: var(--radius-full);
-      border: 1.5px solid rgba(220,38,38,.25); color: #ef4444;
-      background: rgba(220,38,38,.05); font-size: .82rem; font-weight: 600;
-      transition: all .2s; cursor: pointer;
-    }
-    .dash-logout-btn:hover { background: rgba(220,38,38,.1); border-color: #ef4444; }
+    /* ══════════════════════════════════════
+       PAGE SECTIONS
+    ══════════════════════════════════════ */
+    .page-content { flex: 1; padding: 32px; }
+    .page-section { display: none; }
+    .page-section.active { display: block; animation: fadeInUp .3s ease; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* ── Hero ── */
-    .dash-hero {
-      background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 55%, var(--navy-700) 100%);
-      padding: 60px 32px 50px; position: relative; overflow: hidden;
+    /* ── Section headings ── */
+    .sec-header { margin-bottom: 28px; }
+    .sec-tag {
+      display: inline-block; font-size: .68rem; font-weight: 700; letter-spacing: .1em;
+      text-transform: uppercase; color: var(--blue-500,#1e6ff1);
+      background: rgba(30,111,241,.08); padding: 4px 12px; border-radius: 99px;
+      margin-bottom: 8px;
     }
-    .dash-hero::before {
+    .sec-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: #0f1e2d; }
+
+    /* ── Overview / Stats ── */
+    .overview-hero {
+      background: linear-gradient(135deg, #0f1e2d 0%, #1e3a5f 100%);
+      border-radius: 20px; padding: 36px 40px; margin-bottom: 28px; position: relative; overflow: hidden;
+    }
+    .overview-hero::before {
       content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 70% 40%, rgba(30,111,241,0.18) 0%, transparent 55%),
-                  radial-gradient(ellipse at 10% 80%, rgba(0,180,255,0.08) 0%, transparent 45%);
+      background: radial-gradient(ellipse at 80% 50%, rgba(30,111,241,.25) 0%, transparent 60%);
     }
-    .dash-hero-inner { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; }
-    .dash-hero-inner h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
-      color: white; font-weight: 700; margin-bottom: 6px;
-    }
-    .dash-hero-inner p { color: rgba(255,255,255,.55); font-size: .92rem; }
+    .overview-hero-content { position: relative; z-index: 1; }
+    .overview-badge { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,.1); padding: 5px 14px; border-radius: 99px; margin-bottom: 14px; }
+    .overview-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,.2); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{ box-shadow: 0 0 0 3px rgba(16,185,129,.2); } 50%{ box-shadow: 0 0 0 6px rgba(16,185,129,.05); } }
+    .overview-badge span { font-size: .72rem; font-weight: 600; color: rgba(255,255,255,.7); }
+    .overview-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.5rem,3vw,2.2rem); color: white; font-weight: 700; margin-bottom: 6px; }
+    .overview-hero p { color: rgba(255,255,255,.5); font-size: .9rem; }
 
-    /* ── Stats ── */
-    .dash-stats {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      background: white; border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md); border: 1px solid rgba(15,30,45,.07);
-      overflow: hidden; margin-bottom: 40px;
+    .stats-row {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 28px;
     }
-    .dash-stat { padding: 24px 20px; text-align: center; }
-    .dash-stat + .dash-stat { border-left: 1px solid rgba(15,30,45,.06); }
-    .dash-stat .num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--blue-500); }
-    .dash-stat .lbl { font-size: .78rem; color: var(--gray-500); margin-top: 4px; }
+    .stat-card {
+      background: white; border-radius: 16px; padding: 24px;
+      border: 1px solid rgba(15,30,45,.07); box-shadow: 0 2px 12px rgba(15,30,45,.06);
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .stat-card .stat-icon { font-size: 1.6rem; margin-bottom: 8px; }
+    .stat-card .stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--blue-500,#1e6ff1); }
+    .stat-card .stat-lbl { font-size: .78rem; color: #6b7280; font-weight: 500; }
 
-    /* ── Filter tabs ── */
-    .filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+    .quick-actions-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px,1fr)); gap: 14px; }
+    .quick-action {
+      background: white; border-radius: 14px; padding: 20px;
+      border: 1px solid rgba(15,30,45,.07); box-shadow: 0 2px 8px rgba(15,30,45,.04);
+      display: flex; align-items: center; gap: 16px; cursor: pointer;
+      transition: all .2s;
+    }
+    .quick-action:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(15,30,45,.1); border-color: rgba(30,111,241,.2); }
+    .qa-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+    .qa-icon.blue { background: rgba(30,111,241,.1); }
+    .qa-icon.green { background: rgba(16,185,129,.1); }
+    .qa-icon.purple { background: rgba(139,92,246,.1); }
+    .qa-icon.orange { background: rgba(249,115,22,.1); }
+    .qa-text h4 { font-size: .88rem; font-weight: 700; color: #0f1e2d; margin-bottom: 2px; }
+    .qa-text p { font-size: .75rem; color: #6b7280; }
+
+    /* ── Research Library ── */
+    .filter-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
     .filter-tab {
-      padding: 8px 18px; border-radius: var(--radius-full);
-      font-size: .82rem; font-weight: 600; cursor: pointer;
-      border: 1.5px solid rgba(15,30,45,.12); color: var(--gray-600);
+      padding: 8px 18px; border-radius: 99px; font-size: .82rem; font-weight: 600;
+      cursor: pointer; border: 1.5px solid rgba(15,30,45,.12); color: #6b7280;
       background: white; transition: all .2s;
     }
-    .filter-tab:hover { border-color: var(--blue-500); color: var(--blue-500); }
-    .filter-tab.active { background: var(--blue-500); border-color: var(--blue-500); color: white; }
+    .filter-tab:hover { border-color: var(--blue-500,#1e6ff1); color: var(--blue-500,#1e6ff1); }
+    .filter-tab.active { background: var(--blue-500,#1e6ff1); border-color: var(--blue-500,#1e6ff1); color: white; }
 
-    /* ── Paper cards ── */
-    .papers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+    .papers-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 18px; }
     .paper-card {
-      background: white; border-radius: var(--radius-lg);
-      border: 1px solid rgba(15,30,45,.07); padding: 26px 24px;
-      box-shadow: var(--shadow-sm); transition: all .25s;
-      display: flex; flex-direction: column; gap: 12px;
+      background: white; border-radius: 16px; border: 1px solid rgba(15,30,45,.07);
+      padding: 24px; box-shadow: 0 2px 8px rgba(15,30,45,.05);
+      transition: all .25s; display: flex; flex-direction: column; gap: 12px;
     }
-    .paper-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: rgba(30,111,241,.15); }
+    .paper-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(15,30,45,.1); border-color: rgba(30,111,241,.15); }
     .paper-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
     .paper-tag {
-      display: inline-block; padding: 3px 10px; border-radius: var(--radius-full);
-      font-size: .68rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+      display: inline-block; padding: 3px 10px; border-radius: 99px;
+      font-size: .67rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
     }
     .paper-tag.diabetes  { background: rgba(239,68,68,.1);  color: #dc2626; }
     .paper-tag.neuropathy{ background: rgba(139,92,246,.1); color: #7c3aed; }
     .paper-tag.gastro    { background: rgba(16,185,129,.1); color: #059669; }
-    .paper-tag.general   { background: rgba(30,111,241,.1); color: var(--blue-500); }
-    .paper-tag.all       { background: rgba(15,30,45,.08);  color: var(--navy-600); }
-    .paper-type-icon { font-size: .8rem; color: var(--gray-400); margin-left: auto; }
-    .paper-card h3 { font-size: 1rem; font-weight: 600; color: var(--navy-800); line-height: 1.4; }
-    .paper-card p  { font-size: .84rem; color: var(--gray-500); line-height: 1.65; flex: 1; }
-    .paper-date { font-size: .72rem; color: var(--gray-400); }
+    .paper-tag.general   { background: rgba(30,111,241,.1); color: var(--blue-500,#1e6ff1); }
+    .paper-tag.all       { background: rgba(15,30,45,.08);  color: #374151; }
+    .paper-type-icon { font-size: .8rem; color: #9ca3af; margin-left: auto; }
+    .paper-card h3 { font-size: 1rem; font-weight: 600; color: #0f1e2d; line-height: 1.4; }
+    .paper-card p  { font-size: .84rem; color: #6b7280; line-height: 1.65; flex: 1; }
+    .paper-date { font-size: .72rem; color: #9ca3af; }
     .paper-link {
       display: inline-flex; align-items: center; gap: 6px; margin-top: auto;
-      padding: 9px 18px; border-radius: var(--radius-full);
-      background: var(--blue-500); color: white;
-      font-size: .82rem; font-weight: 600; transition: all .2s;
+      padding: 9px 18px; border-radius: 99px;
+      background: var(--blue-500,#1e6ff1); color: white;
+      font-size: .82rem; font-weight: 600; transition: all .2s; text-decoration: none;
     }
-    .paper-link:hover { background: var(--navy-800); }
-
-    /* Empty state */
-    .papers-empty {
-      grid-column: 1/-1; text-align: center; padding: 64px 24px;
-      color: var(--gray-400);
-    }
+    .paper-link:hover { background: #0f1e2d; }
+    .papers-empty { grid-column: 1/-1; text-align: center; padding: 64px 24px; color: #9ca3af; }
     .papers-empty .icon { font-size: 3rem; margin-bottom: 16px; }
     .papers-empty p { font-size: .92rem; }
 
-    /* ── AI Chat widget ── */
-    .ai-widget {
-      position: fixed; bottom: 28px; right: 28px; z-index: 1000;
+    /* ── Products ── */
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 16px; }
+    .product-card {
+      background: white; border-radius: 16px; padding: 22px;
+      border: 1px solid rgba(15,30,45,.08); box-shadow: 0 2px 8px rgba(15,30,45,.05);
+      transition: all .2s;
     }
-    .ai-toggle {
-      width: 56px; height: 56px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--blue-500), var(--navy-700));
-      color: white; border: none; cursor: pointer;
-      box-shadow: 0 8px 28px rgba(30,111,241,.4);
-      display: flex; align-items: center; justify-content: center;
-      transition: all .3s; font-size: 1.4rem;
+    .product-card:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(15,30,45,.1); }
+    .product-card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
+    .product-card h3 { font-size: .95rem; font-weight: 700; color: #0f1e2d; }
+    .product-badge {
+      font-size: .67rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+      padding: 3px 9px; border-radius: 99px; background: rgba(30,111,241,.1); color: var(--blue-500,#1e6ff1);
+      white-space: nowrap; margin-left: 8px; flex-shrink: 0;
     }
-    .ai-toggle:hover { transform: scale(1.08); box-shadow: 0 12px 36px rgba(30,111,241,.5); }
-    .ai-toggle .ai-badge {
-      position: absolute; top: -4px; right: -4px; width: 16px; height: 16px;
-      border-radius: 50%; background: #10b981; border: 2px solid white;
-    }
-    .ai-panel {
-      position: absolute; bottom: 70px; right: 0;
-      width: 360px; background: white; border-radius: 18px;
-      border: 1px solid rgba(15,30,45,.1);
-      box-shadow: 0 24px 72px rgba(15,30,45,.18);
-      display: flex; flex-direction: column;
-      opacity: 0; visibility: hidden; transform: translateY(12px) scale(.97);
-      transition: all .28s cubic-bezier(.34,1.56,.64,1);
-      overflow: hidden;
-    }
-    .ai-panel.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
-    .ai-panel-header {
-      background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
-      padding: 16px 20px; display: flex; align-items: center; gap: 12px;
-    }
-    .ai-panel-header .ai-avatar {
-      width: 36px; height: 36px; border-radius: 50%;
-      background: rgba(255,255,255,.15); display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
-    }
-    .ai-panel-header h4 { color: white; font-size: .9rem; font-weight: 600; }
-    .ai-panel-header p  { color: rgba(255,255,255,.5); font-size: .72rem; }
-    .ai-close {
-      margin-left: auto; background: none; border: none;
-      color: rgba(255,255,255,.6); cursor: pointer; font-size: 1.2rem; padding: 4px;
-    }
-    .ai-messages {
-      flex: 1; overflow-y: auto; padding: 16px;
-      display: flex; flex-direction: column; gap: 10px;
-      max-height: 320px; min-height: 200px;
-    }
-    .ai-msg, .user-msg {
-      max-width: 85%; padding: 10px 14px; border-radius: 12px;
-      font-size: .84rem; line-height: 1.55;
-    }
-    .ai-msg {
-      background: rgba(30,111,241,.07); color: var(--navy-800);
-      border-radius: 4px 12px 12px 12px; align-self: flex-start;
-    }
-    .user-msg {
-      background: var(--blue-500); color: white;
-      border-radius: 12px 4px 12px 12px; align-self: flex-end;
-    }
-    .ai-typing {
-      display: flex; gap: 4px; padding: 10px 14px;
-      background: rgba(30,111,241,.07); border-radius: 4px 12px 12px 12px;
-      align-self: flex-start; width: fit-content;
-    }
-    .ai-typing span {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--blue-500); animation: aiTyping 1.2s infinite;
-    }
-    .ai-typing span:nth-child(2) { animation-delay: .2s; }
-    .ai-typing span:nth-child(3) { animation-delay: .4s; }
-    @keyframes aiTyping { 0%,60%,100%{ opacity:.3; transform:translateY(0); } 30%{ opacity:1; transform:translateY(-4px); } }
-    .ai-input-row {
-      padding: 12px 14px; border-top: 1px solid rgba(15,30,45,.07);
-      display: flex; gap: 8px;
-    }
-    .ai-input {
-      flex: 1; padding: 10px 14px; border-radius: var(--radius-full);
-      border: 1.5px solid rgba(15,30,45,.12); font-size: .84rem;
-      font-family: 'Poppins', sans-serif; outline: none;
-      transition: border-color .2s;
-    }
-    .ai-input:focus { border-color: var(--blue-500); }
-    .ai-send {
-      width: 38px; height: 38px; border-radius: 50%;
-      background: var(--blue-500); color: white; border: none;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: all .2s; flex-shrink: 0;
-    }
-    .ai-send:hover { background: var(--navy-800); }
-    .ai-send svg { width: 16px; height: 16px; }
+    .product-composition { font-size: .78rem; color: #6b7280; margin-bottom: 6px; line-height: 1.5; }
+    .product-indication { font-size: .75rem; color: #9ca3af; margin-bottom: 12px; }
+    .product-indication strong { color: #374151; }
+    .product-links { display: flex; gap: 10px; flex-wrap: wrap; }
+    .product-links a { font-size: .75rem; font-weight: 600; text-decoration: none; transition: opacity .2s; }
+    .product-links a:hover { opacity: .75; }
+    .product-links a.view { color: var(--blue-500,#1e6ff1); }
+    .product-links a.buy { color: #e84040; }
 
     /* ── Clinical Tools ── */
-    .tool-tabs { display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
+    .tool-tabs { display: flex; gap: 10px; margin-bottom: 28px; flex-wrap: wrap; }
     .tool-tab {
-      padding: 10px 22px; border-radius: var(--radius-full);
-      border: 1.5px solid rgba(15,30,45,.12); font-size: .88rem; font-weight: 600;
-      cursor: pointer; background: white; color: var(--gray-600);
+      padding: 11px 24px; border-radius: 99px; border: 1.5px solid rgba(15,30,45,.12);
+      font-size: .88rem; font-weight: 600; cursor: pointer; background: white; color: #6b7280;
       transition: all .2s; font-family: 'Poppins', sans-serif;
     }
-    .tool-tab:hover { border-color: var(--blue-500); color: var(--blue-500); }
-    .tool-tab.active { background: var(--blue-500); border-color: var(--blue-500); color: white; }
+    .tool-tab:hover { border-color: var(--blue-500,#1e6ff1); color: var(--blue-500,#1e6ff1); }
+    .tool-tab.active { background: var(--blue-500,#1e6ff1); border-color: var(--blue-500,#1e6ff1); color: white; }
 
     .tool-card {
-      background: white; border-radius: var(--radius-lg);
-      border: 1px solid rgba(15,30,45,.07); box-shadow: var(--shadow-sm);
-      padding: 36px; max-width: 760px; margin: 0 auto;
+      background: white; border-radius: 18px; border: 1px solid rgba(15,30,45,.07);
+      box-shadow: 0 2px 12px rgba(15,30,45,.06); padding: 36px; max-width: 760px;
     }
-    .tool-card h3 { font-size: 1.15rem; font-weight: 700; color: var(--navy-800); margin-bottom: 6px; }
-    .tool-desc { font-size: .88rem; color: var(--gray-500); margin-bottom: 28px; line-height: 1.6; }
+    .tool-card h3 { font-size: 1.15rem; font-weight: 700; color: #0f1e2d; margin-bottom: 6px; }
+    .tool-desc { font-size: .88rem; color: #6b7280; margin-bottom: 28px; line-height: 1.6; }
 
     .tool-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 20px; }
-    .tool-field > label:first-child { font-size: .8rem; font-weight: 600; color: var(--navy-700); }
+    .tool-field > label:first-child { font-size: .8rem; font-weight: 600; color: #374151; }
     .tool-field input[type="text"], .tool-field input[type="number"] {
       padding: 12px 16px; border-radius: 10px;
       border: 1.5px solid rgba(15,30,45,.12); font-size: .9rem;
       font-family: 'Poppins', sans-serif; outline: none; transition: border-color .2s;
     }
-    .tool-field input:focus { border-color: var(--blue-500); }
+    .tool-field input:focus { border-color: var(--blue-500,#1e6ff1); }
 
     .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     @media (max-width: 520px) { .tool-grid { grid-template-columns: 1fr; } }
@@ -283,347 +342,541 @@
     .conditions-grid { display: flex; flex-wrap: wrap; gap: 8px; }
     .condition-check {
       display: flex; align-items: center; gap: 7px;
-      font-size: .83rem; color: var(--navy-700); cursor: pointer;
+      font-size: .83rem; color: #374151; cursor: pointer;
       padding: 7px 13px; border-radius: 8px;
       border: 1.5px solid rgba(15,30,45,.1); background: white; transition: all .2s;
     }
-    .condition-check:hover { border-color: var(--blue-500); background: rgba(30,111,241,.04); }
-    .condition-check input[type="checkbox"] { accent-color: var(--blue-500); width: 15px; height: 15px; cursor: pointer; }
+    .condition-check:hover { border-color: var(--blue-500,#1e6ff1); background: rgba(30,111,241,.04); }
+    .condition-check input[type="checkbox"] { accent-color: var(--blue-500,#1e6ff1); width: 15px; height: 15px; cursor: pointer; }
 
     .tool-submit {
-      width: 100%; padding: 14px; border-radius: var(--radius-full);
-      background: var(--blue-500); color: white; border: none;
+      width: 100%; padding: 14px; border-radius: 99px;
+      background: var(--blue-500,#1e6ff1); color: white; border: none;
       font-size: .9rem; font-weight: 600; font-family: 'Poppins', sans-serif;
       cursor: pointer; transition: all .2s; margin-top: 8px;
     }
-    .tool-submit:hover:not(:disabled) { background: var(--navy-800); transform: translateY(-1px); }
+    .tool-submit:hover:not(:disabled) { background: #0f1e2d; transform: translateY(-1px); }
     .tool-submit:disabled { opacity: .45; cursor: not-allowed; }
 
     .drug-input-row { display: flex; gap: 8px; }
     .drug-input-row input { flex: 1; }
     .drug-add-btn {
       padding: 12px 20px; border-radius: 10px;
-      background: var(--navy-800); color: white; border: none;
+      background: #0f1e2d; color: white; border: none;
       font-size: .85rem; font-weight: 600; font-family: 'Poppins', sans-serif;
       cursor: pointer; white-space: nowrap; transition: all .2s;
     }
-    .drug-add-btn:hover { background: var(--blue-500); }
+    .drug-add-btn:hover { background: var(--blue-500,#1e6ff1); }
     .drug-tags { display: flex; flex-wrap: wrap; gap: 8px; min-height: 16px; margin: 12px 0 8px; }
     .drug-tag {
       display: flex; align-items: center; gap: 6px;
-      padding: 6px 14px; border-radius: var(--radius-full);
-      background: rgba(30,111,241,.1); color: var(--blue-500); font-size: .84rem; font-weight: 600;
+      padding: 6px 14px; border-radius: 99px;
+      background: rgba(30,111,241,.1); color: var(--blue-500,#1e6ff1); font-size: .84rem; font-weight: 600;
     }
-    .drug-tag button {
-      background: none; border: none; color: var(--blue-500);
-      cursor: pointer; font-size: 1rem; line-height: 1; padding: 0; opacity: .7; transition: opacity .15s;
-    }
+    .drug-tag button { background: none; border: none; color: var(--blue-500,#1e6ff1); cursor: pointer; font-size: 1rem; line-height: 1; padding: 0; opacity: .7; transition: opacity .15s; }
     .drug-tag button:hover { opacity: 1; }
-    .drug-count { font-size: .78rem; color: var(--gray-400); margin-bottom: 16px; }
+    .drug-count { font-size: .78rem; color: #9ca3af; margin-bottom: 16px; }
 
     .tool-loading { text-align: center; padding: 56px 20px; }
-    .tool-loading p { font-size: .88rem; color: var(--gray-400); margin-top: 16px; }
+    .tool-loading p { font-size: .88rem; color: #9ca3af; margin-top: 16px; }
     .loading-dots { display: flex; gap: 6px; justify-content: center; }
-    .loading-dots span {
-      width: 10px; height: 10px; border-radius: 50%;
-      background: var(--blue-500); animation: loadPulse 1.2s infinite;
-    }
+    .loading-dots span { width: 10px; height: 10px; border-radius: 50%; background: var(--blue-500,#1e6ff1); animation: loadPulse 1.2s infinite; }
     .loading-dots span:nth-child(2) { animation-delay: .2s; }
     .loading-dots span:nth-child(3) { animation-delay: .4s; }
     @keyframes loadPulse { 0%,60%,100%{ opacity:.25; transform:scale(.8); } 30%{ opacity:1; transform:scale(1); } }
 
-    .result-header {
-      display: flex; align-items: center; gap: 10px;
-      margin-bottom: 22px; padding-bottom: 16px;
-      border-bottom: 1px solid rgba(15,30,45,.07);
-    }
+    .result-header { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; padding-bottom: 16px; border-bottom: 1px solid rgba(15,30,45,.07); }
     .result-icon { font-size: 1.4rem; }
-    .result-header h4 { font-size: 1rem; font-weight: 700; color: var(--navy-800); flex: 1; }
+    .result-header h4 { font-size: 1rem; font-weight: 700; color: #0f1e2d; flex: 1; }
     .result-reset {
-      padding: 7px 16px; border-radius: var(--radius-full);
-      border: 1.5px solid rgba(15,30,45,.15); color: var(--gray-600);
-      background: white; font-size: .8rem; font-weight: 600;
-      cursor: pointer; font-family: 'Poppins', sans-serif; transition: all .2s;
+      padding: 7px 16px; border-radius: 99px; border: 1.5px solid rgba(15,30,45,.15); color: #6b7280;
+      background: white; font-size: .8rem; font-weight: 600; cursor: pointer; font-family: 'Poppins', sans-serif; transition: all .2s;
     }
-    .result-reset:hover { border-color: var(--blue-500); color: var(--blue-500); }
-    .result-content { font-size: .9rem; color: var(--navy-700); line-height: 1.8; white-space: pre-wrap; }
-    .result-content strong { color: var(--navy-900); }
+    .result-reset:hover { border-color: var(--blue-500,#1e6ff1); color: var(--blue-500,#1e6ff1); }
+    .result-content { font-size: .9rem; color: #374151; line-height: 1.8; white-space: pre-wrap; }
+    .result-content strong { color: #0f1e2d; }
+
+    /* ── Contact MR ── */
+    .contact-card {
+      background: white; border-radius: 18px; padding: 36px;
+      border: 1px solid rgba(15,30,45,.07); box-shadow: 0 2px 12px rgba(15,30,45,.06);
+      max-width: 660px;
+    }
+    .contact-card h3 { font-size: 1.15rem; font-weight: 700; color: #0f1e2d; margin-bottom: 6px; }
+    .contact-card > p { font-size: .88rem; color: #6b7280; margin-bottom: 28px; line-height: 1.6; }
+    .contact-row { display: flex; align-items: center; gap: 14px; padding: 16px 0; border-bottom: 1px solid rgba(15,30,45,.06); }
+    .contact-row:last-child { border-bottom: none; }
+    .contact-ico { width: 44px; height: 44px; border-radius: 12px; background: rgba(30,111,241,.08); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .contact-row h4 { font-size: .82rem; font-weight: 600; color: #0f1e2d; margin-bottom: 2px; }
+    .contact-row p { font-size: .8rem; color: #6b7280; }
+    .contact-row a { color: var(--blue-500,#1e6ff1); font-size: .82rem; font-weight: 600; text-decoration: none; }
+    .contact-row a:hover { text-decoration: underline; }
+
+    /* ── AI Chat widget ── */
+    .ai-widget { position: fixed; bottom: 28px; right: 28px; z-index: 1000; }
+    .ai-toggle {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue-500,#1e6ff1), #0f1e2d);
+      color: white; border: none; cursor: pointer;
+      box-shadow: 0 8px 28px rgba(30,111,241,.4);
+      display: flex; align-items: center; justify-content: center;
+      transition: all .3s; font-size: 1.4rem; position: relative;
+    }
+    .ai-toggle:hover { transform: scale(1.08); box-shadow: 0 12px 36px rgba(30,111,241,.5); }
+    .ai-toggle .ai-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; border-radius: 50%; background: #10b981; border: 2px solid white; }
+    .ai-panel {
+      position: absolute; bottom: 70px; right: 0;
+      width: 360px; background: white; border-radius: 18px;
+      border: 1px solid rgba(15,30,45,.1); box-shadow: 0 24px 72px rgba(15,30,45,.18);
+      display: flex; flex-direction: column;
+      opacity: 0; visibility: hidden; transform: translateY(12px) scale(.97);
+      transition: all .28s cubic-bezier(.34,1.56,.64,1); overflow: hidden;
+    }
+    .ai-panel.open { opacity: 1; visibility: visible; transform: translateY(0) scale(1); }
+    .ai-panel-header {
+      background: linear-gradient(135deg, #0f1e2d, #1e3a5f);
+      padding: 16px 20px; display: flex; align-items: center; gap: 12px;
+    }
+    .ai-panel-header .ai-avatar { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,.15); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+    .ai-panel-header h4 { color: white; font-size: .9rem; font-weight: 600; }
+    .ai-panel-header p  { color: rgba(255,255,255,.5); font-size: .72rem; }
+    .ai-close { margin-left: auto; background: none; border: none; color: rgba(255,255,255,.6); cursor: pointer; font-size: 1.2rem; padding: 4px; }
+    .ai-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; max-height: 320px; min-height: 200px; }
+    .ai-msg, .user-msg { max-width: 85%; padding: 10px 14px; border-radius: 12px; font-size: .84rem; line-height: 1.55; }
+    .ai-msg { background: rgba(30,111,241,.07); color: #0f1e2d; border-radius: 4px 12px 12px 12px; align-self: flex-start; }
+    .user-msg { background: var(--blue-500,#1e6ff1); color: white; border-radius: 12px 4px 12px 12px; align-self: flex-end; }
+    .ai-typing { display: flex; gap: 4px; padding: 10px 14px; background: rgba(30,111,241,.07); border-radius: 4px 12px 12px 12px; align-self: flex-start; width: fit-content; }
+    .ai-typing span { width: 6px; height: 6px; border-radius: 50%; background: var(--blue-500,#1e6ff1); animation: aiTyping 1.2s infinite; }
+    .ai-typing span:nth-child(2) { animation-delay: .2s; }
+    .ai-typing span:nth-child(3) { animation-delay: .4s; }
+    @keyframes aiTyping { 0%,60%,100%{ opacity:.3; transform:translateY(0); } 30%{ opacity:1; transform:translateY(-4px); } }
+    .ai-input-row { padding: 12px 14px; border-top: 1px solid rgba(15,30,45,.07); display: flex; gap: 8px; }
+    .ai-input { flex: 1; padding: 10px 14px; border-radius: 99px; border: 1.5px solid rgba(15,30,45,.12); font-size: .84rem; font-family: 'Poppins', sans-serif; outline: none; transition: border-color .2s; }
+    .ai-input:focus { border-color: var(--blue-500,#1e6ff1); }
+    .ai-send { width: 38px; height: 38px; border-radius: 50%; background: var(--blue-500,#1e6ff1); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .2s; flex-shrink: 0; }
+    .ai-send:hover { background: #0f1e2d; }
+    .ai-send svg { width: 16px; height: 16px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .sb-toggle { display: flex; }
+      .sb-overlay.open { display: block; }
+      .main-wrap { margin-left: 0; }
+      .topbar { padding-left: 72px; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px) {
+      .page-content { padding: 20px 16px; }
+      .stats-row { grid-template-columns: 1fr; }
+      .overview-hero { padding: 24px; }
+      .tool-card, .contact-card { padding: 24px; }
+      .papers-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
 {% include 'partials/loading.html' %}
 
-<!-- ── Header ── -->
-<header class="dash-header">
-  <div class="dash-header-inner">
-    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma" class="dash-logo"></a>
-    <nav class="dash-nav">
-      <a href="/doctor-dashboard" class="active">Dashboard</a>
-      <a href="/doctor-dashboard#papers">Research Library</a>
-      <a href="/doctor-dashboard#tools">Clinical Tools</a>
-      <a href="/contact">Contact MR</a>
-    </nav>
-    <div class="dash-actions">
-      <!-- Notification bell -->
-      <div class="notif-wrap">
-        <button class="notif-bell" id="notifBtn" aria-label="Notifications">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-          </svg>
-          <span class="notif-badge" id="notifBadge">{{ notif_count if notif_count > 0 else '' }}</span>
-        </button>
-        <div class="notif-dropdown" id="notifDropdown">
-          <div class="notif-dd-header">
-            <h4>Notifications</h4>
-            <span id="markAllRead">Mark all read</span>
-          </div>
-          {% if notifications %}
-            {% for n in notifications %}
-            <div class="notif-item">
-              <div class="notif-dot"></div>
-              <div>
-                <p>New paper: <strong>{{ n.papers.title if n.papers else 'Research Update' }}</strong></p>
-                <time>{{ n.created_at[:10] if n.created_at else '' }}</time>
-              </div>
+<!-- ── Mobile overlay ── -->
+<div class="sb-overlay" id="sbOverlay"></div>
+
+<!-- ── Mobile toggle ── -->
+<button class="sb-toggle" id="sbToggle" aria-label="Toggle menu">
+  <span></span><span></span><span></span>
+</button>
+
+<!-- ══════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+
+  <!-- Brand -->
+  <div class="sb-brand">
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma"></a>
+    <p>Doctor Portal</p>
+  </div>
+
+  <!-- Doctor info -->
+  <div class="sb-doctor">
+    <div class="sb-avatar">👨‍⚕️</div>
+    <div>
+      <div class="sb-doctor-name">Dr. {{ doctor_name }}</div>
+      <div class="sb-doctor-role">Healthcare Professional</div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="sb-nav">
+    <div class="sb-nav-label">Main</div>
+
+    <button class="sb-link active" data-section="overview">
+      <span class="sb-icon">🏠</span>
+      Overview
+    </button>
+
+    <button class="sb-link" data-section="research">
+      <span class="sb-icon">📚</span>
+      Research Library
+      {% if papers %}<span class="sb-badge">{{ papers | length }}</span>{% endif %}
+    </button>
+
+    <button class="sb-link" data-section="products">
+      <span class="sb-icon">💊</span>
+      Product Reference
+    </button>
+
+    <button class="sb-link" data-section="tools">
+      <span class="sb-icon">🔬</span>
+      Clinical Tools
+    </button>
+
+    <div class="sb-nav-label" style="margin-top:8px">Support</div>
+
+    <button class="sb-link" data-section="contact">
+      <span class="sb-icon">📞</span>
+      Contact MR
+    </button>
+  </nav>
+
+  <!-- Logout -->
+  <div class="sb-footer">
+    <a href="/doctor-logout" class="sb-logout">
+      <span class="sb-icon">🚪</span>
+      Logout
+    </a>
+  </div>
+</aside>
+
+<!-- ══════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════ -->
+<div class="main-wrap">
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar-title">
+      <span id="topbarSectionLabel">Overview</span>
+    </div>
+
+    <!-- Notification bell -->
+    <div class="notif-wrap">
+      <button class="notif-bell" id="notifBtn" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span class="notif-badge" id="notifBadge">{{ notif_count if notif_count > 0 else '' }}</span>
+      </button>
+      <div class="notif-dropdown" id="notifDropdown">
+        <div class="notif-dd-header">
+          <h4>Notifications</h4>
+          <span id="markAllRead">Mark all read</span>
+        </div>
+        {% if notifications %}
+          {% for n in notifications %}
+          <div class="notif-item">
+            <div class="notif-dot"></div>
+            <div>
+              <p>New paper: <strong>{{ n.papers.title if n.papers else 'Research Update' }}</strong></p>
+              <time>{{ n.created_at[:10] if n.created_at else '' }}</time>
             </div>
-            {% endfor %}
-          {% else %}
-            <div class="notif-empty">You're all caught up ✓</div>
-          {% endif %}
+          </div>
+          {% endfor %}
+        {% else %}
+          <div class="notif-empty">You're all caught up ✓</div>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Page content ── -->
+  <main class="page-content">
+
+    <!-- ════════════════════════
+         OVERVIEW
+    ════════════════════════ -->
+    <section class="page-section active" id="section-overview">
+      <div class="overview-hero">
+        <div class="overview-hero-content">
+          <div class="overview-badge">
+            <span class="dot"></span>
+            <span>Healthcare Professional Portal</span>
+          </div>
+          <h1>Welcome back, Dr. {{ doctor_name }} 👋</h1>
+          <p>Access clinical research, product intelligence, and your AI medical assistant</p>
         </div>
       </div>
-      <a href="/doctor-logout" class="dash-logout-btn">Logout</a>
-    </div>
-  </div>
-</header>
 
-<!-- ── Hero ── -->
-<section class="dash-hero">
-  <div class="dash-hero-inner">
-    <div class="p-hero-badge" style="margin-bottom:14px;display:inline-flex"><span class="dot"></span>Healthcare Professional Portal</div>
-    <h1>Welcome, Dr. {{ doctor_name }} 👋</h1>
-    <p>Access clinical research, product intelligence, and your AI medical assistant</p>
-  </div>
-</section>
-
-<!-- ── Main ── -->
-<section class="p-section p-section-light" id="papers">
-  <div class="p-container">
-
-    <!-- Stats -->
-    <div class="dash-stats p-reveal">
-      <div class="dash-stat">
-        <div class="num">{{ papers | length }}</div>
-        <div class="lbl">Papers Available</div>
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-icon">📄</div>
+          <div class="stat-num">{{ papers | length }}</div>
+          <div class="stat-lbl">Papers Available</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🔔</div>
+          <div class="stat-num">{{ notif_count }}</div>
+          <div class="stat-lbl">New Updates</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🧬</div>
+          <div class="stat-num">4</div>
+          <div class="stat-lbl">Therapy Areas</div>
+        </div>
       </div>
-      <div class="dash-stat">
-        <div class="num">{{ notif_count }}</div>
-        <div class="lbl">New Updates</div>
+
+      <div class="sec-header">
+        <span class="sec-tag">Quick Actions</span>
+        <h2 class="sec-title" style="font-size:1.3rem">Jump to a section</h2>
       </div>
-      <div class="dash-stat">
-        <div class="num">4</div>
-        <div class="lbl">Therapy Areas</div>
+
+      <div class="quick-actions-row">
+        <div class="quick-action" data-goto="research">
+          <div class="qa-icon blue">📚</div>
+          <div class="qa-text"><h4>Research Library</h4><p>Browse clinical papers & CMEs</p></div>
+        </div>
+        <div class="quick-action" data-goto="products">
+          <div class="qa-icon green">💊</div>
+          <div class="qa-text"><h4>Product Reference</h4><p>Monographs & prescribing info</p></div>
+        </div>
+        <div class="quick-action" data-goto="tools">
+          <div class="qa-icon purple">🔬</div>
+          <div class="qa-text"><h4>Clinical Tools</h4><p>Dose calculator & interaction checker</p></div>
+        </div>
+        <div class="quick-action" data-goto="contact">
+          <div class="qa-icon orange">📞</div>
+          <div class="qa-text"><h4>Contact MR</h4><p>Reach your medical representative</p></div>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Section header -->
-    <div class="p-section-header p-reveal" style="margin-bottom:24px">
-      <span class="p-section-tag">Research Library</span>
-      <h2 class="p-section-title">Clinical Papers &amp; Resources</h2>
-      <div class="p-divider"></div>
-    </div>
+    <!-- ════════════════════════
+         RESEARCH LIBRARY
+    ════════════════════════ -->
+    <section class="page-section" id="section-research">
+      <div class="sec-header">
+        <span class="sec-tag">Research Library</span>
+        <h2 class="sec-title">Clinical Papers &amp; Resources</h2>
+      </div>
 
-    <!-- Filter tabs -->
-    <div class="filter-tabs p-reveal">
-      <button class="filter-tab active" data-filter="all">All</button>
-      <button class="filter-tab" data-filter="diabetes">Diabetology</button>
-      <button class="filter-tab" data-filter="neuropathy">Neuropathy</button>
-      <button class="filter-tab" data-filter="gastro">Gastroenterology</button>
-      <button class="filter-tab" data-filter="general">General Medicine</button>
-    </div>
+      <div class="filter-tabs">
+        <button class="filter-tab active" data-filter="all">All</button>
+        <button class="filter-tab" data-filter="diabetes">Diabetology</button>
+        <button class="filter-tab" data-filter="neuropathy">Neuropathy</button>
+        <button class="filter-tab" data-filter="gastro">Gastroenterology</button>
+        <button class="filter-tab" data-filter="general">General Medicine</button>
+      </div>
 
-    <!-- Papers grid -->
-    <div class="papers-grid" id="papersGrid">
-      {% if papers %}
-        {% for paper in papers %}
-        <div class="paper-card p-reveal" data-area="{{ paper.therapy_area or 'all' }}">
-          <div class="paper-meta">
-            <span class="paper-tag {{ paper.therapy_area or 'all' }}">
-              {% if paper.therapy_area == 'diabetes' %}Diabetology
-              {% elif paper.therapy_area == 'neuropathy' %}Neuropathy
-              {% elif paper.therapy_area == 'gastro' %}Gastroenterology
-              {% elif paper.therapy_area == 'general' %}General Medicine
-              {% else %}General{% endif %}
-            </span>
-            <span class="paper-type-icon">
-              {% if paper.content_type == 'pdf' %}📄 PDF
-              {% elif paper.content_type == 'doc' %}📝 DOC
-              {% else %}🔗 Link{% endif %}
-            </span>
+      <div class="papers-grid" id="papersGrid">
+        {% if papers %}
+          {% for paper in papers %}
+          <div class="paper-card" data-area="{{ paper.therapy_area or 'all' }}">
+            <div class="paper-meta">
+              <span class="paper-tag {{ paper.therapy_area or 'all' }}">
+                {% if paper.therapy_area == 'diabetes' %}Diabetology
+                {% elif paper.therapy_area == 'neuropathy' %}Neuropathy
+                {% elif paper.therapy_area == 'gastro' %}Gastroenterology
+                {% elif paper.therapy_area == 'general' %}General Medicine
+                {% else %}General{% endif %}
+              </span>
+              <span class="paper-type-icon">
+                {% if paper.content_type == 'pdf' %}📄 PDF
+                {% elif paper.content_type == 'doc' %}📝 DOC
+                {% else %}🔗 Link{% endif %}
+              </span>
+            </div>
+            <h3>{{ paper.title }}</h3>
+            {% if paper.description %}<p>{{ paper.description }}</p>{% endif %}
+            <time class="paper-date">{{ paper.created_at[:10] if paper.created_at else '' }}</time>
+            <a href="{{ paper.file_url }}" target="_blank" rel="noopener" class="paper-link">
+              {% if paper.content_type == 'link' %}Open Resource{% else %}Download{% endif %} →
+            </a>
           </div>
-          <h3>{{ paper.title }}</h3>
-          {% if paper.description %}<p>{{ paper.description }}</p>{% endif %}
-          <time class="paper-date">{{ paper.created_at[:10] if paper.created_at else '' }}</time>
-          <a href="{{ paper.file_url }}" target="_blank" rel="noopener" class="paper-link">
-            {% if paper.content_type == 'link' %}Open Resource{% else %}Download{% endif %} →
-          </a>
+          {% endfor %}
+        {% else %}
+          <div class="papers-empty">
+            <div class="icon">📚</div>
+            <p>No papers uploaded yet.<br>Check back soon — your administrator will publish resources here.</p>
+          </div>
+        {% endif %}
+        <div id="filterEmpty" style="display:none;grid-column:1/-1;text-align:center;padding:48px 0;color:#9ca3af;font-size:.9rem">
+          No papers in this therapy area yet.
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════
+         PRODUCTS
+    ════════════════════════ -->
+    <section class="page-section" id="section-products">
+      <div class="sec-header">
+        <span class="sec-tag">Tunes Pharma Portfolio</span>
+        <h2 class="sec-title">Product Quick Reference</h2>
+      </div>
+
+      <div class="products-grid">
+        {% for product in products %}
+        <div class="product-card">
+          <div class="product-card-top">
+            <h3>{{ product.name }}</h3>
+            <span class="product-badge">{{ product.category }}</span>
+          </div>
+          <p class="product-composition">{{ product.composition }}</p>
+          <p class="product-indication"><strong>Indication:</strong> {{ product.indication }}</p>
+          <div class="product-links">
+            <a href="/products/{{ product.name | lower | replace(' ','-') }}" target="_blank" class="view">View Monograph →</a>
+            {% if product.buy_1mg %}
+            <a href="{{ product.buy_1mg }}" target="_blank" rel="noopener" class="buy">Buy on 1mg →</a>
+            {% endif %}
+          </div>
         </div>
         {% endfor %}
-      {% else %}
-        <div class="papers-empty">
-          <div class="icon">📚</div>
-          <p>No papers uploaded yet.<br>Check back soon — your administrator will publish resources here.</p>
-        </div>
-      {% endif %}
-      <!-- shown by JS when a category filter has no matches -->
-      <div id="filterEmpty" style="display:none;grid-column:1/-1;text-align:center;padding:48px 0;color:var(--gray-400);font-size:.9rem">
-        No papers in this therapy area yet.
       </div>
-    </div>
+    </section>
 
-  </div>
-</section>
-
-<!-- ── Products Quick Reference ── -->
-<section class="p-section" style="background:#f5f7fb" id="products-ref">
-  <div class="p-container">
-    <div class="p-section-header p-reveal" style="margin-bottom:24px">
-      <span class="p-section-tag">Tunes Pharma Portfolio</span>
-      <h2 class="p-section-title">Product Quick Reference</h2>
-      <div class="p-divider"></div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px">
-      {% for product in products %}
-      <div style="background:white;border-radius:14px;padding:20px 22px;border:1px solid rgba(15,30,45,.08);box-shadow:0 2px 8px rgba(15,30,45,.05)">
-        <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px">
-          <h3 style="font-size:.95rem;font-weight:700;color:var(--navy-800);margin:0">{{ product.name }}</h3>
-          <span style="font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:99px;background:rgba(30,111,241,.1);color:var(--blue-500);white-space:nowrap;margin-left:8px">{{ product.category }}</span>
-        </div>
-        <p style="font-size:.78rem;color:var(--gray-500);margin:0 0 8px;line-height:1.5">{{ product.composition }}</p>
-        <p style="font-size:.75rem;color:var(--gray-400);margin:0 0 12px"><strong style="color:var(--navy-700)">Indication:</strong> {{ product.indication }}</p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <a href="/products/{{ product.name | lower | replace(' ','-') }}" target="_blank" style="font-size:.75rem;font-weight:600;color:var(--blue-500);text-decoration:none">View Monograph →</a>
-          {% if product.buy_1mg %}
-          <a href="{{ product.buy_1mg }}" target="_blank" rel="noopener" style="font-size:.75rem;font-weight:600;color:#e84040;text-decoration:none">Buy on 1mg →</a>
-          {% endif %}
-        </div>
+    <!-- ════════════════════════
+         CLINICAL TOOLS
+    ════════════════════════ -->
+    <section class="page-section" id="section-tools">
+      <div class="sec-header">
+        <span class="sec-tag">AI-Powered</span>
+        <h2 class="sec-title">Clinical Tools</h2>
+        <p style="color:#6b7280;font-size:.88rem;margin-top:6px">Instant dose calculations and drug interaction checks — powered by Claude AI.</p>
       </div>
-      {% endfor %}
-    </div>
-  </div>
-</section>
 
-<!-- ── Clinical Tools ── -->
-<section class="p-section p-section-light" id="tools">
-  <div class="p-container">
+      <div class="tool-tabs">
+        <button class="tool-tab active" data-tool="dose">💊 Dose Calculator</button>
+        <button class="tool-tab" data-tool="interaction">⚠️ Drug Interaction Checker</button>
+      </div>
 
-    <div class="p-section-header p-reveal" style="margin-bottom:28px">
-      <span class="p-section-tag">AI-Powered</span>
-      <h2 class="p-section-title">Clinical Tools</h2>
-      <div class="p-divider"></div>
-      <p class="p-section-sub">Instant dose calculations and drug interaction checks — powered by Claude AI.</p>
-    </div>
-
-    <div class="tool-tabs p-reveal">
-      <button class="tool-tab active" data-tool="dose">💊 Dose Calculator</button>
-      <button class="tool-tab" data-tool="interaction">⚠️ Drug Interaction Checker</button>
-    </div>
-
-    <!-- Dose Calculator -->
-    <div id="dose-panel">
-      <div class="tool-card p-reveal">
-        <div id="doseForm">
-          <h3>Dose Calculator</h3>
-          <p class="tool-desc">Enter the medicine and patient parameters to get the correct dose instantly.</p>
-
-          <div class="tool-field">
-            <label>Medicine Name *</label>
-            <input type="text" id="doseMedicine" placeholder="e.g. Metformin, Pregabalin, Rabeprazole, Glimepiride" autocomplete="off">
-          </div>
-
-          <div class="tool-grid">
+      <!-- Dose Calculator -->
+      <div id="dose-panel">
+        <div class="tool-card">
+          <div id="doseForm">
+            <h3>Dose Calculator</h3>
+            <p class="tool-desc">Enter the medicine and patient parameters to get the correct dose instantly.</p>
             <div class="tool-field">
-              <label>Patient Weight (kg)</label>
-              <input type="number" id="doseWeight" placeholder="e.g. 65" min="1" max="300">
+              <label>Medicine Name *</label>
+              <input type="text" id="doseMedicine" placeholder="e.g. Metformin, Pregabalin, Rabeprazole" autocomplete="off">
+            </div>
+            <div class="tool-grid">
+              <div class="tool-field">
+                <label>Patient Weight (kg)</label>
+                <input type="number" id="doseWeight" placeholder="e.g. 65" min="1" max="300">
+              </div>
+              <div class="tool-field">
+                <label>Patient Age (years)</label>
+                <input type="number" id="doseAge" placeholder="e.g. 52" min="0" max="120">
+              </div>
             </div>
             <div class="tool-field">
-              <label>Patient Age (years)</label>
-              <input type="number" id="doseAge" placeholder="e.g. 52" min="0" max="120">
+              <label>Special Conditions</label>
+              <div class="conditions-grid">
+                <label class="condition-check"><input type="checkbox" value="renal impairment"> Renal Impairment</label>
+                <label class="condition-check"><input type="checkbox" value="hepatic impairment"> Hepatic Impairment</label>
+                <label class="condition-check"><input type="checkbox" value="elderly (65+ years)"> Elderly (65+)</label>
+                <label class="condition-check"><input type="checkbox" value="pediatric patient"> Pediatric</label>
+                <label class="condition-check"><input type="checkbox" value="pregnancy"> Pregnancy</label>
+                <label class="condition-check"><input type="checkbox" value="breastfeeding"> Breastfeeding</label>
+              </div>
             </div>
+            <button class="tool-submit" id="doseSubmit">Calculate Dose →</button>
           </div>
-
-          <div class="tool-field">
-            <label>Special Conditions</label>
-            <div class="conditions-grid">
-              <label class="condition-check"><input type="checkbox" value="renal impairment"> Renal Impairment</label>
-              <label class="condition-check"><input type="checkbox" value="hepatic impairment"> Hepatic Impairment</label>
-              <label class="condition-check"><input type="checkbox" value="elderly (65+ years)"> Elderly (65+)</label>
-              <label class="condition-check"><input type="checkbox" value="pediatric patient"> Pediatric</label>
-              <label class="condition-check"><input type="checkbox" value="pregnancy"> Pregnancy</label>
-              <label class="condition-check"><input type="checkbox" value="breastfeeding"> Breastfeeding</label>
+          <div class="tool-loading" id="doseLoading" style="display:none">
+            <div class="loading-dots"><span></span><span></span><span></span></div>
+            <p>Calculating dose…</p>
+          </div>
+          <div id="doseResult" style="display:none">
+            <div class="result-header">
+              <span class="result-icon">💊</span>
+              <h4>Dose Calculation</h4>
+              <button class="result-reset" id="doseReset">New Query</button>
             </div>
+            <div class="result-content" id="doseContent"></div>
           </div>
-
-          <button class="tool-submit" id="doseSubmit">Calculate Dose →</button>
-        </div>
-
-        <div class="tool-loading" id="doseLoading" style="display:none">
-          <div class="loading-dots"><span></span><span></span><span></span></div>
-          <p>Calculating dose…</p>
-        </div>
-
-        <div id="doseResult" style="display:none">
-          <div class="result-header">
-            <span class="result-icon">💊</span>
-            <h4>Dose Calculation</h4>
-            <button class="result-reset" id="doseReset">New Query</button>
-          </div>
-          <div class="result-content" id="doseContent"></div>
         </div>
       </div>
-    </div>
 
-    <!-- Drug Interaction Checker -->
-    <div id="interaction-panel" style="display:none">
-      <div class="tool-card p-reveal">
-        <div id="interactionForm">
-          <h3>Drug Interaction Checker</h3>
-          <p class="tool-desc">Add at least 2 drugs to check all interactions between them instantly.</p>
-
-          <div class="tool-field">
-            <label>Add Drug</label>
-            <div class="drug-input-row">
-              <input type="text" id="drugInput" placeholder="e.g. Metformin, Amlodipine, Warfarin…" autocomplete="off">
-              <button class="drug-add-btn" id="drugAddBtn">Add</button>
+      <!-- Drug Interaction Checker -->
+      <div id="interaction-panel" style="display:none">
+        <div class="tool-card">
+          <div id="interactionForm">
+            <h3>Drug Interaction Checker</h3>
+            <p class="tool-desc">Add at least 2 drugs to check all interactions between them instantly.</p>
+            <div class="tool-field">
+              <label>Add Drug</label>
+              <div class="drug-input-row">
+                <input type="text" id="drugInput" placeholder="e.g. Metformin, Amlodipine, Warfarin…" autocomplete="off">
+                <button class="drug-add-btn" id="drugAddBtn">Add</button>
+              </div>
             </div>
+            <div class="drug-tags" id="drugTags"></div>
+            <p class="drug-count" id="drugCount">Add at least 2 drugs to check interactions</p>
+            <button class="tool-submit" id="interactionSubmit" disabled>Check Interactions →</button>
           </div>
-
-          <div class="drug-tags" id="drugTags"></div>
-          <p class="drug-count" id="drugCount">Add at least 2 drugs to check interactions</p>
-
-          <button class="tool-submit" id="interactionSubmit" disabled>Check Interactions →</button>
-        </div>
-
-        <div class="tool-loading" id="interactionLoading" style="display:none">
-          <div class="loading-dots"><span></span><span></span><span></span></div>
-          <p>Analysing interactions…</p>
-        </div>
-
-        <div id="interactionResult" style="display:none">
-          <div class="result-header">
-            <span class="result-icon">⚠️</span>
-            <h4>Interaction Analysis</h4>
-            <button class="result-reset" id="interactionReset">Check Another</button>
+          <div class="tool-loading" id="interactionLoading" style="display:none">
+            <div class="loading-dots"><span></span><span></span><span></span></div>
+            <p>Analysing interactions…</p>
           </div>
-          <div class="result-content" id="interactionContent"></div>
+          <div id="interactionResult" style="display:none">
+            <div class="result-header">
+              <span class="result-icon">⚠️</span>
+              <h4>Interaction Analysis</h4>
+              <button class="result-reset" id="interactionReset">Check Another</button>
+            </div>
+            <div class="result-content" id="interactionContent"></div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
-  </div>
-</section>
+    <!-- ════════════════════════
+         CONTACT MR
+    ════════════════════════ -->
+    <section class="page-section" id="section-contact">
+      <div class="sec-header">
+        <span class="sec-tag">Support</span>
+        <h2 class="sec-title">Contact Your MR</h2>
+      </div>
 
-{% include 'partials/footer.html' %}
+      <div class="contact-card">
+        <h3>Medical Representative</h3>
+        <p>Reach out to your assigned Tunes Pharma representative for samples, product info, and clinical support.</p>
+
+        <div class="contact-row">
+          <div class="contact-ico">📞</div>
+          <div>
+            <h4>Phone</h4>
+            <a href="tel:+919876543210">+91 98765 43210</a>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-ico">✉️</div>
+          <div>
+            <h4>Email</h4>
+            <a href="mailto:mr@tunespharma.com">mr@tunespharma.com</a>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-ico">🌐</div>
+          <div>
+            <h4>Website</h4>
+            <a href="/contact">Contact form on Tunes Pharma</a>
+          </div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-ico">🕐</div>
+          <div>
+            <h4>Office Hours</h4>
+            <p>Monday – Saturday, 9:00 AM – 6:00 PM IST</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
 
 <!-- ── AI Chat widget ── -->
 <div class="ai-widget">
@@ -646,24 +899,75 @@
       </button>
     </div>
   </div>
-  <button class="ai-toggle" id="aiToggle" style="position:relative">
+  <button class="ai-toggle" id="aiToggle">
     🤖
     <span class="ai-badge"></span>
   </button>
 </div>
 
 <script>
-// ── Notification bell ──
+/* ── Sidebar navigation ── */
 (function () {
-  var btn  = document.getElementById('notifBtn');
-  var drop = document.getElementById('notifDropdown');
-  var mark = document.getElementById('markAllRead');
-  var badge= document.getElementById('notifBadge');
+  var sectionLabels = {
+    overview: 'Overview',
+    research: 'Research Library',
+    products: 'Product Reference',
+    tools: 'Clinical Tools',
+    contact: 'Contact MR'
+  };
 
-  btn.addEventListener('click', function (e) {
-    e.stopPropagation();
-    drop.classList.toggle('open');
+  var links     = document.querySelectorAll('.sb-link[data-section]');
+  var sections  = document.querySelectorAll('.page-section');
+  var topLabel  = document.getElementById('topbarSectionLabel');
+
+  function showSection(id) {
+    sections.forEach(function (s) { s.classList.remove('active'); });
+    links.forEach(function (l) { l.classList.remove('active'); });
+
+    var sec  = document.getElementById('section-' + id);
+    var link = document.querySelector('.sb-link[data-section="' + id + '"]');
+    if (sec)  sec.classList.add('active');
+    if (link) link.classList.add('active');
+    if (topLabel) topLabel.textContent = sectionLabels[id] || '';
+
+    // close mobile sidebar
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sbOverlay').classList.remove('open');
+  }
+
+  links.forEach(function (link) {
+    link.addEventListener('click', function () {
+      showSection(this.dataset.section);
+    });
   });
+
+  // Quick-action cards on overview
+  document.querySelectorAll('.quick-action[data-goto]').forEach(function (card) {
+    card.addEventListener('click', function () { showSection(this.dataset.goto); });
+  });
+
+  // Mobile toggle
+  var sidebar  = document.getElementById('sidebar');
+  var overlay  = document.getElementById('sbOverlay');
+  var sbToggle = document.getElementById('sbToggle');
+  sbToggle.addEventListener('click', function () {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('open');
+  });
+  overlay.addEventListener('click', function () {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+  });
+})();
+
+/* ── Notification bell ── */
+(function () {
+  var btn   = document.getElementById('notifBtn');
+  var drop  = document.getElementById('notifDropdown');
+  var mark  = document.getElementById('markAllRead');
+  var badge = document.getElementById('notifBadge');
+
+  btn.addEventListener('click', function (e) { e.stopPropagation(); drop.classList.toggle('open'); });
   document.addEventListener('click', function () { drop.classList.remove('open'); });
 
   if (mark) {
@@ -679,7 +983,7 @@
   }
 })();
 
-// ── Paper filter tabs ──
+/* ── Paper filter tabs ── */
 (function () {
   var tabs    = document.querySelectorAll('.filter-tab');
   var cards   = document.querySelectorAll('#papersGrid .paper-card');
@@ -701,77 +1005,8 @@
   });
 })();
 
-// ── AI Chat ──
+/* ── Clinical tool tabs ── */
 (function () {
-  var toggle   = document.getElementById('aiToggle');
-  var panel    = document.getElementById('aiPanel');
-  var closeBtn = document.getElementById('aiClose');
-  var input    = document.getElementById('aiInput');
-  var send     = document.getElementById('aiSend');
-  var messages = document.getElementById('aiMessages');
-  var history  = [];
-
-  function togglePanel() { panel.classList.toggle('open'); }
-  toggle.addEventListener('click', togglePanel);
-  closeBtn.addEventListener('click', function () { panel.classList.remove('open'); });
-
-  function addMsg(text, role) {
-    var div = document.createElement('div');
-    div.className = role === 'user' ? 'user-msg' : 'ai-msg';
-    div.textContent = text;
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-    return div;
-  }
-
-  function showTyping() {
-    var div = document.createElement('div');
-    div.className = 'ai-typing';
-    div.innerHTML = '<span></span><span></span><span></span>';
-    div.id = 'typingIndicator';
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-  }
-  function removeTyping() {
-    var t = document.getElementById('typingIndicator');
-    if (t) t.remove();
-  }
-
-  function sendMessage() {
-    var text = input.value.trim();
-    if (!text) return;
-    input.value = '';
-    addMsg(text, 'user');
-    history.push({ role: 'user', content: text });
-    showTyping();
-    send.disabled = true;
-
-    fetch('/doctor/ai-chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text, history: history.slice(-10) })
-    })
-    .then(function (r) { return r.json(); })
-    .then(function (data) {
-      removeTyping();
-      addMsg(data.reply, 'ai');
-      history.push({ role: 'assistant', content: data.reply });
-      send.disabled = false;
-    })
-    .catch(function () {
-      removeTyping();
-      addMsg('Something went wrong. Please try again.', 'ai');
-      send.disabled = false;
-    });
-  }
-
-  send.addEventListener('click', sendMessage);
-  input.addEventListener('keydown', function (e) { if (e.key === 'Enter') sendMessage(); });
-})();
-
-// ── Clinical Tools ──
-(function () {
-  // Tab switching
   document.querySelectorAll('.tool-tab').forEach(function (tab) {
     tab.addEventListener('click', function () {
       document.querySelectorAll('.tool-tab').forEach(function (t) { t.classList.remove('active'); });
@@ -790,7 +1025,7 @@
       .replace(/🔴/g, '<span style="color:#dc2626">🔴</span>');
   }
 
-  // ── Dose Calculator ──
+  /* Dose Calculator */
   var doseForm    = document.getElementById('doseForm');
   var doseLoading = document.getElementById('doseLoading');
   var doseResult  = document.getElementById('doseResult');
@@ -802,9 +1037,7 @@
     var weight = document.getElementById('doseWeight').value;
     var age    = document.getElementById('doseAge').value;
     var conditions = [];
-    document.querySelectorAll('#doseForm .condition-check input:checked').forEach(function (cb) {
-      conditions.push(cb.value);
-    });
+    document.querySelectorAll('#doseForm .condition-check input:checked').forEach(function (cb) { conditions.push(cb.value); });
     doseForm.style.display    = 'none';
     doseLoading.style.display = '';
     doseResult.style.display  = 'none';
@@ -835,16 +1068,16 @@
     doseForm.style.display = '';
   });
 
-  // ── Drug Interaction Checker ──
-  var drugs               = [];
-  var drugInput           = document.getElementById('drugInput');
-  var interactionForm     = document.getElementById('interactionForm');
-  var interactionLoading  = document.getElementById('interactionLoading');
-  var interactionResult   = document.getElementById('interactionResult');
-  var interactionContent  = document.getElementById('interactionContent');
-  var interactionSubmit   = document.getElementById('interactionSubmit');
-  var drugTags            = document.getElementById('drugTags');
-  var drugCount           = document.getElementById('drugCount');
+  /* Drug Interaction Checker */
+  var drugs              = [];
+  var drugInput          = document.getElementById('drugInput');
+  var interactionForm    = document.getElementById('interactionForm');
+  var interactionLoading = document.getElementById('interactionLoading');
+  var interactionResult  = document.getElementById('interactionResult');
+  var interactionContent = document.getElementById('interactionContent');
+  var interactionSubmit  = document.getElementById('interactionSubmit');
+  var drugTags           = document.getElementById('drugTags');
+  var drugCount          = document.getElementById('drugCount');
 
   function renderTags() {
     drugTags.innerHTML = '';
@@ -853,7 +1086,7 @@
       tag.className = 'drug-tag';
       var btn = document.createElement('button');
       btn.textContent = '×';
-      btn.dataset.i   = i;
+      btn.dataset.i = i;
       btn.addEventListener('click', function () { drugs.splice(parseInt(this.dataset.i), 1); renderTags(); });
       tag.appendChild(document.createTextNode(drug));
       tag.appendChild(btn);
@@ -905,6 +1138,67 @@
     interactionLoading.style.display = 'none';
     interactionForm.style.display    = '';
   });
+})();
+
+/* ── AI Chat ── */
+(function () {
+  var toggle   = document.getElementById('aiToggle');
+  var panel    = document.getElementById('aiPanel');
+  var closeBtn = document.getElementById('aiClose');
+  var input    = document.getElementById('aiInput');
+  var send     = document.getElementById('aiSend');
+  var messages = document.getElementById('aiMessages');
+  var history  = [];
+
+  toggle.addEventListener('click', function () { panel.classList.toggle('open'); });
+  closeBtn.addEventListener('click', function () { panel.classList.remove('open'); });
+
+  function addMsg(text, role) {
+    var div = document.createElement('div');
+    div.className = role === 'user' ? 'user-msg' : 'ai-msg';
+    div.textContent = text;
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function showTyping() {
+    var div = document.createElement('div');
+    div.className = 'ai-typing';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    div.id = 'typingIndicator';
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
+  }
+  function removeTyping() { var t = document.getElementById('typingIndicator'); if (t) t.remove(); }
+
+  function sendMessage() {
+    var text = input.value.trim();
+    if (!text) return;
+    input.value = '';
+    addMsg(text, 'user');
+    history.push({ role: 'user', content: text });
+    showTyping();
+    send.disabled = true;
+    fetch('/doctor/ai-chat', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: text, history: history.slice(-10) })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      removeTyping();
+      addMsg(data.reply, 'ai');
+      history.push({ role: 'assistant', content: data.reply });
+      send.disabled = false;
+    })
+    .catch(function () {
+      removeTyping();
+      addMsg('Something went wrong. Please try again.', 'ai');
+      send.disabled = false;
+    });
+  }
+
+  send.addEventListener('click', sendMessage);
+  input.addEventListener('keydown', function (e) { if (e.key === 'Enter') sendMessage(); });
 })();
 </script>
 </body>
