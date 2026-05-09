@@ -248,6 +248,106 @@
     }
     .ai-send:hover { background: var(--navy-800); }
     .ai-send svg { width: 16px; height: 16px; }
+
+    /* ── Clinical Tools ── */
+    .tool-tabs { display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap; }
+    .tool-tab {
+      padding: 10px 22px; border-radius: var(--radius-full);
+      border: 1.5px solid rgba(15,30,45,.12); font-size: .88rem; font-weight: 600;
+      cursor: pointer; background: white; color: var(--gray-600);
+      transition: all .2s; font-family: 'Poppins', sans-serif;
+    }
+    .tool-tab:hover { border-color: var(--blue-500); color: var(--blue-500); }
+    .tool-tab.active { background: var(--blue-500); border-color: var(--blue-500); color: white; }
+
+    .tool-card {
+      background: white; border-radius: var(--radius-lg);
+      border: 1px solid rgba(15,30,45,.07); box-shadow: var(--shadow-sm);
+      padding: 36px; max-width: 760px; margin: 0 auto;
+    }
+    .tool-card h3 { font-size: 1.15rem; font-weight: 700; color: var(--navy-800); margin-bottom: 6px; }
+    .tool-desc { font-size: .88rem; color: var(--gray-500); margin-bottom: 28px; line-height: 1.6; }
+
+    .tool-field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 20px; }
+    .tool-field > label:first-child { font-size: .8rem; font-weight: 600; color: var(--navy-700); }
+    .tool-field input[type="text"], .tool-field input[type="number"] {
+      padding: 12px 16px; border-radius: 10px;
+      border: 1.5px solid rgba(15,30,45,.12); font-size: .9rem;
+      font-family: 'Poppins', sans-serif; outline: none; transition: border-color .2s;
+    }
+    .tool-field input:focus { border-color: var(--blue-500); }
+
+    .tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 520px) { .tool-grid { grid-template-columns: 1fr; } }
+
+    .conditions-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+    .condition-check {
+      display: flex; align-items: center; gap: 7px;
+      font-size: .83rem; color: var(--navy-700); cursor: pointer;
+      padding: 7px 13px; border-radius: 8px;
+      border: 1.5px solid rgba(15,30,45,.1); background: white; transition: all .2s;
+    }
+    .condition-check:hover { border-color: var(--blue-500); background: rgba(30,111,241,.04); }
+    .condition-check input[type="checkbox"] { accent-color: var(--blue-500); width: 15px; height: 15px; cursor: pointer; }
+
+    .tool-submit {
+      width: 100%; padding: 14px; border-radius: var(--radius-full);
+      background: var(--blue-500); color: white; border: none;
+      font-size: .9rem; font-weight: 600; font-family: 'Poppins', sans-serif;
+      cursor: pointer; transition: all .2s; margin-top: 8px;
+    }
+    .tool-submit:hover:not(:disabled) { background: var(--navy-800); transform: translateY(-1px); }
+    .tool-submit:disabled { opacity: .45; cursor: not-allowed; }
+
+    .drug-input-row { display: flex; gap: 8px; }
+    .drug-input-row input { flex: 1; }
+    .drug-add-btn {
+      padding: 12px 20px; border-radius: 10px;
+      background: var(--navy-800); color: white; border: none;
+      font-size: .85rem; font-weight: 600; font-family: 'Poppins', sans-serif;
+      cursor: pointer; white-space: nowrap; transition: all .2s;
+    }
+    .drug-add-btn:hover { background: var(--blue-500); }
+    .drug-tags { display: flex; flex-wrap: wrap; gap: 8px; min-height: 16px; margin: 12px 0 8px; }
+    .drug-tag {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 14px; border-radius: var(--radius-full);
+      background: rgba(30,111,241,.1); color: var(--blue-500); font-size: .84rem; font-weight: 600;
+    }
+    .drug-tag button {
+      background: none; border: none; color: var(--blue-500);
+      cursor: pointer; font-size: 1rem; line-height: 1; padding: 0; opacity: .7; transition: opacity .15s;
+    }
+    .drug-tag button:hover { opacity: 1; }
+    .drug-count { font-size: .78rem; color: var(--gray-400); margin-bottom: 16px; }
+
+    .tool-loading { text-align: center; padding: 56px 20px; }
+    .tool-loading p { font-size: .88rem; color: var(--gray-400); margin-top: 16px; }
+    .loading-dots { display: flex; gap: 6px; justify-content: center; }
+    .loading-dots span {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--blue-500); animation: loadPulse 1.2s infinite;
+    }
+    .loading-dots span:nth-child(2) { animation-delay: .2s; }
+    .loading-dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes loadPulse { 0%,60%,100%{ opacity:.25; transform:scale(.8); } 30%{ opacity:1; transform:scale(1); } }
+
+    .result-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 22px; padding-bottom: 16px;
+      border-bottom: 1px solid rgba(15,30,45,.07);
+    }
+    .result-icon { font-size: 1.4rem; }
+    .result-header h4 { font-size: 1rem; font-weight: 700; color: var(--navy-800); flex: 1; }
+    .result-reset {
+      padding: 7px 16px; border-radius: var(--radius-full);
+      border: 1.5px solid rgba(15,30,45,.15); color: var(--gray-600);
+      background: white; font-size: .8rem; font-weight: 600;
+      cursor: pointer; font-family: 'Poppins', sans-serif; transition: all .2s;
+    }
+    .result-reset:hover { border-color: var(--blue-500); color: var(--blue-500); }
+    .result-content { font-size: .9rem; color: var(--navy-700); line-height: 1.8; white-space: pre-wrap; }
+    .result-content strong { color: var(--navy-900); }
   </style>
 </head>
 <body>
@@ -259,6 +359,8 @@
     <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma" class="dash-logo"></a>
     <nav class="dash-nav">
       <a href="/doctor-dashboard" class="active">Dashboard</a>
+      <a href="/doctor-dashboard#papers">Research Library</a>
+      <a href="/doctor-dashboard#tools">Clinical Tools</a>
       <a href="/contact">Contact MR</a>
     </nav>
     <div class="dash-actions">
@@ -411,6 +513,116 @@
   </div>
 </section>
 
+<!-- ── Clinical Tools ── -->
+<section class="p-section p-section-light" id="tools">
+  <div class="p-container">
+
+    <div class="p-section-header p-reveal" style="margin-bottom:28px">
+      <span class="p-section-tag">AI-Powered</span>
+      <h2 class="p-section-title">Clinical Tools</h2>
+      <div class="p-divider"></div>
+      <p class="p-section-sub">Instant dose calculations and drug interaction checks — powered by Claude AI.</p>
+    </div>
+
+    <div class="tool-tabs p-reveal">
+      <button class="tool-tab active" data-tool="dose">💊 Dose Calculator</button>
+      <button class="tool-tab" data-tool="interaction">⚠️ Drug Interaction Checker</button>
+    </div>
+
+    <!-- Dose Calculator -->
+    <div id="dose-panel">
+      <div class="tool-card p-reveal">
+        <div id="doseForm">
+          <h3>Dose Calculator</h3>
+          <p class="tool-desc">Enter the medicine and patient parameters to get the correct dose instantly.</p>
+
+          <div class="tool-field">
+            <label>Medicine Name *</label>
+            <input type="text" id="doseMedicine" placeholder="e.g. Metformin, Pregabalin, Rabeprazole, Glimepiride" autocomplete="off">
+          </div>
+
+          <div class="tool-grid">
+            <div class="tool-field">
+              <label>Patient Weight (kg)</label>
+              <input type="number" id="doseWeight" placeholder="e.g. 65" min="1" max="300">
+            </div>
+            <div class="tool-field">
+              <label>Patient Age (years)</label>
+              <input type="number" id="doseAge" placeholder="e.g. 52" min="0" max="120">
+            </div>
+          </div>
+
+          <div class="tool-field">
+            <label>Special Conditions</label>
+            <div class="conditions-grid">
+              <label class="condition-check"><input type="checkbox" value="renal impairment"> Renal Impairment</label>
+              <label class="condition-check"><input type="checkbox" value="hepatic impairment"> Hepatic Impairment</label>
+              <label class="condition-check"><input type="checkbox" value="elderly (65+ years)"> Elderly (65+)</label>
+              <label class="condition-check"><input type="checkbox" value="pediatric patient"> Pediatric</label>
+              <label class="condition-check"><input type="checkbox" value="pregnancy"> Pregnancy</label>
+              <label class="condition-check"><input type="checkbox" value="breastfeeding"> Breastfeeding</label>
+            </div>
+          </div>
+
+          <button class="tool-submit" id="doseSubmit">Calculate Dose →</button>
+        </div>
+
+        <div class="tool-loading" id="doseLoading" style="display:none">
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+          <p>Calculating dose…</p>
+        </div>
+
+        <div id="doseResult" style="display:none">
+          <div class="result-header">
+            <span class="result-icon">💊</span>
+            <h4>Dose Calculation</h4>
+            <button class="result-reset" id="doseReset">New Query</button>
+          </div>
+          <div class="result-content" id="doseContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Drug Interaction Checker -->
+    <div id="interaction-panel" style="display:none">
+      <div class="tool-card p-reveal">
+        <div id="interactionForm">
+          <h3>Drug Interaction Checker</h3>
+          <p class="tool-desc">Add at least 2 drugs to check all interactions between them instantly.</p>
+
+          <div class="tool-field">
+            <label>Add Drug</label>
+            <div class="drug-input-row">
+              <input type="text" id="drugInput" placeholder="e.g. Metformin, Amlodipine, Warfarin…" autocomplete="off">
+              <button class="drug-add-btn" id="drugAddBtn">Add</button>
+            </div>
+          </div>
+
+          <div class="drug-tags" id="drugTags"></div>
+          <p class="drug-count" id="drugCount">Add at least 2 drugs to check interactions</p>
+
+          <button class="tool-submit" id="interactionSubmit" disabled>Check Interactions →</button>
+        </div>
+
+        <div class="tool-loading" id="interactionLoading" style="display:none">
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+          <p>Analysing interactions…</p>
+        </div>
+
+        <div id="interactionResult" style="display:none">
+          <div class="result-header">
+            <span class="result-icon">⚠️</span>
+            <h4>Interaction Analysis</h4>
+            <button class="result-reset" id="interactionReset">Check Another</button>
+          </div>
+          <div class="result-content" id="interactionContent"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 {% include 'partials/footer.html' %}
 
 <!-- ── AI Chat widget ── -->
@@ -555,6 +767,144 @@
 
   send.addEventListener('click', sendMessage);
   input.addEventListener('keydown', function (e) { if (e.key === 'Enter') sendMessage(); });
+})();
+
+// ── Clinical Tools ──
+(function () {
+  // Tab switching
+  document.querySelectorAll('.tool-tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.tool-tab').forEach(function (t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      var tool = tab.dataset.tool;
+      document.getElementById('dose-panel').style.display        = tool === 'dose'        ? '' : 'none';
+      document.getElementById('interaction-panel').style.display = tool === 'interaction' ? '' : 'none';
+    });
+  });
+
+  function fmtResult(text) {
+    return text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/🟢/g, '<span style="color:#059669">🟢</span>')
+      .replace(/🟡/g, '<span style="color:#d97706">🟡</span>')
+      .replace(/🔴/g, '<span style="color:#dc2626">🔴</span>');
+  }
+
+  // ── Dose Calculator ──
+  var doseForm    = document.getElementById('doseForm');
+  var doseLoading = document.getElementById('doseLoading');
+  var doseResult  = document.getElementById('doseResult');
+  var doseContent = document.getElementById('doseContent');
+
+  document.getElementById('doseSubmit').addEventListener('click', function () {
+    var medicine = document.getElementById('doseMedicine').value.trim();
+    if (!medicine) { document.getElementById('doseMedicine').focus(); return; }
+    var weight = document.getElementById('doseWeight').value;
+    var age    = document.getElementById('doseAge').value;
+    var conditions = [];
+    document.querySelectorAll('#doseForm .condition-check input:checked').forEach(function (cb) {
+      conditions.push(cb.value);
+    });
+    doseForm.style.display    = 'none';
+    doseLoading.style.display = '';
+    doseResult.style.display  = 'none';
+    fetch('/doctor/dose-calculator', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ medicine: medicine, weight: weight, age: age, conditions: conditions })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      doseLoading.style.display = 'none';
+      doseContent.innerHTML     = fmtResult(d.reply || 'No response received.');
+      doseResult.style.display  = '';
+    })
+    .catch(function () {
+      doseLoading.style.display = 'none';
+      doseContent.innerHTML     = 'Something went wrong. Please try again.';
+      doseResult.style.display  = '';
+    });
+  });
+
+  document.getElementById('doseReset').addEventListener('click', function () {
+    doseResult.style.display  = 'none';
+    doseLoading.style.display = 'none';
+    document.getElementById('doseMedicine').value = '';
+    document.getElementById('doseWeight').value   = '';
+    document.getElementById('doseAge').value      = '';
+    document.querySelectorAll('#doseForm .condition-check input').forEach(function (cb) { cb.checked = false; });
+    doseForm.style.display = '';
+  });
+
+  // ── Drug Interaction Checker ──
+  var drugs               = [];
+  var drugInput           = document.getElementById('drugInput');
+  var interactionForm     = document.getElementById('interactionForm');
+  var interactionLoading  = document.getElementById('interactionLoading');
+  var interactionResult   = document.getElementById('interactionResult');
+  var interactionContent  = document.getElementById('interactionContent');
+  var interactionSubmit   = document.getElementById('interactionSubmit');
+  var drugTags            = document.getElementById('drugTags');
+  var drugCount           = document.getElementById('drugCount');
+
+  function renderTags() {
+    drugTags.innerHTML = '';
+    drugs.forEach(function (drug, i) {
+      var tag = document.createElement('div');
+      tag.className = 'drug-tag';
+      var btn = document.createElement('button');
+      btn.textContent = '×';
+      btn.dataset.i   = i;
+      btn.addEventListener('click', function () { drugs.splice(parseInt(this.dataset.i), 1); renderTags(); });
+      tag.appendChild(document.createTextNode(drug));
+      tag.appendChild(btn);
+      drugTags.appendChild(tag);
+    });
+    var n = drugs.length;
+    drugCount.textContent = n === 0 ? 'Add at least 2 drugs to check interactions'
+                          : n === 1 ? '1 drug added — add at least 1 more'
+                          : n + ' drugs added — ready to check';
+    interactionSubmit.disabled = n < 2;
+  }
+
+  function addDrug() {
+    var val = drugInput.value.trim();
+    if (!val) return;
+    if (!drugs.includes(val)) { drugs.push(val); renderTags(); }
+    drugInput.value = '';
+    drugInput.focus();
+  }
+
+  document.getElementById('drugAddBtn').addEventListener('click', addDrug);
+  drugInput.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); addDrug(); } });
+
+  interactionSubmit.addEventListener('click', function () {
+    interactionForm.style.display    = 'none';
+    interactionLoading.style.display = '';
+    interactionResult.style.display  = 'none';
+    fetch('/doctor/drug-interaction', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ drugs: drugs })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      interactionLoading.style.display = 'none';
+      interactionContent.innerHTML     = fmtResult(d.reply || 'No response received.');
+      interactionResult.style.display  = '';
+    })
+    .catch(function () {
+      interactionLoading.style.display = 'none';
+      interactionContent.innerHTML     = 'Something went wrong. Please try again.';
+      interactionResult.style.display  = '';
+    });
+  });
+
+  document.getElementById('interactionReset').addEventListener('click', function () {
+    drugs = [];
+    renderTags();
+    interactionResult.style.display  = 'none';
+    interactionLoading.style.display = 'none';
+    interactionForm.style.display    = '';
+  });
 })();
 </script>
 </body>

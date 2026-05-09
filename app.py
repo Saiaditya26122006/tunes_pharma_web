@@ -4,6 +4,10 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import tempfile
 import uuid as uuid_lib
+from dotenv import load_dotenv
+from pathlib import Path
+
+load_dotenv(Path(__file__).parent / '.env', override=True)
 
 try:
     from supabase_client import supabase as sb
@@ -901,6 +905,205 @@ def admin_debug():
     <body><h1>🔍 System Health Check</h1>
     <table>{rows}</table>
     <a href="/admin/papers">← Back to Admin</a></body></html>'''
+
+# ── Phase 1: System prompts ──────────────────────────────────
+
+DOSE_CALC_SYSTEM = (
+    "You are a clinical pharmacology assistant for Tunes Pharma (A Division of Brinda Medicals, Vijayawada). "
+    "You help licensed physicians with dose calculations at the point of care.\n\n"
+    "Tunes Pharma products:\n"
+    "- Ecoglim MV (Glimepiride+Metformin+Voglibose, 1mg/500mg/0.2mg or 2mg/500mg/0.2mg) — Type 2 Diabetes\n"
+    "- Ecoglim MP (Glimepiride+Metformin+Pioglitazone, 1mg/500mg/15mg or 2mg/500mg/15mg) — Type 2 Diabetes\n"
+    "- Nactaid (Taurine 500mg + Acetylcysteine 150mg) — Chronic Kidney Disease\n"
+    "- Resgaba NT (Pregabalin 75mg + Nortriptyline 10mg + Methylcobalamin 1500mcg) — Neuropathic Pain\n"
+    "- Resgaba DLX (Pregabalin 75mg + Duloxetine 30mg) — Neuropathic Pain / Anxiety\n"
+    "- Rabishir D (Domperidone 30mg + Rabeprazole 20mg) — GERD / Acid Reflux\n\n"
+    "Respond in this exact format:\n"
+    "**DOSE:** [standard adult dose and frequency]\n"
+    "**ADJUSTMENTS:** [modifications for the patient's weight, age, or conditions — be specific]\n"
+    "**DURATION:** [typical treatment duration]\n"
+    "**WARNINGS:** [key clinical warnings — monitoring, contraindications, interactions to watch]\n"
+    "**TUNES PHARMA:** [if a Tunes Pharma product is appropriate, name it and relevant strength. "
+    "If not applicable, write: Not applicable for this drug.]\n\n"
+    "Be precise, evidence-based, and concise. You are supporting a licensed physician."
+)
+
+INTERACTION_SYSTEM = (
+    "You are a drug interaction specialist for Tunes Pharma (A Division of Brinda Medicals). "
+    "You help licensed physicians check drug interactions at the point of care.\n\n"
+    "For each pair of drugs, use this format:\n"
+    "**[Drug A] + [Drug B]**\n"
+    "Severity: 🟢 SAFE / 🟡 CAUTION / 🔴 AVOID\n"
+    "Mechanism: [brief explanation]\n"
+    "Clinical action: [what the doctor should do]\n\n"
+    "List all pairs starting with the most severe. Then end with:\n"
+    "**OVERALL:** SAFE TO CO-PRESCRIBE / PRESCRIBE WITH MONITORING / AVOID COMBINATION\n\n"
+    "If a safer alternative exists from Tunes Pharma products (Ecoglim MV, Ecoglim MP, Nactaid, "
+    "Resgaba NT, Resgaba DLX, Rabishir D), mention it. Be evidence-based and concise."
+)
+
+CONTENT_GEN_SYSTEM = (
+    "You are a professional medical communications writer for Tunes Pharma "
+    "(A Division of Brinda Medicals, Vijayawada, Andhra Pradesh).\n\n"
+    "Tunes Pharma products:\n"
+    "- Ecoglim MV and Ecoglim MP: Antidiabetic combinations (Glimepiride + Metformin + Voglibose or Pioglitazone)\n"
+    "- Nactaid: Antioxidant for Chronic Kidney Disease (Taurine + Acetylcysteine)\n"
+    "- Resgaba NT and Resgaba DLX: Neuropathic pain relief (Pregabalin combinations)\n"
+    "- Rabishir D: GERD treatment (Domperidone + Rabeprazole)\n\n"
+    "Writing rules:\n"
+    "1. Professional but warm tone — not corporate jargon\n"
+    "2. Under 200 words unless asked otherwise\n"
+    "3. Use {{Doctor_Name}} as the doctor name placeholder\n"
+    "4. Sign off: Warm regards,\\nTeam Tunes Pharma | A Division of Brinda Medicals | Vijayawada\n"
+    "5. Only make clinically accurate claims within approved indications\n"
+    "6. First line must be: Subject: [subject here] — then a blank line — then the message body\n"
+    "7. Write only the message. No meta-commentary."
+)
+
+# ── Phase 1: Dose Calculator ─────────────────────────────────
+
+@app.route('/doctor/dose-calculator', methods=['POST'])
+@doctor_required
+def dose_calculator():
+    data     = request.get_json() or {}
+    medicine = data.get('medicine', '').strip()
+    if not medicine:
+        return jsonify({'ok': False, 'reply': 'Please enter a medicine name.'})
+    weight     = data.get('weight', '')
+    age        = data.get('age', '')
+    conditions = [c for c in data.get('conditions', []) if c]
+    parts = []
+    if weight:     parts.append(f"weight {weight} kg")
+    if age:        parts.append(f"age {age} years")
+    if conditions: parts.append(f"conditions: {', '.join(conditions)}")
+    patient_ctx = '; '.join(parts) if parts else 'no special parameters'
+    query = f"Calculate dose for {medicine}. Patient: {patient_ctx}."
+    anthropic_key = os.getenv('ANTHROPIC_API_KEY')
+    if not anthropic_key:
+        return jsonify({'ok': False, 'reply': 'AI service not configured. Contact your administrator.'})
+    try:
+        import anthropic as _a
+        resp = _a.Anthropic(api_key=anthropic_key).messages.create(
+            model='claude-sonnet-4-6', max_tokens=1024,
+            system=DOSE_CALC_SYSTEM,
+            messages=[{'role': 'user', 'content': query}]
+        )
+        return jsonify({'ok': True, 'reply': resp.content[0].text})
+    except Exception as e:
+        return jsonify({'ok': False, 'reply': f'Error: {e}'})
+
+# ── Phase 1: Drug Interaction Checker ────────────────────────
+
+@app.route('/doctor/drug-interaction', methods=['POST'])
+@doctor_required
+def drug_interaction():
+    data  = request.get_json() or {}
+    drugs = [d.strip() for d in data.get('drugs', []) if d.strip()]
+    if len(drugs) < 2:
+        return jsonify({'ok': False, 'reply': 'Please enter at least 2 drug names.'})
+    query = f"Check all interactions between: {', '.join(drugs)}."
+    anthropic_key = os.getenv('ANTHROPIC_API_KEY')
+    if not anthropic_key:
+        return jsonify({'ok': False, 'reply': 'AI service not configured. Contact your administrator.'})
+    try:
+        import anthropic as _a
+        resp = _a.Anthropic(api_key=anthropic_key).messages.create(
+            model='claude-sonnet-4-6', max_tokens=1500,
+            system=INTERACTION_SYSTEM,
+            messages=[{'role': 'user', 'content': query}]
+        )
+        return jsonify({'ok': True, 'reply': resp.content[0].text})
+    except Exception as e:
+        return jsonify({'ok': False, 'reply': f'Error: {e}'})
+
+# ── Phase 1: Content Generator (Admin) ───────────────────────
+
+def send_custom_email(doctor_email, doctor_name, subject, content):
+    gmail_user = os.getenv('GMAIL_USER', '')
+    gmail_pass = os.getenv('GMAIL_APP_PASSWORD', '')
+    if not gmail_user or not gmail_pass or not doctor_email:
+        return False
+    try:
+        html_body = content.replace('{{Doctor_Name}}', doctor_name).replace('\n', '<br>')
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = subject
+        msg['From']    = f"Tunes Pharma <{gmail_user}>"
+        msg['To']      = doctor_email
+        html = f"""
+        <div style="font-family:'Poppins',Arial,sans-serif;max-width:580px;margin:0 auto;
+             background:#fff;border-radius:16px;overflow:hidden;border:1px solid #e8ecf0">
+          <div style="background:linear-gradient(135deg,#0a1628,#1e3a52);padding:28px 36px;text-align:center">
+            <p style="color:rgba(255,255,255,.5);font-size:12px;letter-spacing:.1em;
+               text-transform:uppercase;margin:0">Tunes Pharma — Doctor Communication</p>
+          </div>
+          <div style="padding:36px;color:#374151;font-size:14px;line-height:1.8">{html_body}</div>
+          <div style="background:#f8fafc;padding:16px 36px;border-top:1px solid #e8ecf0;text-align:center">
+            <p style="color:#94a3b8;font-size:11px;margin:0">
+              Tunes Pharma · A Division of Brinda Medicals · Vijayawada, Andhra Pradesh
+            </p>
+          </div>
+        </div>"""
+        msg.attach(MIMEText(html, 'html'))
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
+            smtp.login(gmail_user, gmail_pass)
+            smtp.sendmail(gmail_user, doctor_email, msg.as_string())
+        return True
+    except Exception as e:
+        print(f"[Email] Failed to send to {doctor_email}: {e}")
+        return False
+
+@app.route('/admin/content', methods=['GET'])
+@admin_required
+def admin_content():
+    doctors = []
+    if sb:
+        doctors = (sb.table('doctors').select('id, name, specialty, email')
+                     .eq('is_active', True).order('name').execute()).data or []
+    return render_template('admin_content.html', doctors=doctors)
+
+@app.route('/admin/content/generate', methods=['POST'])
+@admin_required
+def admin_content_generate():
+    data     = request.get_json() or {}
+    brief    = data.get('brief', '').strip()
+    audience = data.get('audience', 'all active doctors')
+    if not brief:
+        return jsonify({'ok': False, 'content': 'Please describe what you want to write.'})
+    anthropic_key = os.getenv('ANTHROPIC_API_KEY')
+    if not anthropic_key:
+        return jsonify({'ok': False, 'content': 'AI service not configured.'})
+    try:
+        import anthropic as _a
+        resp = _a.Anthropic(api_key=anthropic_key).messages.create(
+            model='claude-sonnet-4-6', max_tokens=1024,
+            system=CONTENT_GEN_SYSTEM,
+            messages=[{'role': 'user', 'content': f'Audience: {audience}.\nBrief: {brief}'}]
+        )
+        return jsonify({'ok': True, 'content': resp.content[0].text})
+    except Exception as e:
+        return jsonify({'ok': False, 'content': f'Error: {e}'})
+
+@app.route('/admin/content/send', methods=['POST'])
+@admin_required
+def admin_content_send():
+    data       = request.get_json() or {}
+    subject    = data.get('subject', 'Update from Tunes Pharma').strip()
+    content    = data.get('content', '').strip()
+    doctor_ids = data.get('doctor_ids', [])
+    if not content:
+        return jsonify({'ok': False, 'sent': 0, 'message': 'No content to send.'})
+    if not sb:
+        return jsonify({'ok': False, 'sent': 0, 'message': 'Database not connected.'})
+    q = sb.table('doctors').select('id, name, email').eq('is_active', True)
+    if doctor_ids:
+        q = q.in_('id', doctor_ids)
+    doctors = q.execute().data or []
+    sent = sum(
+        1 for d in doctors
+        if d.get('email') and send_custom_email(d['email'], d['name'], subject, content)
+    )
+    return jsonify({'ok': True, 'sent': sent, 'total': len(doctors),
+                    'message': f'Sent to {sent} of {len(doctors)} doctors.'})
 
 if __name__ == "__main__":
     app.run(debug=True)

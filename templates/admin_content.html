@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Admin — Content Generator | Tunes Pharma</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { background: #f5f7fb; font-family: 'Poppins', sans-serif; }
+
+    /* ── Admin layout (shared) ── */
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-sidebar {
+      width: 220px; background: var(--navy-900); flex-shrink: 0;
+      display: flex; flex-direction: column; padding: 28px 0;
+      position: sticky; top: 0; height: 100vh;
+    }
+    .admin-sidebar .brand { padding: 0 24px 28px; border-bottom: 1px solid rgba(255,255,255,.08); margin-bottom: 16px; }
+    .admin-sidebar .brand img { height: 36px; filter: brightness(0) invert(1); }
+    .admin-sidebar .brand p { color: rgba(255,255,255,.35); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; margin-top: 4px; }
+    .admin-nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 24px; color: rgba(255,255,255,.55); font-size: .85rem; font-weight: 500; transition: all .2s;
+    }
+    .admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,.07); color: white; }
+    .admin-nav a.active { border-right: 3px solid var(--blue-500); }
+    .admin-nav a span { font-size: 1rem; }
+    .admin-sidebar .logout-link { margin-top: auto; padding: 0 16px; }
+    .admin-sidebar .logout-link a {
+      display: block; text-align: center; padding: 10px; border-radius: 8px;
+      border: 1px solid rgba(220,38,38,.3); color: rgba(220,38,38,.8);
+      font-size: .82rem; font-weight: 600; transition: all .2s;
+    }
+    .admin-sidebar .logout-link a:hover { background: rgba(220,38,38,.1); color: #ef4444; }
+    .admin-main { flex: 1; padding: 40px; overflow-y: auto; max-width: 860px; }
+    .admin-page-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--navy-900); margin-bottom: 6px; }
+    .admin-page-sub { color: var(--gray-500); font-size: .88rem; margin-bottom: 32px; }
+
+    /* ── Shared form styles ── */
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+    .form-group label { font-size: .8rem; font-weight: 600; color: var(--navy-700); }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 10px 14px; border-radius: 10px;
+      border: 1.5px solid rgba(15,30,45,.12); font-size: .88rem;
+      font-family: 'Poppins', sans-serif; outline: none; transition: border-color .2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--blue-500); }
+    .form-group textarea { resize: vertical; }
+
+    /* ── Content generator cards ── */
+    .gen-card {
+      background: white; border-radius: var(--radius-lg); padding: 32px;
+      border: 1px solid rgba(15,30,45,.07); box-shadow: var(--shadow-sm); margin-bottom: 28px;
+    }
+    .gen-card h3 { font-size: 1rem; font-weight: 700; color: var(--navy-800); margin-bottom: 18px; }
+
+    .step-badge {
+      display: inline-block; padding: 4px 12px; border-radius: var(--radius-full);
+      background: rgba(30,111,241,.1); color: var(--blue-500);
+      font-size: .72rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .step-badge.success { background: rgba(16,185,129,.1); color: #059669; }
+
+    /* Audience selector */
+    .audience-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 18px; }
+    @media (max-width: 600px) { .audience-grid { grid-template-columns: 1fr; } }
+    .audience-option {
+      border: 1.5px solid rgba(15,30,45,.12); border-radius: 12px;
+      padding: 16px 14px; cursor: pointer; transition: all .2s;
+      display: flex; flex-direction: column; gap: 4px; position: relative;
+    }
+    .audience-option:hover { border-color: var(--blue-500); background: rgba(30,111,241,.03); }
+    .audience-option.selected { border-color: var(--blue-500); background: rgba(30,111,241,.06); }
+    .audience-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .aud-icon { font-size: 1.3rem; margin-bottom: 4px; }
+    .aud-label { font-size: .85rem; font-weight: 600; color: var(--navy-800); }
+    .aud-sub { font-size: .75rem; color: var(--gray-400); }
+
+    /* Doctor checklist */
+    .doctor-checklist {
+      max-height: 200px; overflow-y: auto;
+      border: 1.5px solid rgba(15,30,45,.1); border-radius: 10px;
+      padding: 8px 0; margin-bottom: 16px;
+    }
+    .doc-check {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 16px; cursor: pointer; transition: background .15s;
+    }
+    .doc-check:hover { background: rgba(30,111,241,.04); }
+    .doc-check input[type="checkbox"] { accent-color: var(--blue-500); width: 15px; height: 15px; flex-shrink: 0; }
+    .doc-name { font-size: .86rem; font-weight: 500; color: var(--navy-800); }
+    .doc-spec { font-size: .75rem; color: var(--gray-400); margin-left: auto; }
+
+    /* Specialty filter */
+    .spec-select-wrap { margin-bottom: 16px; }
+
+    /* Generate button */
+    .gen-btn {
+      padding: 13px 32px; border-radius: var(--radius-full);
+      background: var(--blue-500); color: white; border: none;
+      font-size: .9rem; font-weight: 600; font-family: 'Poppins', sans-serif;
+      cursor: pointer; transition: all .2s;
+    }
+    .gen-btn:hover:not(:disabled) { background: var(--navy-800); transform: translateY(-1px); }
+    .gen-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+    /* Loading dots */
+    .loading-dots { display: inline-flex; gap: 5px; vertical-align: middle; margin-left: 10px; }
+    .loading-dots span {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: white; animation: loadPulse 1.2s infinite;
+    }
+    .loading-dots span:nth-child(2) { animation-delay: .2s; }
+    .loading-dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes loadPulse { 0%,60%,100%{ opacity:.3; transform:scale(.8); } 30%{ opacity:1; transform:scale(1); } }
+
+    /* Preview step */
+    .action-row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .back-btn {
+      padding: 11px 22px; border-radius: var(--radius-full);
+      border: 1.5px solid rgba(15,30,45,.15); color: var(--gray-600);
+      background: white; font-size: .86rem; font-weight: 600;
+      font-family: 'Poppins', sans-serif; cursor: pointer; transition: all .2s;
+    }
+    .back-btn:hover { border-color: var(--blue-500); color: var(--blue-500); }
+    .send-btn {
+      padding: 13px 32px; border-radius: var(--radius-full);
+      background: #059669; color: white; border: none;
+      font-size: .9rem; font-weight: 600; font-family: 'Poppins', sans-serif;
+      cursor: pointer; transition: all .2s;
+    }
+    .send-btn:hover:not(:disabled) { background: #047857; transform: translateY(-1px); }
+    .send-btn:disabled { opacity: .45; cursor: not-allowed; }
+
+    .send-status {
+      margin-top: 18px; padding: 14px 18px; border-radius: 10px;
+      font-size: .88rem; font-weight: 500;
+    }
+    .send-status.ok  { background: rgba(16,185,129,.1); color: #059669; border: 1px solid rgba(16,185,129,.25); }
+    .send-status.err { background: rgba(239,68,68,.08);  color: #dc2626; border: 1px solid rgba(239,68,68,.2); }
+
+    .char-count { font-size: .75rem; color: var(--gray-400); text-align: right; margin-top: 4px; }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="brand">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma">
+      <p>Admin Panel</p>
+    </div>
+    <nav class="admin-nav">
+      <a href="/admin/papers"><span>📄</span> Papers</a>
+      <a href="/admin/doctors"><span>👨‍⚕️</span> Doctors</a>
+      <a href="/admin/content" class="active"><span>✍️</span> Content</a>
+      <a href="/" target="_blank"><span>🌐</span> View Website</a>
+    </nav>
+    <div class="logout-link">
+      <a href="/admin-logout">Logout</a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="admin-main">
+    <h1 class="admin-page-title">Content Generator</h1>
+    <p class="admin-page-sub">Describe what you want to communicate, select your audience, and let AI draft it in seconds. Review, edit, then send.</p>
+
+    <!-- Step 1 -->
+    <div class="gen-card" id="step1">
+      <div class="step-badge">Step 1 — Brief</div>
+      <h3>What do you want to write?</h3>
+
+      <div class="form-group">
+        <label>Brief *</label>
+        <textarea id="genBrief" rows="3" placeholder="e.g. Product launch announcement for Ecoglim MV targeting diabetologists — mention the triple-action formula and the new 1mg strength"></textarea>
+      </div>
+
+      <div class="form-group" style="margin-bottom:8px">
+        <label>Who should receive this?</label>
+      </div>
+      <div class="audience-grid">
+        <div class="audience-option selected" data-value="all">
+          <input type="radio" name="audience" value="all" checked>
+          <span class="aud-icon">👥</span>
+          <span class="aud-label">All Doctors</span>
+          <span class="aud-sub">{{ doctors|length }} active</span>
+        </div>
+        <div class="audience-option" data-value="specialty">
+          <input type="radio" name="audience" value="specialty">
+          <span class="aud-icon">🔬</span>
+          <span class="aud-label">By Specialty</span>
+          <span class="aud-sub">Filter by type</span>
+        </div>
+        <div class="audience-option" data-value="select">
+          <input type="radio" name="audience" value="select">
+          <span class="aud-icon">✓</span>
+          <span class="aud-label">Select Doctors</span>
+          <span class="aud-sub">Choose individually</span>
+        </div>
+      </div>
+
+      <!-- Specialty filter -->
+      <div id="specSection" style="display:none" class="spec-select-wrap">
+        <div class="form-group" style="margin-bottom:0">
+          <label>Specialty</label>
+          <select id="specSelect">
+            <option value="">-- Select Specialty --</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Individual doctor list -->
+      <div id="doctorSelectSection" style="display:none">
+        <div class="doctor-checklist" id="doctorChecklist">
+          {% if doctors %}
+            {% for doc in doctors %}
+            <label class="doc-check">
+              <input type="checkbox" class="doc-checkbox" value="{{ doc.id }}"
+                     data-name="{{ doc.name }}" data-spec="{{ doc.specialty or '' }}">
+              <span class="doc-name">{{ doc.name }}</span>
+              {% if doc.specialty %}<span class="doc-spec">{{ doc.specialty }}</span>{% endif %}
+            </label>
+            {% endfor %}
+          {% else %}
+            <div style="padding:24px;text-align:center;color:var(--gray-400);font-size:.85rem">No doctors in database yet.</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <button class="gen-btn" id="generateBtn">Generate Draft →</button>
+    </div>
+
+    <!-- Loading state -->
+    <div class="gen-card" id="genLoading" style="display:none;text-align:center;padding:48px 32px">
+      <p style="font-size:1rem;color:var(--navy-700);font-weight:500">AI is drafting your message…</p>
+      <div style="display:flex;gap:8px;justify-content:center;margin-top:16px">
+        <span style="width:10px;height:10px;border-radius:50%;background:var(--blue-500);animation:loadPulse 1.2s infinite;display:inline-block"></span>
+        <span style="width:10px;height:10px;border-radius:50%;background:var(--blue-500);animation:loadPulse 1.2s .2s infinite;display:inline-block"></span>
+        <span style="width:10px;height:10px;border-radius:50%;background:var(--blue-500);animation:loadPulse 1.2s .4s infinite;display:inline-block"></span>
+      </div>
+    </div>
+
+    <!-- Step 2 — Preview & Send -->
+    <div class="gen-card" id="step2" style="display:none">
+      <div class="step-badge success">Step 2 — Review &amp; Send</div>
+      <h3>Edit if needed, then send</h3>
+
+      <div class="form-group">
+        <label>Subject Line</label>
+        <input type="text" id="subjectInput" placeholder="Email subject">
+      </div>
+
+      <div class="form-group">
+        <label>Message Content</label>
+        <textarea id="contentPreview" rows="14" style="font-size:.88rem;line-height:1.8"></textarea>
+        <div class="char-count" id="charCount">0 characters</div>
+      </div>
+
+      <div id="recipientSummary" style="font-size:.84rem;color:var(--gray-500);margin-bottom:20px"></div>
+
+      <div class="action-row">
+        <button class="back-btn" id="backBtn">← Edit Brief</button>
+        <button class="send-btn" id="sendBtn">Send to Doctors →</button>
+      </div>
+
+      <div class="send-status" id="sendStatus" style="display:none"></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+(function () {
+  // ── Audience toggle ──
+  var audOptions   = document.querySelectorAll('.audience-option');
+  var specSection  = document.getElementById('specSection');
+  var docSection   = document.getElementById('doctorSelectSection');
+  var specSelect   = document.getElementById('specSelect');
+  var checkboxes   = document.querySelectorAll('.doc-checkbox');
+
+  // Populate specialty dropdown from doctors
+  var specs = [];
+  checkboxes.forEach(function (cb) {
+    var s = cb.dataset.spec;
+    if (s && !specs.includes(s)) specs.push(s);
+  });
+  specs.sort().forEach(function (s) {
+    var opt = document.createElement('option');
+    opt.value = s; opt.textContent = s;
+    specSelect.appendChild(opt);
+  });
+
+  // Filter doctor checklist by specialty
+  specSelect.addEventListener('change', function () {
+    var val = specSelect.value;
+    checkboxes.forEach(function (cb) {
+      var row = cb.closest('.doc-check');
+      row.style.display = (!val || cb.dataset.spec === val) ? '' : 'none';
+    });
+  });
+
+  audOptions.forEach(function (opt) {
+    opt.addEventListener('click', function () {
+      audOptions.forEach(function (o) { o.classList.remove('selected'); });
+      opt.classList.add('selected');
+      opt.querySelector('input[type="radio"]').checked = true;
+      var val = opt.dataset.value;
+      specSection.style.display = val === 'specialty' ? '' : 'none';
+      docSection.style.display  = val === 'select'    ? '' : 'none';
+    });
+  });
+
+  function getAudienceLabel() {
+    var sel = document.querySelector('.audience-option.selected').dataset.value;
+    if (sel === 'all')       return 'all active doctors';
+    if (sel === 'specialty') return specSelect.value ? ('doctors specialising in ' + specSelect.value) : 'all active doctors';
+    var checked = document.querySelectorAll('.doc-checkbox:checked');
+    if (checked.length === 0) return 'all active doctors';
+    var names = [];
+    checked.forEach(function (cb) { names.push(cb.dataset.name); });
+    return names.join(', ');
+  }
+
+  function getSelectedDoctorIds() {
+    var sel = document.querySelector('.audience-option.selected').dataset.value;
+    if (sel === 'all') return [];
+    if (sel === 'specialty') {
+      var spec = specSelect.value;
+      if (!spec) return [];
+      var ids = [];
+      checkboxes.forEach(function (cb) { if (cb.dataset.spec === spec) ids.push(cb.value); });
+      return ids;
+    }
+    var ids = [];
+    document.querySelectorAll('.doc-checkbox:checked').forEach(function (cb) { ids.push(cb.value); });
+    return ids;
+  }
+
+  // ── Generate ──
+  var step1      = document.getElementById('step1');
+  var step2      = document.getElementById('step2');
+  var genLoading = document.getElementById('genLoading');
+  var generateBtn= document.getElementById('generateBtn');
+  var contentPrev= document.getElementById('contentPreview');
+  var subjectInput = document.getElementById('subjectInput');
+  var charCount  = document.getElementById('charCount');
+  var recipSumm  = document.getElementById('recipientSummary');
+  var sendStatus = document.getElementById('sendStatus');
+
+  contentPrev.addEventListener('input', function () {
+    charCount.textContent = contentPrev.value.length + ' characters';
+  });
+
+  generateBtn.addEventListener('click', function () {
+    var brief = document.getElementById('genBrief').value.trim();
+    if (!brief) { document.getElementById('genBrief').focus(); return; }
+    step1.style.display      = 'none';
+    genLoading.style.display = '';
+    step2.style.display      = 'none';
+    fetch('/admin/content/generate', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ brief: brief, audience: getAudienceLabel() })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      genLoading.style.display = 'none';
+      if (!d.ok) { step1.style.display = ''; alert(d.content || 'Generation failed.'); return; }
+      var text = d.content || '';
+      // Extract subject from first line if it starts with "Subject:"
+      var subject = '';
+      var body    = text;
+      var lines   = text.split('\n');
+      if (lines[0] && lines[0].trim().toLowerCase().startsWith('subject:')) {
+        subject = lines[0].replace(/^subject:\s*/i, '').trim();
+        body    = lines.slice(2).join('\n').trim();  // skip blank line after subject
+      }
+      subjectInput.value  = subject;
+      contentPrev.value   = body;
+      charCount.textContent = body.length + ' characters';
+      var ids  = getSelectedDoctorIds();
+      var aud  = document.querySelector('.audience-option.selected').dataset.value;
+      var summ = aud === 'all'       ? 'Sending to all ' + {{ doctors|length }} + ' active doctors'
+               : aud === 'specialty' ? 'Sending to ' + (specSelect.value || 'all') + ' specialists'
+               : 'Sending to ' + ids.length + ' selected doctor(s)';
+      recipSumm.textContent = summ;
+      step2.style.display = '';
+    })
+    .catch(function () {
+      genLoading.style.display = 'none';
+      step1.style.display = '';
+      alert('Something went wrong. Please try again.');
+    });
+  });
+
+  // ── Back button ──
+  document.getElementById('backBtn').addEventListener('click', function () {
+    step2.style.display = 'none';
+    step1.style.display = '';
+    sendStatus.style.display = 'none';
+  });
+
+  // ── Send ──
+  var sendBtn = document.getElementById('sendBtn');
+  sendBtn.addEventListener('click', function () {
+    var subject = subjectInput.value.trim() || 'Update from Tunes Pharma';
+    var content = contentPrev.value.trim();
+    if (!content) { alert('Message is empty.'); return; }
+    if (!confirm('Send this message to the selected doctors?')) return;
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sending…';
+    fetch('/admin/content/send', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subject: subject, content: content, doctor_ids: getSelectedDoctorIds() })
+    })
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      sendStatus.className     = 'send-status ' + (d.ok ? 'ok' : 'err');
+      sendStatus.textContent   = d.message || (d.ok ? 'Sent!' : 'Error sending.');
+      sendStatus.style.display = '';
+      sendBtn.disabled     = false;
+      sendBtn.textContent  = 'Send to Doctors →';
+    })
+    .catch(function () {
+      sendStatus.className     = 'send-status err';
+      sendStatus.textContent   = 'Network error. Please try again.';
+      sendStatus.style.display = '';
+      sendBtn.disabled     = false;
+      sendBtn.textContent  = 'Send to Doctors →';
+    });
+  });
+})();
+</script>
+</body>
+</html>
