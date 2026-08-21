@@ -1,9 +1,12 @@
+{% set page_title = "Tunes Pharma — Product Catalog" %}
+{% set page_description = "Search and filter the full Tunes Pharma product catalog by category, indication, or brand." %}
+{% set page_path = "/product-catalog" %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Product Catalog | Tunes Therapeutics Pvt. Ltd.</title>
+  {% include 'partials/seo_head.html' %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
@@ -87,7 +90,7 @@
       <a href="/contact">Contact</a>
     </nav>
     <div class="p-header-actions">
-      <a href="/Pharmaintel_ai" class="p-ai-btn">Pharmaintel AI</a>
+      <a href="/pharmaintel_ai" class="p-ai-btn">Pharmaintel AI</a>
     </div>
   </div>
 </header>

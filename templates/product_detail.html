@@ -1,9 +1,12 @@
+{% set page_title = product.name ~ " — Tunes Pharma" %}
+{% set page_description = (product.description or 'Prescription formulation from Tunes Pharma.') | truncate(155, killwords=True, end='…') %}
+{% set page_path = request.path %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>{{ product.name }} | Tunes Therapeutics Pvt. Ltd.</title>
+  {% include 'partials/seo_head.html' %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -461,7 +464,7 @@
       <a href="/products" class="active">Products</a>
       <a href="/services">Services</a>
       <a href="/research">Market Insights</a>
-      <a href="/Gallery">Gallery</a>
+      <a href="/gallery">Gallery</a>
     </nav>
     <div class="p-header-actions">
       <a href="/doctor-portal" class="p-doctor-btn" title="Doctor Portal">

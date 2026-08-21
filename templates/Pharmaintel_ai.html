@@ -1,9 +1,12 @@
+{% set page_title = "Pharmaintel AI — Tunes Pharma" %}
+{% set page_description = "Pharmaintel AI: document analysis and strategy assistant for pharmaceutical professionals, from Tunes Pharma." %}
+{% set page_path = "/pharmaintel_ai" %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Pharmaintel AI | Tunes Therapeutics Pvt. Ltd.</title>
+  {% include 'partials/seo_head.html' %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>

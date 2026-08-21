@@ -1,9 +1,12 @@
+{% set page_title = "About Tunes Pharma — Our Mission & Story" %}
+{% set page_description = "Learn about Tunes Therapeutics Pvt. Ltd., the pharmaceutical company behind Tunes Pharma formulations and clinical research." %}
+{% set page_path = "/about" %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>About Us | Tunes Therapeutics Pvt. Ltd.</title>
+  {% include 'partials/seo_head.html' %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
@@ -306,7 +309,7 @@
       </div>
       <a href="/services">Services</a>
       <a href="/research">Market Insights</a>
-      <a href="/Gallery">Gallery</a>
+      <a href="/gallery">Gallery</a>
     </nav>
     <div class="p-header-actions">
       <a href="/doctor-portal" class="p-doctor-btn" title="Doctor Portal">

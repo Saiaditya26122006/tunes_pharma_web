@@ -14,6 +14,8 @@ try:
 except Exception:
     sb = None
 
+BASE_URL = os.environ.get("BASE_URL", "https://tunespharma.org")
+
 # ── Email helper (Gmail SMTP — no extra package needed) ──────
 import smtplib
 from email.mime.multipart import MIMEMultipart
@@ -76,6 +78,10 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = '/tmp/uploads'
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'tunes-therapeutics-secret-2024')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+@app.context_processor
+def inject_base_url():
+    return {'base_url': BASE_URL}
 
 # Language translations
 translations = {
@@ -409,12 +415,20 @@ def product_detail(product_name):
     product = products_data.get(product_name)
     return render_template("product_detail.html", product=product, lang=lang, t=translations.get(lang, translations['en'])) if product else ("Product not found", 404)
 
-@app.route('/Gallery')
-def Gallery():
+@app.route('/gallery')
+def gallery():
     lang = session.get('language', 'en')
     return render_template('Gallery.html', lang=lang, t=translations.get(lang, translations['en']))
 
-@app.route('/Pharmaintel_ai', methods=['GET', 'POST'])
+@app.route('/Gallery')
+def gallery_redirect():
+    return redirect('/gallery', code=308)
+
+@app.route('/Pharmaintel_ai')
+def pharmaintel_ai_redirect():
+    return redirect('/pharmaintel_ai', code=308)
+
+@app.route('/pharmaintel_ai', methods=['GET', 'POST'])
 def pharmaintel_ai():
     message, pdf_text = '', ''
     if request.method == 'POST':
@@ -1105,6 +1119,34 @@ def admin_content_send():
     )
     return jsonify({'ok': True, 'sent': sent, 'total': len(doctors),
                     'message': f'Sent to {sent} of {len(doctors)} doctors.'})
+
+@app.route('/robots.txt')
+def robots_txt():
+    body = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Disallow: /admin\n"
+        "Disallow: /doctor-dashboard\n"
+        "Disallow: /doctor-portal\n"
+        "Disallow: /doctor/\n"
+        "Disallow: /set-language/\n"
+        "\n"
+        f"Sitemap: {BASE_URL}/sitemap.xml\n"
+    )
+    return body, 200, {'Content-Type': 'text/plain; charset=utf-8'}
+
+@app.route('/sitemap.xml')
+def sitemap_xml():
+    paths = [
+        '/', '/about', '/contact', '/research', '/services',
+        '/products', '/gallery', '/pharmaintel_ai',
+        '/product-catalog', '/stockist-locator',
+        '/regulatory-compliance', '/online-ordering',
+    ]
+    paths += [f'/products/{slug}' for slug in products_data.keys()]
+    urls = ''.join(f'<url><loc>{BASE_URL}{p}</loc></url>' for p in paths)
+    xml = f'<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">{urls}</urlset>'
+    return xml, 200, {'Content-Type': 'application/xml'}
 
 if __name__ == "__main__":
     app.run(debug=True)

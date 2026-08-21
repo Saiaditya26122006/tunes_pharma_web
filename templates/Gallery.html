@@ -1,9 +1,12 @@
+{% set page_title = "Tunes Pharma — Gallery" %}
+{% set page_description = "Photos from Tunes Pharma events, product launches, and field activities." %}
+{% set page_path = "/gallery" %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Gallery | Tunes Therapeutics Pvt. Ltd.</title>
+  {% include 'partials/seo_head.html' %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
@@ -106,7 +109,7 @@
       </div>
       <a href="/services">Services</a>
       <a href="/research">Market Insights</a>
-      <a href="/Gallery" class="active">Gallery</a>
+      <a href="/gallery" class="active">Gallery</a>
     </nav>
     <div class="p-header-actions">
       <a href="/doctor-portal" class="p-doctor-btn" title="Doctor Portal">

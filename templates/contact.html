@@ -1,9 +1,12 @@
+{% set page_title = "Contact Tunes Pharma" %}
+{% set page_description = "Reach the Tunes Pharma team for product enquiries, medical information, distributor questions, or partnership requests." %}
+{% set page_path = "/contact" %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Contact Us | Tunes Therapeutics Pvt. Ltd.</title>
+  {% include 'partials/seo_head.html' %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
@@ -105,7 +108,7 @@
       </div>
       <a href="/services">Services</a>
       <a href="/research">Market Insights</a>
-      <a href="/Gallery">Gallery</a>
+      <a href="/gallery">Gallery</a>
     </nav>
     <div class="p-header-actions">
       <a href="/doctor-portal" class="p-doctor-btn" title="Doctor Portal">
@@ -271,7 +274,7 @@
         <div style="font-size:2.5rem;margin-bottom:14px">🤖</div>
         <h4 style="color:var(--navy-800);margin-bottom:8px;font-size:1.05rem">Pharmaintel AI</h4>
         <p style="color:var(--gray-500);font-size:.87rem;line-height:1.7;margin-bottom:16px">Get instant pharmaceutical insights powered by GPT-4 intelligence.</p>
-        <a href="/Pharmaintel_ai" class="p-btn p-btn-navy" style="font-size:13px;padding:10px 20px">Launch AI Tool</a>
+        <a href="/pharmaintel_ai" class="p-btn p-btn-navy" style="font-size:13px;padding:10px 20px">Launch AI Tool</a>
       </div>
       <div class="p-card p-reveal p-delay-3" style="padding:28px;text-align:center" data-tilt>
         <div class="p-card-accent"></div>

@@ -1,0 +1,39 @@
+{%- set _site_name = 'Tunes Pharma' -%}
+{%- set _base_url  = base_url -%}
+{%- set _default_desc = 'Tunes Pharma (Tunes Therapeutics Pvt. Ltd.) develops prescription formulations in diabetology, neuropathy and gastroenterology across India.' -%}
+{%- set _title = page_title | default(_site_name ~ ' — Pharmaceutical Formulations & Clinical Research') -%}
+{%- set _desc  = page_description | default(_default_desc) -%}
+{%- set _path  = page_path | default('/') -%}
+{%- set _canonical = _base_url ~ _path -%}
+{%- set _og_image = _base_url ~ '/static/images/logo.png' -%}
+<title>{{ _title }}</title>
+<meta name="description" content="{{ _desc }}">
+<link rel="canonical" href="{{ _canonical }}">
+<meta property="og:site_name" content="{{ _site_name }}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{{ _title }}">
+<meta property="og:description" content="{{ _desc }}">
+<meta property="og:url" content="{{ _canonical }}">
+<meta property="og:image" content="{{ _og_image }}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{ _title }}">
+<meta name="twitter:description" content="{{ _desc }}">
+<meta name="twitter:image" content="{{ _og_image }}">
+{% if _path == '/' %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Tunes Pharma",
+  "legalName": "Tunes Therapeutics Pvt. Ltd.",
+  "url": "{{ _base_url }}",
+  "logo": "{{ _base_url }}/static/images/logo.png",
+  "description": "Tunes Pharma (Tunes Therapeutics Pvt. Ltd.) develops prescription formulations in diabetology, neuropathy and gastroenterology across India.",
+  {# TODO: add LinkedIn (needs /company/<slug> URL) and Twitter (handle mismatch — footer says tunes_pvt_ltd vs tunes_therapeutics_pvt_ltd elsewhere) once confirmed. #}
+  "sameAs": [
+    "https://www.facebook.com/tunes_therapeutics_pvt_ltd",
+    "https://www.instagram.com/tunes_therapeutics_pvt_ltd"
+  ]
+}
+</script>
+{% endif %}
