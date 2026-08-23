@@ -22,9 +22,9 @@ function initMolecularNetwork() {
   const pts = [], vels = [];
 
   const palette = [
-    new THREE.Color(0x60a5fa), new THREE.Color(0x93c5fd),
-    new THREE.Color(0x00b4ff), new THREE.Color(0xffffff),
-    new THREE.Color(0xe8c98f),
+    new THREE.Color(0x1e40af), new THREE.Color(0x2563eb),
+    new THREE.Color(0x0284c7), new THREE.Color(0x0f1e2d),
+    new THREE.Color(0xb8892a),
   ];
 
   for (let i = 0; i < COUNT; i++) {
@@ -54,7 +54,7 @@ function initMolecularNetwork() {
       if (d < 2.8) {
         const g = new THREE.BufferGeometry().setFromPoints([pts[i],pts[j]]);
         lineGroup.add(new THREE.Line(g, new THREE.LineBasicMaterial({
-          color:0x3b82f6, transparent:true, opacity:(1-d/2.8)*.28
+          color:0x1e40af, transparent:true, opacity:(1-d/2.8)*.35
         })));
       }
     }

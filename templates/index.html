@@ -42,26 +42,6 @@
     @keyframes bob { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
     @keyframes arrowFade { 0%,100%{opacity:.4} 50%{opacity:.9} }
 
-    /* Experience grid */
-    .exp-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 22px;
-    }
-    .exp-card {
-      padding: 28px 26px 24px;
-      position: relative;
-      cursor: pointer;
-    }
-    .exp-card h3 { font-size: 1.1rem; font-weight: 600; color: var(--navy-800); margin-bottom: 8px; }
-    .exp-card p  { font-size: .88rem; color: var(--gray-500); line-height: 1.72; margin-bottom: 18px; }
-    .exp-link {
-      display: inline-flex; align-items: center; gap: 6px;
-      color: var(--blue-500); font-size: .85rem; font-weight: 600;
-      transition: gap .3s;
-    }
-    .exp-card:hover .exp-link { gap: 10px; }
-
     /* Feature cards */
     .feat-card { padding: 34px 28px; }
     .feat-card h3 { font-size: 1.1rem; font-weight: 600; color: var(--navy-800); margin-bottom: 10px; }
@@ -228,7 +208,7 @@
         </div>
       </div>
       <a href="/services">Services</a>
-      <a href="/research">Market Insights</a>
+      <a href="/research">Academic Insights</a>
       <a href="/gallery">Gallery</a>
     </nav>
     <div class="p-header-actions">
@@ -241,65 +221,105 @@
 </header>
 
 <!-- ── HERO ── -->
-<section class="p-hero">
-  <canvas id="hero-canvas" class="p-hero-canvas"></canvas>
-  <div class="p-hero-overlay"></div>
-  <div class="p-hero-content">
-    <div class="p-hero-tagline">
-      <span class="p-hero-tagline-rule"></span>
-      <span class="p-hero-tagline-text">Enhancing Life Through Connecting People</span>
-      <span class="p-hero-tagline-rule"></span>
+<section class="t-hero">
+  <canvas id="hero-canvas" class="t-hero-canvas"></canvas>
+  <div class="t-hero-overlay"></div>
+  <div class="t-hero-inner">
+    <div class="t-hero-logo-wrap">
+      <img src="{{ url_for('static', filename='images/logo on homepage.png') }}" alt="Tunes Therapeutics" class="t-hero-logo">
     </div>
-    <div class="p-hero-est">Est. 2021</div>
-    <h1 class="p-hero-title-oneline">Retuning Health, <span class="gradient-text">Redefining Lives</span></h1>
-    <p>Tunes Pharma — a Division of Brinda Medicals — delivers safe, effective and affordable generic prescription medicines to healthcare providers and patients across Andhra Pradesh and Telangana.</p>
-    <div class="p-hero-btns">
-      <a href="/products"  class="p-btn p-btn-primary">Explore Products</a>
-      <a href="/about"     class="p-btn p-btn-outline">Our Story</a>
+    <div class="t-hero-tagline">
+      <span class="t-hero-tagline-rule"></span>
+      <h1 class="t-hero-tagline-text">Enhancing Life Through Connecting People</h1>
+      <span class="t-hero-tagline-rule"></span>
+    </div>
+    <div class="t-hero-est">
+      <span class="dot">·</span>
+      <span class="txt">Est. 2021</span>
+      <span class="dot">·</span>
     </div>
   </div>
-  <button class="hero-scroll-btn p-hero-scroll" onclick="window.scrollBy({top:window.innerHeight*.9,behavior:'smooth'})">
-    <span>Discover</span><div class="arrow"></div>
-  </button>
+  <div class="t-hero-cards">
+    <div class="t-info-card">
+      <div class="t-info-label">
+        <img src="{{ url_for('static', filename='images/logo on homepage.png') }}" alt="" class="t-info-bullet">
+        <span class="label">Vision</span>
+      </div>
+      <p>Enhancing lives through accessible and affordable healthcare.</p>
+    </div>
+    <div class="t-info-card">
+      <div class="t-info-label">
+        <img src="{{ url_for('static', filename='images/logo on homepage.png') }}" alt="" class="t-info-bullet">
+        <span class="label">Mission</span>
+      </div>
+      <p>Providing quality, affordable medicines through advanced formulations.</p>
+    </div>
+    <div class="t-info-card">
+      <div class="t-info-label">
+        <img src="{{ url_for('static', filename='images/logo on homepage.png') }}" alt="" class="t-info-bullet">
+        <span class="label">Commitment</span>
+      </div>
+      <p>Committed to quality, affordability, and lasting trust.</p>
+    </div>
+  </div>
 </section>
 
-<!-- ── DIGITAL EXPERIENCE ── -->
-<section class="p-section p-section-light">
+<!-- ── HIGHLY TRUSTED · THOROUGHLY TESTED ── -->
+<section class="p-section p-section-white ht-section">
   <div class="p-container">
-    <div class="p-section-header center p-reveal">
-      <span class="p-section-tag">Digital Ecosystem</span>
-      <h2 class="p-section-title">Every Tool, One Platform</h2>
-      <div class="p-divider center"></div>
-      <p class="p-section-subtitle">From advanced product catalogs to B2B ordering, doctor portals, and AI intelligence — access everything in one seamless experience.</p>
-    </div>
-    <div class="exp-grid">
-      <div class="exp-card p-card p-reveal p-delay-1" data-tilt onclick="window.location.href='/product-catalog'">
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">📚</div>
-        <h3>Product Catalog</h3>
-        <p>Search by composition, indication, or therapeutic category and explore detailed product intel instantly.</p>
-        <span class="exp-link">Browse Catalog <span>→</span></span>
+    <div class="ht-grid">
+      <div class="ht-image-wrap p-reveal-left">
+        <div class="ht-blob"></div>
+        <img src="{{ url_for('static', filename='images/Gemini_Generated_Image_7cl3z67cl3z67cl3.png') }}" alt="Tunes Pharma scientist" class="ht-image">
       </div>
-      <div class="exp-card p-card p-reveal p-delay-2" data-tilt onclick="window.location.href='/doctor-portal'">
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">🩺</div>
-        <h3>Doctor Portal</h3>
-        <p>Secure access for medical professionals to request samples, view product information, and connect directly with our MR team.</p>
-        <span class="exp-link">Enter Portal <span>→</span></span>
-      </div>
-      <div class="exp-card p-card p-reveal p-delay-3" data-tilt onclick="window.location.href='/regulatory-compliance'">
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">📑</div>
-        <h3>Compliance Hub</h3>
-        <p>Review certifications, DCGI approvals, and global quality standards powering our manufacturing.</p>
-        <span class="exp-link">View Compliance <span>→</span></span>
-      </div>
-      <div class="exp-card p-card p-reveal p-delay-4" data-tilt onclick="window.location.href='/online-ordering'">
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">🛒</div>
-        <h3>Online Ordering</h3>
-        <p>Place wholesale purchase requests, share schedules, and collaborate with our sales desk digitally.</p>
-        <span class="exp-link">Place Order <span>→</span></span>
+      <div class="ht-content p-reveal-right">
+        <h2 class="ht-title"><span class="accent">Highly trusted</span> Thoroughly tested</h2>
+        <p class="ht-lead">Tunes Pharma is known for innovative formulations that benefit patients across India. Our portfolio features trusted branded generics certified by key regulatory bodies. With deep experience in chronic therapy — diabetology, neuropathy and gastroenterology — Tunes' scientific approach and unwavering commitment continue to drive our progress.</p>
+        <p class="ht-lead">All our formulations are manufactured in <strong>WHO (GMP)</strong> and <strong>DCGI-approved</strong> facilities, upholding our promise of uncompromised quality.</p>
+        <div class="ht-values">
+          <div class="ht-value">
+            <div class="ht-value-icon">🏅</div>
+            <div>
+              <h4>QUALITY</h4>
+              <p>We are committed to stringent standards of excellence and innovation across every batch we release.</p>
+            </div>
+          </div>
+          <div class="ht-value">
+            <div class="ht-value-icon">💡</div>
+            <div>
+              <h4>INNOVATION</h4>
+              <p>We create impactful change through science-driven formulations, driven by a passion to make a real difference.</p>
+            </div>
+          </div>
+          <div class="ht-value">
+            <div class="ht-value-icon">🤲</div>
+            <div>
+              <h4>EMPATHY</h4>
+              <p>Empathy fuels our purpose — science shapes our medicines, and together we help transform lives with care.</p>
+            </div>
+          </div>
+          <div class="ht-value">
+            <div class="ht-value-icon">🫱🏻‍🫲🏽</div>
+            <div>
+              <h4>INCLUSION</h4>
+              <p>Every patient, every prescriber, every partner — we serve with equal commitment across geographies.</p>
+            </div>
+          </div>
+          <div class="ht-value">
+            <div class="ht-value-icon">🤝</div>
+            <div>
+              <h4>INTEGRITY</h4>
+              <p>Integrity is our cornerstone — guiding every decision, from formulation to prescription and beyond.</p>
+            </div>
+          </div>
+          <div class="ht-value">
+            <div class="ht-value-icon">👥</div>
+            <div>
+              <h4>TEAMWORK</h4>
+              <p>Our lean, expert team drives outsized outcomes through shared purpose and collective ownership.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
