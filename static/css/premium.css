@@ -291,7 +291,7 @@ a  { text-decoration:none; }
 .p-hero-content {
   position:relative; z-index:3;
   text-align:center; color:white;
-  max-width:920px; padding:140px 24px 80px;
+  max-width:1280px; padding:140px 24px 80px;
 }
 .p-hero-badge {
   display:inline-flex; align-items:center; gap:8px;
@@ -303,6 +303,40 @@ a  { text-decoration:none; }
   font-size:12px; font-weight:700;
   letter-spacing:.09em; text-transform:uppercase;
   margin-bottom:28px;
+}
+.p-hero-tagline {
+  display:flex; align-items:center; justify-content:center;
+  gap:22px; margin: 0 auto 12px;
+  max-width: 1080px;
+}
+.p-hero-tagline-rule {
+  flex: 1 1 auto;
+  height: 1px; max-width: 200px;
+  background: linear-gradient(90deg, transparent, rgba(201,169,110,0.55), transparent);
+}
+.p-hero-tagline-text {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 500;
+  font-size: clamp(1.15rem, 2vw, 1.75rem);
+  letter-spacing: .01em;
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 55%, #f0e0b0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  white-space: nowrap;
+}
+.p-hero-est {
+  display: inline-block;
+  margin: 0 auto 30px;
+  color: rgba(201,169,110,0.75);
+  font-size: 11px; font-weight: 700;
+  letter-spacing: .35em; text-transform: uppercase;
+}
+@media (max-width: 720px) {
+  .p-hero-tagline { gap: 12px; }
+  .p-hero-tagline-rule { max-width: 60px; }
+  .p-hero-tagline-text { white-space: normal; }
 }
 .p-hero-badge .dot {
   width:6px; height:6px;
@@ -321,6 +355,14 @@ a  { text-decoration:none; }
   margin-bottom:24px;
   letter-spacing:-.025em;
 }
+.p-hero h1.p-hero-title-oneline {
+  font-size:clamp(2rem,5.2vw,4.6rem);
+  white-space:nowrap;
+  letter-spacing:-.03em;
+}
+@media (max-width: 820px) {
+  .p-hero h1.p-hero-title-oneline { white-space:normal; }
+}
 .p-hero h1 .gradient-text {
   background:linear-gradient(135deg,var(--gold-light) 0%,var(--gold) 50%,#f0e0b0 100%);
   -webkit-background-clip:text;
@@ -330,8 +372,9 @@ a  { text-decoration:none; }
 .p-hero p {
   font-size:clamp(1rem,2vw,1.22rem);
   color:rgba(255,255,255,0.68);
-  max-width:660px; margin:0 auto 44px;
+  max-width:1180px; margin:0 auto 44px;
   line-height:1.85; font-weight:300;
+  text-align:center; text-align-last:center;
 }
 .p-hero-btns {
   display:flex; gap:14px;
