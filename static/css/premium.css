@@ -1409,3 +1409,13 @@ footer { margin-top:0 !important; font-family:'Poppins',sans-serif; }
   .p-grid-4 { grid-template-columns:1fr; }
   .p-grid-5 { grid-template-columns:1fr; }
 }
+
+/* ====== SplitType line-mask reveal ====== */
+.split-line { overflow: hidden; display: block; }
+.split-word { display: inline-block; will-change: transform, opacity; }
+
+/* ====== Lenis smooth scroll ====== */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }

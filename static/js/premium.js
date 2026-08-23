@@ -223,9 +223,62 @@ function initMobileMenu() {
   overlay.querySelectorAll('a').forEach(a => a.addEventListener('click', close));
 }
 
+/* ── Smooth scroll (Lenis) + GSAP ScrollTrigger sync ── */
+function initSmoothScroll() {
+  if (typeof Lenis === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const lenis = new Lenis({
+    duration: 1.15,
+    easing: t => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+    smoothTouch: false,
+  });
+
+  function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+  requestAnimationFrame(raf);
+
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add(t => lenis.raf(t * 1000));
+    gsap.ticker.lagSmoothing(0);
+  }
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if (id.length > 1) {
+        const target = document.querySelector(id);
+        if (target) { e.preventDefault(); lenis.scrollTo(target, { offset: -80 }); }
+      }
+    });
+  });
+}
+
+/* ── Line-mask reveal on section headings (SplitType + GSAP) ── */
+function initSplitHeadings() {
+  if (typeof SplitType === 'undefined' || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const targets = document.querySelectorAll('.p-section-title, .ht-title, .p-hero-title-oneline, .t-hero-tagline-text');
+  targets.forEach(el => {
+    const split = new SplitType(el, { types: 'lines,words', lineClass: 'split-line', wordClass: 'split-word' });
+    gsap.set(split.words, { yPercent: 110, opacity: 0 });
+    gsap.to(split.words, {
+      yPercent: 0,
+      opacity: 1,
+      duration: 0.9,
+      ease: 'power3.out',
+      stagger: 0.06,
+      scrollTrigger: { trigger: el, start: 'top 85%', once: true },
+    });
+  });
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   initHeader(); initScrollReveal(); initCounters();
   initHeroGSAP(); initMagnetic(); initMobileMenu();
+  initSmoothScroll(); initSplitHeadings();
   setTimeout(initTilt,120);
   if(document.getElementById('hero-canvas')&&typeof THREE!=='undefined') initMolecularNetwork();
 });
