@@ -60,7 +60,7 @@ def send_email_notification(doctor_email, doctor_name, paper_title, paper_descri
             </p>
           </div>
           <div style="background:#f8fafc;padding:16px 36px;border-top:1px solid #e8ecf0;text-align:center">
-            <p style="color:#94a3b8;font-size:11px;margin:0">Tunes Pharma · A Division of Brinda Medicals · Guntur, Andhra Pradesh</p>
+            <p style="color:#94a3b8;font-size:11px;margin:0">Tunes Pharma · Guntur, Andhra Pradesh</p>
           </div>
         </div>
         """
@@ -637,7 +637,7 @@ def doctor_ai_chat():
                 model="claude-opus-4-7",
                 max_tokens=1024,
                 system=(
-                    "You are a medical AI assistant for Tunes Pharma (A Division of Brinda Medicals). "
+                    "You are a medical AI assistant for Tunes Pharma. "
                     "You help registered doctors understand research papers, clinical guidelines, drug interactions, "
                     "dosage information, and pharmaceutical data. Be professional, concise and evidence-based. "
                     "Therapy areas: Diabetology, Neuropathy, Gastroenterology, General Medicine."
@@ -924,7 +924,7 @@ def admin_debug():
 # ── Phase 1: System prompts ──────────────────────────────────
 
 DOSE_CALC_SYSTEM = (
-    "You are a clinical pharmacology assistant for Tunes Pharma (A Division of Brinda Medicals, Vijayawada). "
+    "You are a clinical pharmacology assistant for Tunes Pharma. "
     "You help licensed physicians with dose calculations at the point of care.\n\n"
     "Tunes Pharma products:\n"
     "- Ecoglim MV (Glimepiride+Metformin+Voglibose, 1mg/500mg/0.2mg or 2mg/500mg/0.2mg) — Type 2 Diabetes\n"
@@ -944,7 +944,7 @@ DOSE_CALC_SYSTEM = (
 )
 
 INTERACTION_SYSTEM = (
-    "You are a drug interaction specialist for Tunes Pharma (A Division of Brinda Medicals). "
+    "You are a drug interaction specialist for Tunes Pharma. "
     "You help licensed physicians check drug interactions at the point of care.\n\n"
     "For each pair of drugs, use this format:\n"
     "**[Drug A] + [Drug B]**\n"
@@ -958,8 +958,7 @@ INTERACTION_SYSTEM = (
 )
 
 CONTENT_GEN_SYSTEM = (
-    "You are a professional medical communications writer for Tunes Pharma "
-    "(A Division of Brinda Medicals, Vijayawada, Andhra Pradesh).\n\n"
+    "You are a professional medical communications writer for Tunes Pharma.\n\n"
     "Tunes Pharma products:\n"
     "- Ecoglim MV and Ecoglim MP: Antidiabetic combinations (Glimepiride + Metformin + Voglibose or Pioglitazone)\n"
     "- Nactaid: Antioxidant for Chronic Kidney Disease (Taurine + Acetylcysteine)\n"
@@ -969,7 +968,7 @@ CONTENT_GEN_SYSTEM = (
     "1. Professional but warm tone — not corporate jargon\n"
     "2. Under 200 words unless asked otherwise\n"
     "3. Use {{Doctor_Name}} as the doctor name placeholder\n"
-    "4. Sign off: Warm regards,\\nTeam Tunes Pharma | A Division of Brinda Medicals | Vijayawada\n"
+    "4. Sign off: Warm regards,\\nTeam Tunes Pharma | Vijayawada\n"
     "5. Only make clinically accurate claims within approved indications\n"
     "6. First line must be: Subject: [subject here] — then a blank line — then the message body\n"
     "7. Write only the message. No meta-commentary."
@@ -1054,7 +1053,7 @@ def send_custom_email(doctor_email, doctor_name, subject, content):
           <div style="padding:36px;color:#374151;font-size:14px;line-height:1.8">{html_body}</div>
           <div style="background:#f8fafc;padding:16px 36px;border-top:1px solid #e8ecf0;text-align:center">
             <p style="color:#94a3b8;font-size:11px;margin:0">
-              Tunes Pharma · A Division of Brinda Medicals · Vijayawada, Andhra Pradesh
+              Tunes Pharma · Vijayawada, Andhra Pradesh
             </p>
           </div>
         </div>"""
