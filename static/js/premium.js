@@ -305,8 +305,11 @@ function initLogoStory() {
     framePath = i => `${base}${String(i + 1).padStart(pad, '0')}${ext}`;
   }
 
-  // Reduced motion → show the completed logo, skip scroll animation
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  // Skip the scroll-scrub on phones (matches the CSS static-hero override)
+  // and for prefers-reduced-motion. Avoids downloading ~6MB of frames on mobile.
+  const isPhone   = window.matchMedia('(max-width: 768px)').matches;
+  const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (isPhone || isReduced) {
     section.classList.add('is-reduced');
     return;
   }
