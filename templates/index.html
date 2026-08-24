@@ -222,41 +222,59 @@
   </div>
 </header>
 
-<!-- ── HERO ── -->
-<section class="t-hero">
-  <canvas id="hero-canvas" class="t-hero-canvas"></canvas>
-  <div class="t-hero-overlay"></div>
-  <div class="t-hero-inner">
-    <div class="t-hero-logo-wrap">
-      <img src="{{ url_for('static', filename='images/logo-on-homepage.png') }}" alt="Tunes Therapeutics" class="t-hero-logo">
-    </div>
-    <div class="t-hero-tagline">
-      <span class="t-hero-tagline-rule"></span>
-      <h1 class="t-hero-tagline-text">Enhancing Life Through Connecting People</h1>
-      <span class="t-hero-tagline-rule"></span>
-    </div>
-    <div class="t-hero-est">
-      <span class="dot">·</span>
-      <span class="txt">Est. 2021</span>
-      <span class="dot">·</span>
+<!-- ── HERO (tall, sticky — scroll scrubs the logo construction) ── -->
+<section class="t-hero" id="t-hero">
+  <div class="t-hero-sticky">
+    <canvas id="hero-canvas" class="t-hero-canvas"></canvas>
+    <div class="t-hero-overlay"></div>
+    <div class="t-hero-inner">
+      <div class="t-hero-logo-wrap">
+        <canvas
+          id="logo-story-canvas"
+          class="t-hero-logo-canvas"
+          role="img"
+          aria-label="Tunes Pharma logo construction animation"
+          data-scroll-section="#t-hero"
+          data-frame-count="100"
+          data-frame-dir="{{ url_for('static', filename='images/logo_frame_2/') }}"
+          data-frame-scheme="tunes-v2"
+        ></canvas>
+        <img
+          src="{{ url_for('static', filename='images/logo_frame_2/frame0-100_freeremovebg.webp') }}"
+          alt="Tunes Pharma logo"
+          class="t-hero-logo-fallback"
+          loading="lazy"
+          decoding="async"
+        >
+      </div>
+      <div class="t-hero-tagline">
+        <span class="t-hero-tagline-rule"></span>
+        <h1 class="t-hero-tagline-text">Enhancing Life Through Connecting People</h1>
+        <span class="t-hero-tagline-rule"></span>
+      </div>
+      <div class="t-hero-est">
+        <span class="dot">·</span>
+        <span class="txt">Est. 2021</span>
+        <span class="dot">·</span>
+      </div>
     </div>
   </div>
   <div class="t-hero-cards">
-    <div class="t-info-card">
+    <div class="t-info-card p-reveal p-delay-1">
       <div class="t-info-label">
         <img src="{{ url_for('static', filename='images/logo-on-homepage.png') }}" alt="" class="t-info-bullet">
         <span class="label">Vision</span>
       </div>
       <p>Enhancing lives through accessible and affordable healthcare.</p>
     </div>
-    <div class="t-info-card">
+    <div class="t-info-card p-reveal p-delay-2">
       <div class="t-info-label">
         <img src="{{ url_for('static', filename='images/logo-on-homepage.png') }}" alt="" class="t-info-bullet">
         <span class="label">Mission</span>
       </div>
       <p>Providing quality, affordable medicines through advanced formulations.</p>
     </div>
-    <div class="t-info-card">
+    <div class="t-info-card p-reveal p-delay-3">
       <div class="t-info-label">
         <img src="{{ url_for('static', filename='images/logo-on-homepage.png') }}" alt="" class="t-info-bullet">
         <span class="label">Commitment</span>

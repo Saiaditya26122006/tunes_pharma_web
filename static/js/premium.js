@@ -275,10 +275,170 @@ function initSplitHeadings() {
   });
 }
 
+/* ── Scroll-scrubbed logo construction (canvas image sequence) ── */
+function initLogoStory() {
+  const canvas = document.getElementById('logo-story-canvas');
+  if (!canvas) return;
+
+  const wrap = canvas.parentElement;
+  const sectionSel = canvas.dataset.scrollSection || '#t-hero';
+  const section = document.querySelector(sectionSel);
+  if (!wrap || !section) return;
+
+  const total  = parseInt(canvas.dataset.frameCount, 10) || 100;
+  const dir    = canvas.dataset.frameDir    || '';
+  const scheme = canvas.dataset.frameScheme || '';
+  // Fallback (legacy) attributes still supported for other pages:
+  const base   = canvas.dataset.frameBase   || '';
+  const pad    = parseInt(canvas.dataset.framePad, 10) || 4;
+  const ext    = canvas.dataset.frameExt    || '.webp';
+
+  // Build the URL for frame index i (0-based).
+  let framePath;
+  if (scheme === 'tunes-v2') {
+    // Frame 1 → `frame0_freeremovebg.webp` (no number suffix),
+    // Frame N (2..100) → `frame0-N_freeremovebg.webp`
+    framePath = i => i === 0
+      ? `${dir}frame0_freeremovebg.webp`
+      : `${dir}frame0-${i + 1}_freeremovebg.webp`;
+  } else {
+    framePath = i => `${base}${String(i + 1).padStart(pad, '0')}${ext}`;
+  }
+
+  // Reduced motion → show the completed logo, skip scroll animation
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    section.classList.add('is-reduced');
+    return;
+  }
+
+  const ctx = canvas.getContext('2d', { alpha: true });
+  const frames  = new Array(total);        // Image objects
+  const loaded  = new Array(total).fill(false);
+
+  let targetFrame  = 0;
+  let currentFrame = -1;
+  let firstReady   = false;
+  let rafPending   = false;
+  let cssW = 0, cssH = 0;
+
+  function resizeCanvas() {
+    const rect = wrap.getBoundingClientRect();
+    const dpr  = Math.min(window.devicePixelRatio || 1, 2);
+    cssW = rect.width;
+    cssH = rect.height;
+    const bufW = Math.max(1, Math.round(cssW * dpr));
+    const bufH = Math.max(1, Math.round(cssH * dpr));
+    if (canvas.width !== bufW || canvas.height !== bufH) {
+      canvas.width  = bufW;
+      canvas.height = bufH;
+    }
+    // Force a redraw at new size
+    currentFrame = -1;
+    scheduleRender();
+  }
+
+  function nearestLoaded(target) {
+    if (loaded[target]) return target;
+    for (let d = 1; d < total; d++) {
+      const lo = target - d, hi = target + d;
+      if (lo >= 0 && loaded[lo]) return lo;
+      if (hi < total && loaded[hi]) return hi;
+    }
+    return -1;
+  }
+
+  function draw(idx) {
+    const img = frames[idx];
+    if (!img || !img.complete || img.naturalWidth === 0) return;
+    const cw = canvas.width, ch = canvas.height;
+    const iw = img.naturalWidth, ih = img.naturalHeight;
+    // Aspect-fit (contain)
+    const scale = Math.min(cw / iw, ch / ih);
+    const dw = iw * scale, dh = ih * scale;
+    const dx = (cw - dw) * 0.5, dy = (ch - dh) * 0.5;
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(img, dx, dy, dw, dh);
+    currentFrame = idx;
+  }
+
+  function scheduleRender() {
+    if (rafPending) return;
+    rafPending = true;
+    requestAnimationFrame(() => {
+      rafPending = false;
+      const idx = nearestLoaded(targetFrame);
+      if (idx !== -1 && idx !== currentFrame) draw(idx);
+    });
+  }
+
+  function updateProgress() {
+    const rect  = section.getBoundingClientRect();
+    const vh    = window.innerHeight;
+    const range = section.offsetHeight - vh;
+    if (range <= 0) { targetFrame = total - 1; scheduleRender(); return; }
+    const scrolled = -rect.top;
+    const p = Math.max(0, Math.min(1, scrolled / range));
+    targetFrame = Math.min(total - 1, Math.max(0, Math.round(p * (total - 1))));
+    scheduleRender();
+  }
+
+  function onFirstFrameReady() {
+    if (firstReady) return;
+    firstReady = true;
+    const first = frames[0];
+    if (first && first.naturalWidth) {
+      // Match the wrap aspect ratio to the actual frame ratio → no letterboxing
+      wrap.style.aspectRatio = `${first.naturalWidth} / ${first.naturalHeight}`;
+    }
+    // Wait one frame so the new aspect ratio has laid out before measuring
+    requestAnimationFrame(() => { resizeCanvas(); updateProgress(); });
+  }
+
+  function loadFrame(i, priority) {
+    if (frames[i]) return;
+    const img = new Image();
+    img.decoding = 'async';
+    if (priority && 'fetchPriority' in img) img.fetchPriority = 'high';
+    img.onload = () => {
+      loaded[i] = true;
+      if (i === 0) onFirstFrameReady();
+      if (i === targetFrame || Math.abs(i - targetFrame) < 3) scheduleRender();
+    };
+    img.onerror = () => { /* leave loaded[i] false; nearestLoaded will skip */ };
+    frames[i] = img;
+    img.src = framePath(i);
+  }
+
+  // Priority: first frame, then progressively load the rest.
+  loadFrame(0, true);
+  let nextIdx = 1;
+  function pump() {
+    if (nextIdx >= total) return;
+    // Push a small batch each tick to keep the main thread free
+    const batch = 4;
+    for (let k = 0; k < batch && nextIdx < total; k++) loadFrame(nextIdx++);
+    setTimeout(pump, 30);
+  }
+  // Wait a beat so the first frame gets network priority
+  setTimeout(pump, 60);
+
+  // Scroll & resize wiring
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', () => { resizeCanvas(); updateProgress(); }, { passive: true });
+
+  // In case first frame was already cached and onFirstFrameReady didn't fire
+  if (frames[0] && frames[0].complete && frames[0].naturalWidth) onFirstFrameReady();
+
+  // Initial layout pass even before first frame lands
+  resizeCanvas();
+  updateProgress();
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   initHeader(); initScrollReveal(); initCounters();
   initHeroGSAP(); initMagnetic(); initMobileMenu();
   initSmoothScroll(); initSplitHeadings();
+  initLogoStory();
   setTimeout(initTilt,120);
   if(document.getElementById('hero-canvas')&&typeof THREE!=='undefined') initMolecularNetwork();
 });
