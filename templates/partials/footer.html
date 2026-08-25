@@ -1,83 +1,69 @@
 <style>
     footer {
         position: relative;
-        margin-top: 100px;
+        margin-top: 72px;
         overflow: hidden;
     }
 
     .footer-upper {
         background: #34495e;
         color: white;
-        padding: 60px 20px;
+        padding: 30px 20px 24px;
         position: relative;
     }
 
     .footer-upper-content {
         max-width: 1400px;
         margin: 0 auto;
-        display: grid;
-        grid-template-columns: auto repeat(5, 1fr);
-        gap: 40px;
-        align-items: start;
     }
 
-    .footer-logo-section {
+    .footer-brand-row {
         display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .footer-logo {
+        align-items: center;
+        gap: 20px;
+        padding-bottom: 18px;
         margin-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.10);
     }
-
-    .footer-logo img {
-        max-width: 120px;
+    .footer-brand-row img {
+        max-width: 78px;
         height: auto;
         filter: brightness(0) invert(1);
-        transition: transform 0.3s ease;
+        flex-shrink: 0;
     }
-
-    .footer-logo img:hover {
-        transform: scale(1.05);
-    }
-
     .footer-tagline {
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 600;
-        margin-bottom: 10px;
+        color: #fff;
+        margin: 0;
+        letter-spacing: 0.01em;
     }
 
-    .footer-column h4 {
-        font-size: 1rem;
-        margin-bottom: 20px;
+    .footer-info-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 32px;
+    }
+    .footer-block h4 {
+        font-size: 0.75rem;
+        margin: 0 0 8px;
         color: #3498db;
         font-weight: 700;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.06em;
     }
-
-    .footer-links {
-        list-style: none;
+    .footer-block p {
+        color: rgba(255,255,255,0.85);
+        font-size: 0.85rem;
+        line-height: 1.6;
+        margin: 0;
     }
-
-    .footer-links li {
-        margin-bottom: 10px;
-    }
-
-    .footer-links a {
-        color: rgba(255, 255, 255, 0.9);
+    .footer-block a {
+        color: rgba(255,255,255,0.85);
         text-decoration: none;
-        font-size: 0.95rem;
-        transition: all 0.3s ease;
-        display: block;
-        padding: 4px 0;
+        transition: color 0.2s ease;
     }
-
-    .footer-links a:hover {
-        color: #3498db;
-        padding-left: 5px;
-    }
+    .footer-block a:hover { color: #3498db; }
 
     .scroll-to-top {
         position: fixed;
@@ -110,7 +96,7 @@
     .footer-lower {
         background: #2c3e50;
         color: white;
-        padding: 25px 20px;
+        padding: 14px 20px;
     }
 
     .footer-lower-content {
@@ -183,25 +169,26 @@
         filter: brightness(0) invert(1);
     }
 
-    @media (max-width: 1024px) {
-        .footer-upper-content {
-            grid-template-columns: auto repeat(2, 1fr);
-            gap: 30px;
-        }
-    }
-
-    @media (max-width: 768px) {
-        footer { margin-top: 48px; }
-        .footer-upper { padding: 40px 16px; }
-        .footer-upper-content {
+    @media (max-width: 900px) {
+        .footer-info-row {
             grid-template-columns: 1fr 1fr;
             gap: 24px;
         }
-        .footer-logo-section {
-            grid-column: 1 / -1;
+    }
+    @media (max-width: 768px) {
+        footer { margin-top: 40px; }
+        .footer-upper { padding: 24px 16px 18px; }
+        .footer-brand-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
+            padding-bottom: 14px;
+            margin-bottom: 16px;
         }
-        .footer-tagline { font-size: .95rem; }
-        .footer-lower { padding: 18px 16px; }
+        .footer-brand-row img { max-width: 64px; }
+        .footer-tagline { font-size: .9rem; }
+        .footer-info-row { grid-template-columns: 1fr; gap: 18px; }
+        .footer-lower { padding: 12px 16px; }
         .footer-lower-content {
             flex-direction: column;
             text-align: center;
@@ -213,75 +200,31 @@
             width: 40px; height: 40px; font-size: 16px;
         }
     }
-    @media (max-width: 480px) {
-        .footer-upper-content { grid-template-columns: 1fr; }
-        .footer-links a { font-size: .85rem; }
-        .footer-column h4 { font-size: .9rem; margin-bottom: 12px; }
-    }
 </style>
 
 <footer>
     <div class="footer-upper">
         <div class="footer-upper-content">
-            <div class="footer-logo-section">
-                <div class="footer-logo">
-                    <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo">
-                </div>
+            <div class="footer-brand-row">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Therapeutics Logo">
                 <p class="footer-tagline">Retuning Health, Redefining Lives</p>
-                <p style="color: rgba(255,255,255,0.8); line-height: 1.8; font-size: 0.9rem;">
-                    Committed to excellence in pharmaceutical innovation and patient care.
-                </p>
-                <p style="color: rgba(255,255,255,0.8); line-height: 1.8; font-size: 0.9rem; margin-top: 12px;">
-                    <strong>Corporate Office:</strong><br>
-                    Gowthamnagar, Ferozguda, Balanagar,<br>
-                    Hyderabad - 500011, Telangana, India
-                </p>
             </div>
-            <div class="footer-column">
-                <h4>About Tunes</h4>
-                <ul class="footer-links">
-                    <li><a href="/about">About Us</a></li>
-                    <li><a href="/about#mission">Vision & Values</a></li>
-                    <li><a href="/research">Research</a></li>
-                    <li><a href="/gallery">Gallery</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Operations</h4>
-                <ul class="footer-links">
-                    <li><a href="/products">Our Products</a></li>
-                    <li><a href="/product-catalog">Product Catalog</a></li>
-                    <li><a href="/online-ordering">Online Ordering</a></li>
-                    <li><a href="/stockist-locator">Find Stockist</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Resources</h4>
-                <ul class="footer-links">
-                    <li><a href="/research">Research & Dev</a></li>
-                    <li><a href="/pharmaintel_ai">Pharmaintel AI</a></li>
-                    <li><a href="/contact">Customer Support</a></li>
-                    <li><a href="/contact">Partner with Us</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Work With Us</h4>
-                <ul class="footer-links">
-                    <li><a href="/careers">Careers</a></li>
-                    <li><a href="/contact">Contact Us</a></li>
-                    <li><a href="/about">Join Our Team</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h4>Quick Links</h4>
-                <ul class="footer-links">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/about">About</a></li>
-                    <li><a href="/products">Products</a></li>
-                    <li><a href="/services">Services</a></li>
-                    <li><a href="/contact">Contact</a></li>
-                    <li><a href="/gallery">Gallery</a></li>
-                </ul>
+            <div class="footer-info-row">
+                <div class="footer-block">
+                    <h4>Corporate Office</h4>
+                    <p>Gowthamnagar, Ferozguda, Balanagar,<br>Hyderabad&nbsp;-&nbsp;500011, Telangana, India</p>
+                </div>
+                <div class="footer-block">
+                    <h4>Registered Office</h4>
+                    <p>#3-340/4, Polakampadu, Undavalli,<br>Guntur&nbsp;-&nbsp;522501, Andhra&nbsp;Pradesh, India</p>
+                </div>
+                <div class="footer-block">
+                    <h4>Get in Touch</h4>
+                    <p>
+                        <a href="tel:+919295006066">+91 9295 006 066</a><br>
+                        <a href="mailto:brindamedicals21@gmail.com">brindamedicals21@gmail.com</a>
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -289,12 +232,7 @@
     <div class="footer-lower">
         <div class="footer-lower-content">
             <div class="footer-copyright">
-                <p>&copy; 2024 Tunes Therapeutics Pvt. Ltd. | All Rights Reserved</p>
-                <div class="footer-copyright-links">
-                    <a href="/privacy">Privacy Policy</a>
-                    <span>|</span>
-                    <a href="/disclaimer">Disclaimer</a>
-                </div>
+                <p>&copy; 2025 Tunes Therapeutics Pvt. Ltd. &nbsp;|&nbsp; All Rights Reserved</p>
             </div>
             <div class="footer-social-lower">
                 <a href="https://www.facebook.com/tunes_therapeutics_pvt_ltd" class="social-link-lower" target="_blank">

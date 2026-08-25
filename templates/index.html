@@ -111,8 +111,46 @@
       padding: 20px 22px 22px;
     }
     .prod-card-body h3 {
-      color: #fff; font-size: 1.1rem; font-weight: 700;
-      margin-bottom: 6px; line-height: 1.2;
+      color: #fff; font-size: 1.7rem; font-weight: 800;
+      margin: 0; line-height: 1.15;
+      letter-spacing: -0.01em;
+    }
+    .prod-card-body h3 .brand-red  { color: #FF4D6D; }  /* screen-friendly crimson */
+    .prod-card-body h3 .brand-navy { color: #5FA8FF; }  /* screen-friendly sky-navy */
+
+    /* Hover: reveal description underneath the title */
+    .prod-card-body p {
+      color: rgba(255,255,255,.88);
+      font-size: .88rem;
+      line-height: 1.55;
+      margin: 0;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transform: translateY(6px);
+      transition: max-height .45s cubic-bezier(.22,.61,.36,1),
+                  opacity   .32s ease-out .04s,
+                  transform .45s cubic-bezier(.22,.61,.36,1),
+                  margin-top .45s cubic-bezier(.22,.61,.36,1);
+    }
+    .prod-card:hover .prod-card-body p,
+    .prod-card:focus-within .prod-card-body p {
+      max-height: 140px;
+      opacity: 1;
+      transform: translateY(0);
+      margin-top: 10px;
+    }
+    /* On hover, darken the overlay bottom slightly for description legibility */
+    .prod-card:hover .prod-card-overlay {
+      background: linear-gradient(
+        to bottom,
+        transparent 20%,
+        rgba(5,15,30,.72) 50%,
+        rgba(5,15,30,.96) 100%
+      );
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .prod-card-body p { transition: none; }
     }
     .prod-card-body p {
       color: rgba(255,255,255,.68); font-size: .82rem;
@@ -169,23 +207,6 @@
       flex-shrink: 0; margin-top: 1px; font-size: 11px; color: white;
     }
 
-    /* CTA Banner */
-    .cta-banner {
-      background: linear-gradient(135deg, var(--navy-800) 0%, var(--navy-700) 50%, var(--navy-600) 100%);
-      position: relative; overflow: hidden;
-    }
-    .cta-banner::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 80% 50%, rgba(30,111,241,0.2) 0%, transparent 60%);
-    }
-    .cta-inner { position: relative; z-index: 1; text-align: center; color: white; }
-    .cta-inner h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2rem,3.5vw,2.8rem);
-      margin-bottom: 16px; letter-spacing: -.02em;
-    }
-    .cta-inner p { color: rgba(255,255,255,.65); font-size: 1.05rem; margin-bottom: 36px; }
   </style>
 </head>
 <body>
@@ -287,42 +308,42 @@
         <p class="ht-lead">All our formulations are manufactured in <strong>WHO (GMP)</strong> and <strong>DCGI-approved</strong> facilities, upholding our promise of uncompromised quality.</p>
         <div class="ht-values">
           <div class="ht-value">
-            <div class="ht-value-icon">🏅</div>
+            <div class="ht-value-icon"><img src="{{ url_for('static', filename='images/Quality.png') }}" alt=""></div>
             <div>
               <h4>QUALITY</h4>
               <p>We are committed to stringent standards of excellence and innovation across every batch we release.</p>
             </div>
           </div>
           <div class="ht-value">
-            <div class="ht-value-icon">💡</div>
+            <div class="ht-value-icon"><img src="{{ url_for('static', filename='images/Innovation.png') }}" alt=""></div>
             <div>
               <h4>INNOVATION</h4>
               <p>We create impactful change through science-driven formulations, driven by a passion to make a real difference.</p>
             </div>
           </div>
           <div class="ht-value">
-            <div class="ht-value-icon">🤲</div>
+            <div class="ht-value-icon"><img src="{{ url_for('static', filename='images/Empathy.png') }}" alt=""></div>
             <div>
               <h4>EMPATHY</h4>
               <p>Empathy fuels our purpose — science shapes our medicines, and together we help transform lives with care.</p>
             </div>
           </div>
           <div class="ht-value">
-            <div class="ht-value-icon">🫱🏻‍🫲🏽</div>
+            <div class="ht-value-icon"><img src="{{ url_for('static', filename='images/Inclusion.png') }}" alt=""></div>
             <div>
               <h4>INCLUSION</h4>
               <p>Every patient, every prescriber, every partner — we serve with equal commitment across geographies.</p>
             </div>
           </div>
           <div class="ht-value">
-            <div class="ht-value-icon">🤝</div>
+            <div class="ht-value-icon"><img src="{{ url_for('static', filename='images/Integrity.png') }}" alt=""></div>
             <div>
               <h4>INTEGRITY</h4>
               <p>Integrity is our cornerstone — guiding every decision, from formulation to prescription and beyond, for a lasting trust.</p>
             </div>
           </div>
           <div class="ht-value">
-            <div class="ht-value-icon">👥</div>
+            <div class="ht-value-icon"><img src="{{ url_for('static', filename='images/Team Work.png') }}" alt=""></div>
             <div>
               <h4>TEAMWORK</h4>
               <p>Our lean, expert team drives outsized outcomes through shared purpose and collective ownership.</p>
@@ -335,91 +356,61 @@
 </section>
 
 <!-- ── FEATURED PRODUCTS ── -->
-<section class="p-section p-section-dark">
+<section class="p-section p-section-light">
   <div class="p-container">
     <div class="p-section-header p-reveal" style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px">
       <div>
-        <span class="p-section-tag">Featured Products</span>
-        <h2 class="p-section-title">Innovative Formulations</h2>
+        <h2 class="p-section-title">Product Portfolio</h2>
         <div class="p-divider gold"></div>
       </div>
-      <a href="/products" class="p-btn p-btn-outline p-reveal" style="flex-shrink:0">View All Products →</a>
+      <a href="/products" class="p-btn p-btn-blue p-reveal" style="flex-shrink:0">View →</a>
     </div>
     <div class="prod-grid">
 
       <!-- Ecoglim MV1 -->
-      <div class="prod-card p-reveal p-delay-1" onclick="window.location.href='/products/ecoglim-mv1'">
+      <div class="prod-card p-reveal-left p-delay-1" onclick="window.location.href='/products/ecoglim-mv1'">
         <img src="{{ url_for('static', filename='images/p1.jpg') }}" alt="Ecoglim MV1" class="prod-card-img" onerror="this.style.background='#0d1e30'">
         <div class="prod-card-overlay"></div>
         <span class="prod-card-tag diabetes">Diabetes Management</span>
         <div class="prod-card-body">
-          <h3>Ecoglim MV1</h3>
+          <h3><span class="brand-red">ECOGLIM</span> <span class="brand-navy">series</span></h3>
           <p>Advanced diabetes management with multi-vitamin complex for enhanced glycemic control.</p>
-          <a class="prod-card-cta">
-            Explore
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
         </div>
       </div>
 
       <!-- NACTAID -->
-      <div class="prod-card p-reveal p-delay-2" onclick="window.location.href='/products/nactaid'">
+      <div class="prod-card p-reveal-left p-delay-2" onclick="window.location.href='/products/nactaid'">
         <img src="{{ url_for('static', filename='images/p2.jpg') }}" alt="NACTAID" class="prod-card-img" onerror="this.style.background='#0d1e30'">
         <div class="prod-card-overlay"></div>
         <span class="prod-card-tag antioxidant">Antioxidant Support</span>
         <div class="prod-card-body">
-          <h3>NACTAID</h3>
+          <h3><span class="brand-red">NACT</span><span class="brand-navy">AID</span></h3>
           <p>N-Acetylcysteine + Taurine combination for antioxidant and metabolic support.</p>
-          <a class="prod-card-cta">
-            Explore
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
         </div>
       </div>
 
       <!-- RESGABA Series -->
-      <div class="prod-card p-reveal p-delay-3" onclick="window.location.href='/products/resgaba-nt'">
+      <div class="prod-card p-reveal-left p-delay-3" onclick="window.location.href='/products/resgaba-nt'">
         <img src="{{ url_for('static', filename='images/product_images.jpg') }}" alt="RESGABA-NT" class="prod-card-img" onerror="this.style.background='#0d1e30'">
         <div class="prod-card-overlay"></div>
         <span class="prod-card-tag neuro">Neuropathic Pain</span>
         <div class="prod-card-body">
-          <h3>RESGABA Series</h3>
+          <h3><span class="brand-red">RESGABA</span><span class="brand-navy">-NT</span></h3>
           <p>Precision formulations for neuropathic pain with proven clinical efficacy and safety.</p>
-          <a class="prod-card-cta">
-            Explore
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
         </div>
       </div>
 
       <!-- RABISHIR-DSR -->
-      <div class="prod-card p-reveal p-delay-4" onclick="window.location.href='/products/rabishir-dsr'">
-        <img src="{{ url_for('static', filename='images/product_images.jpg') }}" alt="RABISHIR-DSR" class="prod-card-img" onerror="this.style.background='#0d1e30'">
+      <div class="prod-card p-reveal-left p-delay-4" onclick="window.location.href='/products/rabishir-dsr'">
+        <img src="{{ url_for('static', filename='images/Rabishir-DSR.jpg') }}" alt="RABISHIR-DSR" class="prod-card-img" onerror="this.style.background='#0d1e30'">
         <div class="prod-card-overlay"></div>
         <span class="prod-card-tag gastro">Gastrointestinal</span>
         <div class="prod-card-body">
-          <h3>RABISHIR-DSR</h3>
+          <h3><span class="brand-red">RABISHIR</span><span class="brand-navy">-DSR</span></h3>
           <p>Dual-action GI therapy combining acid suppression with enhanced gastric motility.</p>
-          <a class="prod-card-cta">
-            Explore
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </a>
         </div>
       </div>
 
-    </div>
-  </div>
-</section>
-
-<!-- ── CTA BANNER ── -->
-<section class="p-section p-section-sm cta-banner">
-  <div class="p-container">
-    <div class="cta-inner p-reveal">
-      <h2>Ready to Partner with Tunes Pharma?</h2>
-      <p>Join our growing network of doctors, distributors, hospitals, and healthcare institutions across Andhra Pradesh &amp; Telangana.</p>
-      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
-        <a href="/contact" class="p-btn p-btn-primary">Contact Our Team</a>
-      </div>
     </div>
   </div>
 </section>

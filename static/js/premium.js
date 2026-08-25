@@ -278,7 +278,7 @@ function initSplitHeadings() {
   if (typeof SplitType === 'undefined' || typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  const targets = document.querySelectorAll('.p-section-title, .ht-title, .p-hero-title-oneline, .t-hero-tagline-text');
+  const targets = document.querySelectorAll('.p-section-title, .ht-title, .p-hero-title-oneline');
   targets.forEach(el => {
     const split = new SplitType(el, { types: 'lines,words', lineClass: 'split-line', wordClass: 'split-word' });
     gsap.set(split.words, { yPercent: 110, opacity: 0 });
