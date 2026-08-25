@@ -21,3 +21,9 @@ uploads/
 # OS
 .DS_Store
 Thumbs.db
+
+# Claude Code runtime (worktrees can grow to hundreds of MB)
+.claude/
+.agents/
+.claire/
+skills-lock.json

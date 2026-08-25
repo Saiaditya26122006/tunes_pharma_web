@@ -43,15 +43,14 @@
 </style>
 
 <div class="tp-loader" id="globalLoading">
-  <video
+  <img
     class="tp-loader-video"
-    src="{{ url_for('static', filename='videos/logo_video.webm') }}"
-    autoplay muted loop playsinline
-    disablepictureinpicture disableremoteplayback
-    preload="metadata"
+    src="{{ url_for('static', filename='videos/logo_loader.webp') }}"
+    alt=""
     aria-hidden="true"
+    decoding="async"
     onerror="this.closest('.tp-loader').classList.add('video-failed')"
-  ></video>
+  >
   <div class="tp-loader-video-fallback" aria-hidden="true"></div>
   <div class="tp-loader-name">Tunes Pharma</div>
 </div>

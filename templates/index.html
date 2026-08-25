@@ -229,14 +229,12 @@
     <div class="t-hero-overlay"></div>
     <div class="t-hero-inner">
       <div class="t-hero-logo-wrap">
-        <video
+        <img
           class="t-hero-logo-video"
-          autoplay muted loop playsinline preload="auto"
-          disablepictureinpicture disableremoteplayback
-          aria-label="Tunes Pharma logo animation"
+          src="{{ url_for('static', filename='videos/logo_video.webp') }}"
+          alt="Tunes Pharma logo animation"
+          decoding="async"
         >
-          <source src="{{ url_for('static', filename='videos/logo_video.webm') }}" type="video/webm">
-        </video>
       </div>
       <div class="t-hero-tagline">
         <span class="t-hero-tagline-rule"></span>
