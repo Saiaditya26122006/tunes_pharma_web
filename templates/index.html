@@ -229,23 +229,14 @@
     <div class="t-hero-overlay"></div>
     <div class="t-hero-inner">
       <div class="t-hero-logo-wrap">
-        <canvas
-          id="logo-story-canvas"
-          class="t-hero-logo-canvas"
-          role="img"
-          aria-label="Tunes Pharma logo construction animation"
-          data-scroll-section="#t-hero"
-          data-frame-count="100"
-          data-frame-dir="{{ url_for('static', filename='images/logo_frame_2/') }}"
-          data-frame-scheme="tunes-v2"
-        ></canvas>
-        <img
-          src="{{ url_for('static', filename='images/logo_frame_2/frame0-100_freeremovebg.webp') }}"
-          alt="Tunes Pharma logo"
-          class="t-hero-logo-fallback"
-          loading="lazy"
-          decoding="async"
+        <video
+          class="t-hero-logo-video"
+          autoplay muted loop playsinline preload="auto"
+          disablepictureinpicture disableremoteplayback
+          aria-label="Tunes Pharma logo animation"
         >
+          <source src="{{ url_for('static', filename='videos/logo_video.webm') }}" type="video/webm">
+        </video>
       </div>
       <div class="t-hero-tagline">
         <span class="t-hero-tagline-rule"></span>

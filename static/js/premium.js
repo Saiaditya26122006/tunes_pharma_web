@@ -16,7 +16,7 @@ function initMolecularNetwork() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setClearColor(0x000000, 0);
 
-  const COUNT     = window.innerWidth < 768 ? 60 : 110;
+  const COUNT     = window.innerWidth < 768 ? 45 : 80;
   const positions = new Float32Array(COUNT * 3);
   const colors    = new Float32Array(COUNT * 3);
   const pts = [], vels = [];
@@ -48,7 +48,12 @@ function initMolecularNetwork() {
   scene.add(lineGroup);
 
   function rebuildLines() {
-    while (lineGroup.children.length) lineGroup.remove(lineGroup.children[0]);
+    while (lineGroup.children.length) {
+      const child = lineGroup.children[0];
+      lineGroup.remove(child);
+      if (child.geometry) child.geometry.dispose();
+      if (child.material) child.material.dispose();
+    }
     for (let i=0; i<COUNT; i++) for (let j=i+1; j<COUNT; j++) {
       const d = pts[i].distanceTo(pts[j]);
       if (d < 2.8) {
@@ -66,8 +71,18 @@ function initMolecularNetwork() {
     my = -(e.clientY/window.innerHeight-.5)*.6;
   }, {passive:true});
 
+  // Pause the render loop while the hero is off-screen so the WebGL work
+  // doesn't compete with scroll interpolation on the rest of the page.
+  let visible = true;
+  const io = new IntersectionObserver(
+    ([e]) => { visible = e.isIntersecting; if (visible) requestAnimationFrame(animate); },
+    { rootMargin: '150px 0px' }
+  );
+  io.observe(canvas);
+
   let frame=0, time=0;
-  (function animate() {
+  function animate() {
+    if (!visible) return;
     requestAnimationFrame(animate);
     time+=.004; frame++;
     for (let i=0; i<COUNT; i++) {
@@ -78,13 +93,16 @@ function initMolecularNetwork() {
       positions[i*3]=pts[i].x; positions[i*3+1]=pts[i].y; positions[i*3+2]=pts[i].z;
     }
     ptGeo.attributes.position.needsUpdate=true;
-    if (frame%4===0) rebuildLines();
+    // Line rebuild is O(n²) and allocates fresh geometries each pass — throttle
+    // it to ~4 Hz to keep GC pressure low during scroll.
+    if (frame%15===0) rebuildLines();
     ptMesh.rotation.y=lineGroup.rotation.y=time*.04;
     camera.position.x+=(mx*2-camera.position.x)*.035;
     camera.position.y+=(my*2-camera.position.y)*.035;
     camera.lookAt(scene.position);
     renderer.render(scene,camera);
-  })();
+  }
+  animate();
 
   window.addEventListener('resize', () => {
     camera.aspect=window.innerWidth/window.innerHeight;
@@ -275,173 +293,10 @@ function initSplitHeadings() {
   });
 }
 
-/* ── Scroll-scrubbed logo construction (canvas image sequence) ── */
-function initLogoStory() {
-  const canvas = document.getElementById('logo-story-canvas');
-  if (!canvas) return;
-
-  const wrap = canvas.parentElement;
-  const sectionSel = canvas.dataset.scrollSection || '#t-hero';
-  const section = document.querySelector(sectionSel);
-  if (!wrap || !section) return;
-
-  const total  = parseInt(canvas.dataset.frameCount, 10) || 100;
-  const dir    = canvas.dataset.frameDir    || '';
-  const scheme = canvas.dataset.frameScheme || '';
-  // Fallback (legacy) attributes still supported for other pages:
-  const base   = canvas.dataset.frameBase   || '';
-  const pad    = parseInt(canvas.dataset.framePad, 10) || 4;
-  const ext    = canvas.dataset.frameExt    || '.webp';
-
-  // Build the URL for frame index i (0-based).
-  let framePath;
-  if (scheme === 'tunes-v2') {
-    // Frame 1 → `frame0_freeremovebg.webp` (no number suffix),
-    // Frame N (2..100) → `frame0-N_freeremovebg.webp`
-    framePath = i => i === 0
-      ? `${dir}frame0_freeremovebg.webp`
-      : `${dir}frame0-${i + 1}_freeremovebg.webp`;
-  } else {
-    framePath = i => `${base}${String(i + 1).padStart(pad, '0')}${ext}`;
-  }
-
-  // Skip the scroll-scrub on phones (matches the CSS static-hero override)
-  // and for prefers-reduced-motion. Avoids downloading ~6MB of frames on mobile.
-  const isPhone   = window.matchMedia('(max-width: 768px)').matches;
-  const isReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (isPhone || isReduced) {
-    section.classList.add('is-reduced');
-    return;
-  }
-
-  const ctx = canvas.getContext('2d', { alpha: true });
-  const frames  = new Array(total);        // Image objects
-  const loaded  = new Array(total).fill(false);
-
-  let targetFrame  = 0;
-  let currentFrame = -1;
-  let firstReady   = false;
-  let rafPending   = false;
-  let cssW = 0, cssH = 0;
-
-  function resizeCanvas() {
-    const rect = wrap.getBoundingClientRect();
-    const dpr  = Math.min(window.devicePixelRatio || 1, 2);
-    cssW = rect.width;
-    cssH = rect.height;
-    const bufW = Math.max(1, Math.round(cssW * dpr));
-    const bufH = Math.max(1, Math.round(cssH * dpr));
-    if (canvas.width !== bufW || canvas.height !== bufH) {
-      canvas.width  = bufW;
-      canvas.height = bufH;
-    }
-    // Force a redraw at new size
-    currentFrame = -1;
-    scheduleRender();
-  }
-
-  function nearestLoaded(target) {
-    if (loaded[target]) return target;
-    for (let d = 1; d < total; d++) {
-      const lo = target - d, hi = target + d;
-      if (lo >= 0 && loaded[lo]) return lo;
-      if (hi < total && loaded[hi]) return hi;
-    }
-    return -1;
-  }
-
-  function draw(idx) {
-    const img = frames[idx];
-    if (!img || !img.complete || img.naturalWidth === 0) return;
-    const cw = canvas.width, ch = canvas.height;
-    const iw = img.naturalWidth, ih = img.naturalHeight;
-    // Aspect-fit (contain)
-    const scale = Math.min(cw / iw, ch / ih);
-    const dw = iw * scale, dh = ih * scale;
-    const dx = (cw - dw) * 0.5, dy = (ch - dh) * 0.5;
-    ctx.clearRect(0, 0, cw, ch);
-    ctx.drawImage(img, dx, dy, dw, dh);
-    currentFrame = idx;
-  }
-
-  function scheduleRender() {
-    if (rafPending) return;
-    rafPending = true;
-    requestAnimationFrame(() => {
-      rafPending = false;
-      const idx = nearestLoaded(targetFrame);
-      if (idx !== -1 && idx !== currentFrame) draw(idx);
-    });
-  }
-
-  function updateProgress() {
-    const rect  = section.getBoundingClientRect();
-    const vh    = window.innerHeight;
-    const range = section.offsetHeight - vh;
-    if (range <= 0) { targetFrame = total - 1; scheduleRender(); return; }
-    const scrolled = -rect.top;
-    const p = Math.max(0, Math.min(1, scrolled / range));
-    targetFrame = Math.min(total - 1, Math.max(0, Math.round(p * (total - 1))));
-    scheduleRender();
-  }
-
-  function onFirstFrameReady() {
-    if (firstReady) return;
-    firstReady = true;
-    const first = frames[0];
-    if (first && first.naturalWidth) {
-      // Match the wrap aspect ratio to the actual frame ratio → no letterboxing
-      wrap.style.aspectRatio = `${first.naturalWidth} / ${first.naturalHeight}`;
-    }
-    // Wait one frame so the new aspect ratio has laid out before measuring
-    requestAnimationFrame(() => { resizeCanvas(); updateProgress(); });
-  }
-
-  function loadFrame(i, priority) {
-    if (frames[i]) return;
-    const img = new Image();
-    img.decoding = 'async';
-    if (priority && 'fetchPriority' in img) img.fetchPriority = 'high';
-    img.onload = () => {
-      loaded[i] = true;
-      if (i === 0) onFirstFrameReady();
-      if (i === targetFrame || Math.abs(i - targetFrame) < 3) scheduleRender();
-    };
-    img.onerror = () => { /* leave loaded[i] false; nearestLoaded will skip */ };
-    frames[i] = img;
-    img.src = framePath(i);
-  }
-
-  // Priority: first frame, then progressively load the rest.
-  loadFrame(0, true);
-  let nextIdx = 1;
-  function pump() {
-    if (nextIdx >= total) return;
-    // Push a small batch each tick to keep the main thread free
-    const batch = 4;
-    for (let k = 0; k < batch && nextIdx < total; k++) loadFrame(nextIdx++);
-    setTimeout(pump, 30);
-  }
-  // Wait a beat so the first frame gets network priority
-  setTimeout(pump, 60);
-
-  // Scroll & resize wiring
-  window.addEventListener('scroll', updateProgress, { passive: true });
-  window.addEventListener('resize', () => { resizeCanvas(); updateProgress(); }, { passive: true });
-
-  // In case first frame was already cached and onFirstFrameReady didn't fire
-  if (frames[0] && frames[0].complete && frames[0].naturalWidth) onFirstFrameReady();
-
-  // Initial layout pass even before first frame lands
-  resizeCanvas();
-  updateProgress();
-}
-
 document.addEventListener('DOMContentLoaded',()=>{
   initHeader(); initScrollReveal(); initCounters();
   initHeroGSAP(); initMagnetic(); initMobileMenu();
   initSmoothScroll(); initSplitHeadings();
-  initLogoStory();
   setTimeout(initTilt,120);
   if(document.getElementById('hero-canvas')&&typeof THREE!=='undefined') initMolecularNetwork();
 });
