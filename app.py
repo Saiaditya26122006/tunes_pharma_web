@@ -150,7 +150,7 @@ products_data = {
     "ecoglim-mv2": {
         "name": "Ecoglim MV 2mg/500mg/0.2mg Tablet SR",
         "description": "Ecoglim MV 2mg/500mg/0.2mg Tablet SR belongs to a category of medicines known as anti-diabetic drugs. It is a combination of medicines used to treat type 2 diabetes mellitus in adults. It helps control blood sugar levels in people with diabetes. Take it with or immediately before meals, regularly at the same time each day. Keep taking this medicine even if you feel well or your blood sugar levels are controlled — stopping without consulting your doctor may put you at risk of kidney damage, blindness, nerve problems, and loss of limbs.",
-        "image": "ecoglim-mv2.jpg",
+        "image": "Ecoglim-MV2.jpg",
         "features": "Triple-action antidiabetic — higher Glimepiride dose (2mg) for patients requiring stronger glycemic control",
         "composition": "Glimepiride 2mg + Metformin 500mg + Voglibose 0.2mg",
         "category": "Diabetes",
@@ -174,7 +174,7 @@ products_data = {
     "ecoglim-mp1": {
         "name": "Ecoglim MP 1mg/500mg/15mg Tablet SR",
         "description": "Ecoglim MP 1mg/500mg/15mg Tablet SR is a medicine that helps control blood sugar levels. It is used together with diet and exercise to improve blood sugar control in adults with type 2 diabetes mellitus. It helps in the proper utilisation of insulin, thereby lowering blood sugar levels. Take it with food to avoid stomach upset. Overdose may lead to low blood sugar (hypoglycemia).",
-        "image": "ecoglim-mp1.jpg",
+        "image": "Ecoglim MP1.jpg",
         "features": "Triple-action antidiabetic — improves insulin utilisation through 3 distinct mechanisms for better glycemic control",
         "composition": "Glimepiride 1mg + Metformin 500mg + Pioglitazone 15mg",
         "category": "Diabetes",
@@ -198,7 +198,7 @@ products_data = {
     "ecoglim-mp2": {
         "name": "Ecoglim MP 2mg/500mg/15mg Tablet SR",
         "description": "Ecoglim MP 2mg/500mg/15mg Tablet SR is a medicine that helps control blood sugar levels. It is used together with diet and exercise to improve blood sugar control in adults with type 2 diabetes mellitus. It contains a higher dose of Glimepiride (2mg) for patients requiring stronger glycemic control. It helps in the proper utilisation of insulin, thereby lowering blood sugar levels. Take it with food to avoid stomach upset. Overdose may lead to low blood sugar (hypoglycemia).",
-        "image": "ecoglim-mp2.jpg",
+        "image": "Ecoglim MP2.jpg",
         "features": "Triple-action antidiabetic with higher Glimepiride dose (2mg) — for patients needing stronger insulin stimulation and glycemic control",
         "composition": "Glimepiride 2mg + Metformin 500mg + Pioglitazone 15mg",
         "category": "Diabetes",
@@ -222,7 +222,7 @@ products_data = {
     "nactaid": {
         "name": "Nactaid 500mg/150mg Tablet",
         "description": "Nactaid 500mg/150mg Tablet is a combination medicine used in the treatment of chronic kidney disease. It protects the kidneys from damage and reduces the risk of kidney failure. It can be taken with or without food in a dose and duration as advised by the doctor. Keep taking this medicine for as long as your doctor recommends — stopping early may worsen your condition.",
-        "image": "nactaid.jpg",
+        "image": "p2.jpg",
         "features": "Dual antioxidant combination — protects kidneys from free radical damage and slows progression of chronic kidney disease",
         "composition": "Taurine 500mg + Acetylcysteine 150mg",
         "category": "Nephrology",
@@ -286,7 +286,7 @@ products_data = {
     "rabishir-dsr": {
         "name": "Rabishir D 30mg/20mg Capsule SR",
         "description": "Rabishir D 30mg/20mg Capsule SR is a combination medicine used to treat gastroesophageal reflux disease (acid reflux). It works by relieving symptoms of acidity such as heartburn, stomach pain, or irritation. It also neutralizes the acid and promotes easy passage of gas to reduce stomach discomfort. Take it on an empty stomach in the dose and duration advised by your doctor. Continue taking it for as long as prescribed — stopping early may cause symptoms to return or worsen.",
-        "image": "rabishir-dsr.jpg",
+        "image": "Rabishir-DSR.jpg",
         "features": "Dual-action GI relief — reduces stomach acid (Rabeprazole) and improves gastric motility (Domperidone SR)",
         "composition": "Domperidone 30mg + Rabeprazole 20mg",
         "category": "Gastrointestinal",

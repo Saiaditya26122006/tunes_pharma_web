@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   {% include 'partials/seo_head.html' %}
   <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
 
   <!-- CDN Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
@@ -62,12 +62,10 @@
       overflow: hidden;
       cursor: pointer;
       background: #0d1e30;
-      transition: transform .4s cubic-bezier(.22,1,.36,1), box-shadow .4s ease;
-      box-shadow: 0 4px 24px rgba(0,0,0,.35);
+      transition: transform .4s cubic-bezier(.22,1,.36,1);
     }
     .prod-card:hover {
       transform: translateY(-8px);
-      box-shadow: 0 20px 48px rgba(0,0,0,.5);
     }
     /* Image */
     .prod-card-img {
@@ -81,12 +79,7 @@
     /* Full-height gradient overlay */
     .prod-card-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(
-        to bottom,
-        transparent 30%,
-        rgba(5,15,30,.55) 55%,
-        rgba(5,15,30,.92) 100%
-      );
+      background: transparent;
       pointer-events: none;
     }
 
@@ -107,16 +100,32 @@
 
     /* Bottom content */
     .prod-card-body {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      padding: 20px 22px 22px;
+      position: absolute; bottom: 0; left: 0; right: auto;
+      padding: 4px 14px 0;
+      text-align: left;
+      max-width: 85%;
     }
     .prod-card-body h3 {
-      color: #fff; font-size: 1.7rem; font-weight: 800;
-      margin: 0; line-height: 1.15;
-      letter-spacing: -0.01em;
+      font-family: 'Baloo 2', 'Poppins', sans-serif;
+      color: #1E342A; font-size: 1.3rem; font-weight: 800;
+      margin: 0; line-height: 1.1;
+      letter-spacing: -0.045em;
+      text-align: left;
     }
-    .prod-card-body h3 .brand-red  { color: #FF4D6D; }  /* screen-friendly crimson */
-    .prod-card-body h3 .brand-navy { color: #5FA8FF; }  /* screen-friendly sky-navy */
+    .prod-card-body h3 .brand-red,
+    .prod-card-body h3 .brand-navy { color: inherit; }
+    /* Per-card premium dark palette */
+    .prod-card-body h3.brand-ecoglim  { color: #1E342A; }  /* deep forest green */
+    .prod-card-body h3.brand-nactaid  { color: #2E1B4E; }  /* deep royal purple */
+    .prod-card-body h3.brand-resgaba  { color: #5C2A10; }  /* deep sienna brown */
+    .prod-card-body h3.brand-rabishir { color: #0F3D3A; }  /* deep petrol teal */
+    .prod-card-body h3 .ecoglim-tm {
+      font-size: .35em;
+      vertical-align: super;
+      font-weight: 700;
+      margin-left: 1px;
+      letter-spacing: 0;
+    }
 
     /* Hover: reveal description underneath the title */
     .prod-card-body p {
@@ -140,14 +149,9 @@
       transform: translateY(0);
       margin-top: 10px;
     }
-    /* On hover, darken the overlay bottom slightly for description legibility */
+    /* On hover, keep overlay transparent */
     .prod-card:hover .prod-card-overlay {
-      background: linear-gradient(
-        to bottom,
-        transparent 20%,
-        rgba(5,15,30,.72) 50%,
-        rgba(5,15,30,.96) 100%
-      );
+      background: transparent;
     }
     @media (prefers-reduced-motion: reduce) {
       .prod-card-body p { transition: none; }
@@ -373,7 +377,7 @@
         <div class="prod-card-overlay"></div>
         <span class="prod-card-tag diabetes">Diabetes Management</span>
         <div class="prod-card-body">
-          <h3><span class="brand-red">ECOGLIM</span> <span class="brand-navy">series</span></h3>
+          <h3 class="brand-ecoglim"><span class="brand-red">Ecoglim<span class="ecoglim-tm">TM</span></span> <span class="brand-navy">series</span></h3>
           <p>Advanced diabetes management with multi-vitamin complex for enhanced glycemic control.</p>
         </div>
       </div>
@@ -384,7 +388,7 @@
         <div class="prod-card-overlay"></div>
         <span class="prod-card-tag antioxidant">Antioxidant Support</span>
         <div class="prod-card-body">
-          <h3><span class="brand-red">NACT</span><span class="brand-navy">AID</span></h3>
+          <h3 class="brand-nactaid"><span class="brand-red">NACT</span><span class="brand-navy">aid</span></h3>
           <p>N-Acetylcysteine + Taurine combination for antioxidant and metabolic support.</p>
         </div>
       </div>
@@ -395,7 +399,7 @@
         <div class="prod-card-overlay"></div>
         <span class="prod-card-tag neuro">Neuropathic Pain</span>
         <div class="prod-card-body">
-          <h3><span class="brand-red">RESGABA</span><span class="brand-navy">-NT</span></h3>
+          <h3 class="brand-resgaba"><span class="brand-red">Resgaba</span><span class="brand-navy">-NT</span></h3>
           <p>Precision formulations for neuropathic pain with proven clinical efficacy and safety.</p>
         </div>
       </div>
@@ -406,7 +410,7 @@
         <div class="prod-card-overlay"></div>
         <span class="prod-card-tag gastro">Gastrointestinal</span>
         <div class="prod-card-body">
-          <h3><span class="brand-red">RABISHIR</span><span class="brand-navy">-DSR</span></h3>
+          <h3 class="brand-rabishir"><span class="brand-red">Rabishir</span><span class="brand-navy">-DSR</span></h3>
           <p>Dual-action GI therapy combining acid suppression with enhanced gastric motility.</p>
         </div>
       </div>
