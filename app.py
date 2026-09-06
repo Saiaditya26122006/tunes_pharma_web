@@ -87,7 +87,7 @@ def inject_base_url():
 translations = {
     'en': {
         'home': 'Home',
-        'about': 'About',
+        'about': 'About Us',
         'products': 'Products',
         'services': 'Services',
         'research': 'Research',
