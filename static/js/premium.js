@@ -215,14 +215,9 @@ function initMobileMenu() {
 
   // Action buttons
   const contactHref = (actions.querySelector('.p-contact-btn') || {}).href || '/contact';
-  const doctorHref  = (actions.querySelector('.p-doctor-btn') || {}).href  || '/doctor-portal';
   navHTML += `
     <div class="p-mobile-divider"></div>
     <div class="p-mobile-actions">
-      <a href="${doctorHref}" class="p-doctor-btn-full">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2z"/><path d="M2 20c0-4 4-7 10-7s10 3 10 7"/><path d="M17 13v4m-2-2h4"/></svg>
-        Doctor Portal
-      </a>
       <a href="${contactHref}" class="p-contact-btn">Contact Us</a>
     </div>`;
 

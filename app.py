@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import tempfile
 import uuid as uuid_lib
+from datetime import datetime, timezone
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -13,6 +14,11 @@ try:
     from supabase_client import supabase as sb
 except Exception:
     sb = None
+
+try:
+    import whatsapp_service as wa
+except Exception:
+    wa = None
 
 BASE_URL = os.environ.get("BASE_URL", "https://tunespharma.org")
 
@@ -41,7 +47,7 @@ def send_email_notification(doctor_email, doctor_name, paper_title, paper_descri
         html = f"""
         <div style="font-family:'Poppins',Arial,sans-serif;max-width:580px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;border:1px solid #e8ecf0">
           <div style="background:linear-gradient(135deg,#0a1628,#1e3a52);padding:32px 36px;text-align:center">
-            <p style="color:rgba(255,255,255,.5);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 8px">Tunes Pharma — Doctor Portal</p>
+            <p style="color:rgba(255,255,255,.5);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 8px">Tunes Pharma</p>
             <h1 style="color:#fff;font-size:22px;margin:0;font-weight:700">New Resource Published</h1>
           </div>
           <div style="padding:36px">
@@ -55,8 +61,7 @@ def send_email_notification(doctor_email, doctor_name, paper_title, paper_descri
               <a href="{paper_url}" style="display:inline-block;background:#1e6ff1;color:#fff;padding:13px 32px;border-radius:50px;font-size:14px;font-weight:600;text-decoration:none">View Resource →</a>
             </div>
             <p style="color:#94a3b8;font-size:12px;text-align:center;margin:0">
-              Log in anytime at <a href="https://tunespharma.in/doctor-portal" style="color:#1e6ff1">tunespharma.in/doctor-portal</a><br>
-              to access your full research library and AI assistant.
+              Visit <a href="https://tunespharma.in" style="color:#1e6ff1">tunespharma.in</a> for more resources.
             </p>
           </div>
           <div style="background:#f8fafc;padding:16px 36px;border-top:1px solid #e8ecf0;text-align:center">
@@ -535,13 +540,6 @@ def stockist_locator():
                          t=translations.get(lang, translations['en']))
 
 # ── Auth decorators ─────────────────────────────────────────
-def doctor_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if 'doctor_id' not in session:
-            return redirect('/doctor-portal')
-        return f(*args, **kwargs)
-    return decorated
 
 def admin_required(f):
     @wraps(f)
@@ -553,120 +551,16 @@ def admin_required(f):
 
 ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD', 'tunesadmin2024')
 
-# ── Doctor Portal ────────────────────────────────────────────
-@app.route('/doctor-portal', methods=['GET', 'POST'])
-def doctor_portal():
-    lang = session.get('language', 'en')
-    if 'doctor_id' in session:
-        return redirect('/doctor-dashboard')
-    error = None
-    if request.method == 'POST':
-        username = request.form.get('username', '').strip()
-        password = request.form.get('password', '')
-        if sb:
-            result = sb.table('doctors').select('*').eq('username', username).eq('is_active', True).execute()
-            if result.data and check_password_hash(result.data[0]['password_hash'], password):
-                doc = result.data[0]
-                session['doctor_id'] = doc['id']
-                session['doctor_name'] = doc['name']
-                return redirect('/doctor-dashboard')
-            error = 'Invalid username or password.'
-        else:
-            if username and password:
-                session['doctor_id'] = 'demo'
-                session['doctor_name'] = username.title()
-                return redirect('/doctor-dashboard')
-            error = 'Please enter your credentials.'
-    return render_template('doctor_portal.html', error=error, lang=lang, t=translations.get(lang, translations['en']))
-
-@app.route('/doctor-logout')
-def doctor_logout():
-    session.pop('doctor_id', None)
-    session.pop('doctor_name', None)
-    return redirect('/doctor-portal')
-
-@app.route('/doctor-dashboard')
-@doctor_required
-def doctor_dashboard():
-    lang = session.get('language', 'en')
-    papers, notifications, notif_count = [], [], 0
-    doctor_id = session.get('doctor_id')
-    if sb and doctor_id != 'demo':
-        papers = (sb.table('papers').select('*').order('created_at', desc=True).execute()).data or []
-        n = (sb.table('notifications')
-               .select('*, papers(title, therapy_area)')
-               .eq('doctor_id', doctor_id)
-               .eq('is_read', False)
-               .order('created_at', desc=True)
-               .limit(10)
-               .execute()).data or []
-        notifications = n
-        notif_count = len(n)
-    return render_template('doctor_dashboard.html',
-                           doctor_name=session.get('doctor_name', 'Doctor'),
-                           papers=papers,
-                           notifications=notifications,
-                           notif_count=notif_count,
-                           products=list(products_data.values()),
-                           lang=lang)
-
-@app.route('/doctor/notifications/read', methods=['POST'])
-@doctor_required
-def mark_notifications_read():
-    doctor_id = session.get('doctor_id')
-    if sb and doctor_id != 'demo':
-        sb.table('notifications').update({'is_read': True}).eq('doctor_id', doctor_id).execute()
-    return jsonify({'ok': True})
-
-@app.route('/doctor/ai-chat', methods=['POST'])
-@doctor_required
-def doctor_ai_chat():
-    data = request.get_json() or {}
-    message = data.get('message', '').strip()
-    history = data.get('history', [])
-    if not message:
-        return jsonify({'ok': False, 'reply': 'Please type a message.'})
-
-    anthropic_key = os.getenv('ANTHROPIC_API_KEY')
-    if anthropic_key:
-        try:
-            import anthropic
-            ai = anthropic.Anthropic(api_key=anthropic_key)
-            messages = history[-10:] + [{"role": "user", "content": message}]
-            resp = ai.messages.create(
-                model="claude-opus-4-7",
-                max_tokens=1024,
-                system=(
-                    "You are a medical AI assistant for Tunes Pharma. "
-                    "You help registered doctors understand research papers, clinical guidelines, drug interactions, "
-                    "dosage information, and pharmaceutical data. Be professional, concise and evidence-based. "
-                    "Therapy areas: Diabetology, Neuropathy, Gastroenterology, General Medicine."
-                ),
-                messages=messages
-            )
-            return jsonify({'ok': True, 'reply': resp.content[0].text})
-        except Exception as e:
-            pass
-
-    return jsonify({
-        'ok': True,
-        'placeholder': True,
-        'reply': (
-            "The AI assistant is being configured and will be live very soon. "
-            "For clinical queries, please contact your Tunes Pharma medical representative."
-        )
-    })
-
 # ── Admin Panel ──────────────────────────────────────────────
 @app.route('/admin', methods=['GET', 'POST'])
 def admin_login():
     if session.get('is_admin'):
-        return redirect('/admin/papers')
+        return redirect('/admin/dashboard')
     error = None
     if request.method == 'POST':
         if request.form.get('password', '') == ADMIN_PASSWORD:
             session['is_admin'] = True
-            return redirect('/admin/papers')
+            return redirect('/admin/dashboard')
         error = 'Incorrect password.'
     return render_template('admin_login.html', error=error)
 
@@ -675,13 +569,71 @@ def admin_logout():
     session.pop('is_admin', None)
     return redirect('/admin')
 
+
+# ── Admin Dashboard ───────────────────────────────────────────
+
+@app.route('/admin/dashboard')
+@admin_required
+def admin_dashboard():
+    stats = {
+        'total_articles': 0, 'published_articles': 0, 'draft_articles': 0,
+        'archived_articles': 0, 'total_doctors': 0, 'active_doctors': 0,
+        'inactive_doctors': 0, 'total_notifications_sent': 0,
+        'recent_articles': [], 'recent_notifications': [],
+    }
+    if sb:
+        try:
+            all_papers = (sb.table('papers').select('*').order('created_at', desc=True).execute()).data or []
+            stats['total_articles'] = len(all_papers)
+            stats['published_articles'] = len([p for p in all_papers if p.get('status') == 'published'])
+            stats['draft_articles'] = len([p for p in all_papers if p.get('status') == 'draft'])
+            stats['archived_articles'] = len([p for p in all_papers if p.get('status') == 'archived'])
+            stats['recent_articles'] = all_papers[:5]
+
+            all_doctors = (sb.table('doctors').select('*').execute()).data or []
+            stats['total_doctors'] = len(all_doctors)
+            stats['active_doctors'] = len([d for d in all_doctors if d.get('is_active')])
+            stats['inactive_doctors'] = stats['total_doctors'] - stats['active_doctors']
+
+            all_notifs = (sb.table('whatsapp_messages').select('*').order('created_at', desc=True).limit(10).execute()).data or []
+            stats['recent_notifications'] = all_notifs
+            stats['total_notifications_sent'] = len((sb.table('whatsapp_messages').select('id').execute()).data or [])
+        except Exception as e:
+            print(f"[Dashboard] Error loading stats: {e}")
+    return render_template('admin_dashboard.html', stats=stats)
+
+
+# ── Public Academic Insights (Published Articles) ──────────────
+
+@app.route('/academic-insights')
+def academic_insights():
+    articles = []
+    if sb:
+        try:
+            articles = (sb.table('papers')
+                .select('*')
+                .eq('status', 'published')
+                .order('published_at', desc=True)
+                .execute()).data or []
+        except Exception:
+            pass
+    lang = session.get('language', 'en')
+    return render_template('academic_insights.html', articles=articles, lang=lang, t=translations.get(lang, translations['en']))
+
+
+# ── Enhanced Paper Management ──────────────────────────────────
+
 @app.route('/admin/papers', methods=['GET'])
 @admin_required
 def admin_papers():
     papers = []
+    status_filter = request.args.get('status', '')
     if sb:
-        papers = (sb.table('papers').select('*').order('created_at', desc=True).execute()).data or []
-    return render_template('admin_papers.html', papers=papers)
+        q = sb.table('papers').select('*').order('created_at', desc=True)
+        if status_filter in ('draft', 'published', 'archived'):
+            q = q.eq('status', status_filter)
+        papers = (q.execute()).data or []
+    return render_template('admin_papers.html', papers=papers, current_filter=status_filter)
 
 @app.route('/admin/papers/upload', methods=['POST'])
 @admin_required
@@ -690,9 +642,14 @@ def admin_upload_paper():
     description = request.form.get('description', '').strip()
     therapy     = request.form.get('therapy_area', 'all')
     ctype       = request.form.get('content_type', 'link')
+    status      = request.form.get('status', 'draft')
+    author      = request.form.get('author', '').strip()
+    category    = request.form.get('category', 'General').strip()
     link_url    = request.form.get('link_url', '').strip()
     file        = request.files.get('file')
+    thumbnail   = request.files.get('thumbnail')
     file_url    = link_url
+    thumbnail_url = None
 
     if file and file.filename and sb:
         ext   = os.path.splitext(file.filename)[1].lower()
@@ -708,23 +665,47 @@ def admin_upload_paper():
         except Exception:
             pass
 
+    if thumbnail and thumbnail.filename and sb:
+        ext = os.path.splitext(thumbnail.filename)[1].lower() or '.jpg'
+        tname = f"thumb_{uuid_lib.uuid4()}{ext}"
+        tmp = tempfile.mktemp(suffix=ext)
+        thumbnail.save(tmp)
+        with open(tmp, 'rb') as f:
+            sb.storage.from_('papers').upload(tname, f, {'content-type': thumbnail.content_type})
+        thumbnail_url = sb.storage.from_('papers').get_public_url(tname)
+        try:
+            os.remove(tmp)
+        except Exception:
+            pass
+
     if title and file_url and sb:
-        result = sb.table('papers').insert({
+        insert_data = {
             'title': title, 'description': description,
             'content_type': ctype, 'file_url': file_url,
-            'therapy_area': therapy,
-        }).execute()
+            'therapy_area': therapy, 'status': status,
+            'author': author, 'category': category,
+        }
+        if thumbnail_url:
+            insert_data['thumbnail_url'] = thumbnail_url
+        if status == 'published':
+            insert_data['published_at'] = datetime.now(timezone.utc).isoformat()
+
+        result = sb.table('papers').insert(insert_data).execute()
         if result.data:
-            paper_id = result.data[0]['id']
-            # Fetch all active doctors with their emails
-            doctors = (sb.table('doctors').select('id, name, email')
+            paper = result.data[0]
+            paper_id = paper['id']
+
+            # Fetch all active doctors
+            doctors = (sb.table('doctors').select('id, name, email, whatsapp_number, whatsapp_consent')
                          .eq('is_active', True).execute()).data or []
-            if doctors:
+
+            if status == 'published' and doctors:
                 # Create in-app notification for every doctor
                 sb.table('notifications').insert(
                     [{'doctor_id': d['id'], 'paper_id': paper_id} for d in doctors]
                 ).execute()
-                # Send email to every doctor who has an email address
+
+                # Send email notifications
                 for doc in doctors:
                     if doc.get('email'):
                         send_email_notification(
@@ -735,7 +716,19 @@ def admin_upload_paper():
                             paper_url      = file_url,
                             therapy_area   = therapy
                         )
-    return redirect('/admin/papers')
+
+                # Send WhatsApp notifications to eligible doctors
+                if wa and wa._is_configured():
+                    eligible = [d for d in doctors if d.get('whatsapp_consent') and d.get('whatsapp_number')]
+                    if eligible:
+                        wa_result = wa.broadcast_article_notification(eligible, paper)
+                        _log_whatsapp_campaign(
+                            sb, message_type='article_notification',
+                            paper_id=paper_id, message_body=f"Article: {title}",
+                            results=wa_result
+                        )
+
+    return redirect('/admin/dashboard')
 
 @app.route('/admin/papers/<paper_id>', methods=['GET'])
 @admin_required
@@ -752,11 +745,18 @@ def admin_edit_paper(paper_id):
     title       = request.form.get('title', '').strip()
     description = request.form.get('description', '').strip()
     therapy     = request.form.get('therapy_area', 'all')
+    status      = request.form.get('status', 'draft')
+    author      = request.form.get('author', '').strip()
+    category    = request.form.get('category', 'General').strip()
     link_url    = request.form.get('link_url', '').strip()
     file        = request.files.get('file')
+    thumbnail   = request.files.get('thumbnail')
     if not (title and sb):
         return redirect('/admin/papers')
-    update_data = {'title': title, 'description': description, 'therapy_area': therapy}
+    update_data = {'title': title, 'description': description, 'therapy_area': therapy,
+                   'status': status, 'author': author, 'category': category}
+    if status == 'published':
+        update_data['published_at'] = datetime.now(timezone.utc).isoformat()
     if file and file.filename:
         ext   = os.path.splitext(file.filename)[1].lower()
         fname = f"{uuid_lib.uuid4()}{ext}"
@@ -773,6 +773,18 @@ def admin_edit_paper(paper_id):
     elif link_url:
         update_data['file_url']     = link_url
         update_data['content_type'] = 'link'
+    if thumbnail and thumbnail.filename:
+        ext = os.path.splitext(thumbnail.filename)[1].lower() or '.jpg'
+        tname = f"thumb_{uuid_lib.uuid4()}{ext}"
+        tmp = tempfile.mktemp(suffix=ext)
+        thumbnail.save(tmp)
+        with open(tmp, 'rb') as f:
+            sb.storage.from_('papers').upload(tname, f, {'content-type': thumbnail.content_type})
+        update_data['thumbnail_url'] = sb.storage.from_('papers').get_public_url(tname)
+        try:
+            os.remove(tmp)
+        except Exception:
+            pass
     sb.table('papers').update(update_data).eq('id', paper_id).execute()
     return redirect('/admin/papers')
 
@@ -782,6 +794,220 @@ def admin_delete_paper(paper_id):
     if sb:
         sb.table('papers').delete().eq('id', paper_id).execute()
     return redirect('/admin/papers')
+
+
+@app.route('/admin/papers/publish/<paper_id>', methods=['POST'])
+@admin_required
+def admin_publish_paper(paper_id):
+    """Publish a draft article, send notifications to all eligible doctors."""
+    if not sb:
+        return redirect('/admin/papers')
+    result = sb.table('papers').select('*').eq('id', paper_id).execute()
+    if not result.data:
+        return redirect('/admin/papers')
+    paper = result.data[0]
+    if paper.get('status') == 'published':
+        return redirect('/admin/papers')
+
+    # Update status
+    sb.table('papers').update({
+        'status': 'published',
+        'published_at': datetime.now(timezone.utc).isoformat()
+    }).eq('id', paper_id).execute()
+
+    # Fetch eligible doctors
+    doctors = (sb.table('doctors').select('id, name, email, whatsapp_number, whatsapp_consent')
+                 .eq('is_active', True).execute()).data or []
+    if doctors:
+        # In-app notifications
+        sb.table('notifications').insert(
+            [{'doctor_id': d['id'], 'paper_id': paper_id} for d in doctors]
+        ).execute()
+
+        # Email notifications
+        for doc in doctors:
+            if doc.get('email'):
+                send_email_notification(
+                    doctor_email=doc['email'], doctor_name=doc['name'],
+                    paper_title=paper['title'], paper_description=paper.get('description', ''),
+                    paper_url=paper.get('file_url', ''), therapy_area=paper.get('therapy_area', 'all')
+                )
+
+        # WhatsApp notifications
+        if wa and wa._is_configured():
+            eligible = [d for d in doctors if d.get('whatsapp_consent') and d.get('whatsapp_number')]
+            if eligible:
+                wa_result = wa.broadcast_article_notification(eligible, paper)
+                _log_whatsapp_campaign(sb, 'article_notification', paper_id, f"Article: {paper['title']}", wa_result)
+
+    return redirect('/admin/papers')
+
+
+@app.route('/admin/papers/archive/<paper_id>', methods=['POST'])
+@admin_required
+def admin_archive_paper(paper_id):
+    if sb:
+        sb.table('papers').update({'status': 'archived'}).eq('id', paper_id).execute()
+    return redirect('/admin/papers')
+
+
+# ── Doctor Management (Enhanced) ──────────────────────────────
+
+@app.route('/admin/doctors/edit/<doctor_id>', methods=['GET'])
+@admin_required
+def admin_edit_doctor_form(doctor_id):
+    doctor = None
+    if sb:
+        result = sb.table('doctors').select('*').eq('id', doctor_id).execute()
+        if result.data:
+            doctor = result.data[0]
+    if not doctor:
+        return redirect('/admin/doctors')
+    return render_template('admin_doctor_edit.html', doctor=doctor)
+
+
+@app.route('/admin/doctors/edit/<doctor_id>', methods=['POST'])
+@admin_required
+def admin_edit_doctor(doctor_id):
+    name             = request.form.get('name', '').strip()
+    phone            = request.form.get('phone', '').strip()
+    whatsapp_number  = request.form.get('whatsapp_number', '').strip()
+    email            = request.form.get('email', '').strip()
+    hospital         = request.form.get('hospital', '').strip()
+    specialty        = request.form.get('specialty', '').strip()
+    whatsapp_consent = request.form.get('whatsapp_consent') == 'on'
+    is_active        = request.form.get('is_active') == 'on'
+    if name and sb:
+        sb.table('doctors').update({
+            'name': name, 'phone': phone, 'whatsapp_number': whatsapp_number,
+            'email': email, 'hospital': hospital, 'specialty': specialty,
+            'whatsapp_consent': whatsapp_consent, 'is_active': is_active,
+        }).eq('id', doctor_id).execute()
+    return redirect('/admin/doctors')
+
+
+@app.route('/admin/doctors/whatsapp-toggle/<doctor_id>', methods=['POST'])
+@admin_required
+def admin_toggle_whatsapp(doctor_id):
+    if sb:
+        doc = (sb.table('doctors').select('whatsapp_consent').eq('id', doctor_id).execute()).data
+        if doc:
+            sb.table('doctors').update({'whatsapp_consent': not doc[0]['whatsapp_consent']}).eq('id', doctor_id).execute()
+    return redirect('/admin/doctors')
+
+
+# ── WhatsApp Messaging ─────────────────────────────────────────
+
+@app.route('/admin/messages', methods=['GET'])
+@admin_required
+def admin_messages():
+    doctors = []
+    specialties = []
+    if sb:
+        doctors = (sb.table('doctors').select('*').eq('is_active', True).order('name').execute()).data or []
+        all_docs = (sb.table('doctors').select('specialty').execute()).data or []
+        specialties = sorted(list(set(d.get('specialty', '') for d in all_docs if d.get('specialty'))))
+    return render_template('admin_messages.html', doctors=doctors, specialties=specialties)
+
+
+@app.route('/admin/messages/send', methods=['POST'])
+@admin_required
+def admin_send_message():
+    message_text = request.form.get('message_text', '').strip()
+    target       = request.form.get('target', 'all')  # 'all', 'selected', 'specialty'
+    specialty    = request.form.get('specialty', '').strip()
+    doctor_ids   = request.form.getlist('doctor_ids')
+
+    if not message_text or not sb:
+        return redirect('/admin/messages')
+
+    q = sb.table('doctors').select('id, name, whatsapp_number').eq('is_active', True)
+    if target == 'selected' and doctor_ids:
+        q = q.in_('id', doctor_ids)
+    elif target == 'specialty' and specialty:
+        q = q.eq('specialty', specialty)
+    doctors = q.execute().data or []
+
+    wa_result = {'total': 0, 'success': 0, 'failed': 0, 'results': []}
+    if wa and wa._is_configured():
+        eligible = [d for d in doctors if d.get('whatsapp_number')]
+        if eligible:
+            wa_result = wa.broadcast_manual_message(eligible, message_text)
+            _log_whatsapp_campaign(sb, 'manual_message', None, message_text, wa_result)
+
+    return render_template('admin_message_result.html',
+                           message_text=message_text, result=wa_result)
+
+
+@app.route('/admin/notifications', methods=['GET'])
+@admin_required
+def admin_notification_history():
+    messages = []
+    if sb:
+        messages = (sb.table('whatsapp_messages')
+            .select('*')
+            .order('created_at', desc=True)
+            .limit(50)
+            .execute()).data or []
+    return render_template('admin_notifications.html', messages=messages)
+
+
+@app.route('/admin/notifications/<msg_id>', methods=['GET'])
+@admin_required
+def admin_notification_detail(msg_id):
+    message = None
+    delivery_logs = []
+    if sb:
+        result = sb.table('whatsapp_messages').select('*').eq('id', msg_id).execute()
+        if result.data:
+            message = result.data[0]
+        delivery_logs = (sb.table('whatsapp_delivery_log')
+            .select('*')
+            .eq('message_id', msg_id)
+            .order('sent_at', desc=True)
+            .execute()).data or []
+    return render_template('admin_notification_detail.html', message=message, delivery_logs=delivery_logs)
+
+
+# ── Helper: Log WhatsApp campaign ──────────────────────────────
+
+def _log_whatsapp_campaign(sb_client, message_type, paper_id, message_body, wa_result):
+    """Log a WhatsApp campaign and its delivery details."""
+    try:
+        error_details = [r for r in wa_result.get('results', []) if r.get('error')]
+        status = 'sent'
+        if wa_result['failed'] == wa_result['total']:
+            status = 'failed'
+        elif wa_result['failed'] > 0:
+            status = 'partial'
+
+        msg_result = sb_client.table('whatsapp_messages').insert({
+            'message_type': message_type,
+            'paper_id': paper_id,
+            'message_body': message_body[:2000],
+            'recipient_count': wa_result['total'],
+            'success_count': wa_result['success'],
+            'fail_count': wa_result['failed'],
+            'status': status,
+            'error_details': error_details[:50],
+            'sent_by': 'system',
+        }).execute()
+
+        if msg_result.data:
+            msg_id = msg_result.data[0]['id']
+            delivery_rows = []
+            for r in wa_result.get('results', []):
+                delivery_rows.append({
+                    'message_id': msg_id,
+                    'doctor_id': r.get('doctor_id'),
+                    'whatsapp_number': r.get('whatsapp_number', ''),
+                    'status': r.get('status', 'failed'),
+                    'error_message': r.get('error'),
+                })
+            if delivery_rows:
+                sb_client.table('whatsapp_delivery_log').insert(delivery_rows).execute()
+    except Exception as e:
+        print(f"[WhatsApp Log] Failed to log campaign: {e}")
 
 @app.route('/admin/seed-test', methods=['POST'])
 @admin_required
@@ -820,6 +1046,9 @@ def admin_seed_test():
                 if notifs:
                     sb.table('notifications').insert(notifs).execute()
     return redirect('/admin/doctors')
+
+
+# ── Admin Panel ──────────────────────────────────────────────
 
 @app.route('/admin/doctors', methods=['GET'])
 @admin_required
@@ -977,7 +1206,6 @@ CONTENT_GEN_SYSTEM = (
 # ── Phase 1: Dose Calculator ─────────────────────────────────
 
 @app.route('/doctor/dose-calculator', methods=['POST'])
-@doctor_required
 def dose_calculator():
     data     = request.get_json() or {}
     medicine = data.get('medicine', '').strip()
@@ -1009,7 +1237,6 @@ def dose_calculator():
 # ── Phase 1: Drug Interaction Checker ────────────────────────
 
 @app.route('/doctor/drug-interaction', methods=['POST'])
-@doctor_required
 def drug_interaction():
     data  = request.get_json() or {}
     drugs = [d.strip() for d in data.get('drugs', []) if d.strip()]
@@ -1125,9 +1352,6 @@ def robots_txt():
         "User-agent: *\n"
         "Allow: /\n"
         "Disallow: /admin\n"
-        "Disallow: /doctor-dashboard\n"
-        "Disallow: /doctor-portal\n"
-        "Disallow: /doctor/\n"
         "Disallow: /set-language/\n"
         "\n"
         f"Sitemap: {BASE_URL}/sitemap.xml\n"

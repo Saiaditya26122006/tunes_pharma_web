@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin Dashboard | Tunes Pharma</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { background: #f5f7fb; font-family: 'Poppins', sans-serif; }
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-sidebar {
+      width: 220px; background: var(--navy-900); flex-shrink: 0;
+      display: flex; flex-direction: column; padding: 28px 0;
+      position: sticky; top: 0; height: 100vh;
+    }
+    .admin-sidebar .brand { padding: 0 24px 28px; border-bottom: 1px solid rgba(255,255,255,.08); margin-bottom: 16px; }
+    .admin-sidebar .brand img { height: 36px; filter: brightness(0) invert(1); }
+    .admin-sidebar .brand p { color: rgba(255,255,255,.35); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; margin-top: 4px; }
+    .admin-nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 24px; color: rgba(255,255,255,.55); font-size: .85rem; font-weight: 500; transition: all .2s;
+    }
+    .admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,.07); color: white; }
+    .admin-nav a.active { border-right: 3px solid var(--blue-500); }
+    .admin-nav a span { font-size: 1rem; }
+    .admin-sidebar .logout-link { margin-top: auto; padding: 0 16px; }
+    .admin-sidebar .logout-link a {
+      display: block; text-align: center; padding: 10px;
+      border-radius: 8px; border: 1px solid rgba(220,38,38,.3);
+      color: rgba(220,38,38,.8); font-size: .82rem; font-weight: 600; transition: all .2s;
+    }
+    .admin-sidebar .logout-link a:hover { background: rgba(220,38,38,.1); color: #ef4444; }
+    .admin-main { flex: 1; padding: 40px; overflow-y: auto; }
+    .admin-page-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--navy-900); margin-bottom: 6px; }
+    .admin-page-sub { color: var(--gray-500); font-size: .88rem; margin-bottom: 32px; }
+
+    /* Stats grid */
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; margin-bottom: 36px; }
+    .stat-card {
+      background: white; border-radius: var(--radius-lg); padding: 24px;
+      border: 1px solid rgba(15,30,45,.07); box-shadow: var(--shadow-sm);
+      transition: all .2s;
+    }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .stat-card .stat-icon { font-size: 1.8rem; margin-bottom: 10px; }
+    .stat-card .stat-value { font-size: 1.8rem; font-weight: 700; color: var(--navy-900); font-family: 'Playfair Display', serif; }
+    .stat-card .stat-label { font-size: .78rem; color: var(--gray-400); margin-top: 4px; text-transform: uppercase; letter-spacing: .05em; }
+    .stat-card.accent-blue { border-left: 4px solid var(--blue-500); }
+    .stat-card.accent-green { border-left: 4px solid #10b981; }
+    .stat-card.accent-amber { border-left: 4px solid #f59e0b; }
+    .stat-card.accent-red { border-left: 4px solid #ef4444; }
+    .stat-card.accent-purple { border-left: 4px solid #8b5cf6; }
+
+    /* Sections */
+    .dash-section { margin-bottom: 36px; }
+    .dash-section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .dash-section-header h3 { font-size: 1rem; font-weight: 600; color: var(--navy-800); }
+    .dash-section-header a { font-size: .82rem; color: var(--blue-500); font-weight: 600; text-decoration: none; }
+    .dash-section-header a:hover { text-decoration: underline; }
+    .dash-card {
+      background: white; border-radius: var(--radius-lg);
+      border: 1px solid rgba(15,30,45,.07); box-shadow: var(--shadow-sm); overflow: hidden;
+    }
+    .dash-card-body { padding: 0; }
+
+    /* Table */
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      padding: 12px 20px; text-align: left; font-size: .72rem; font-weight: 700;
+      letter-spacing: .06em; text-transform: uppercase; color: var(--gray-400);
+      border-bottom: 1px solid rgba(15,30,45,.07); background: rgba(15,30,45,.02);
+    }
+    tbody td { padding: 12px 20px; font-size: .84rem; border-bottom: 1px solid rgba(15,30,45,.05); vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: rgba(30,111,241,.02); }
+
+    .badge {
+      display: inline-block; padding: 3px 10px; border-radius: var(--radius-full);
+      font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+    }
+    .badge.published { background: rgba(16,185,129,.1); color: #059669; }
+    .badge.draft { background: rgba(245,158,11,.1); color: #d97706; }
+    .badge.archived { background: rgba(15,30,45,.08); color: var(--navy-600); }
+    .badge.sent { background: rgba(16,185,129,.1); color: #059669; }
+    .badge.partial { background: rgba(245,158,11,.1); color: #d97706; }
+    .badge.failed { background: rgba(220,38,38,.1); color: #dc2626; }
+
+    .empty-msg { text-align: center; padding: 40px; color: var(--gray-400); font-size: .88rem; }
+
+    /* Quick actions */
+    .quick-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 36px; }
+    .quick-action-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: var(--radius-full);
+      background: white; border: 1.5px solid rgba(15,30,45,.1);
+      color: var(--navy-800); font-size: .85rem; font-weight: 600;
+      text-decoration: none; transition: all .2s; cursor: pointer;
+    }
+    .quick-action-btn:hover { border-color: var(--blue-500); color: var(--blue-500); transform: translateY(-1px); }
+    .quick-action-btn.primary { background: var(--blue-500); border-color: var(--blue-500); color: white; }
+    .quick-action-btn.primary:hover { background: var(--navy-800); border-color: var(--navy-800); }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="brand">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma">
+      <p>Admin Panel</p>
+    </div>
+    <nav class="admin-nav">
+      <a href="/admin/dashboard" class="active"><span>📊</span> Dashboard</a>
+      <a href="/admin/papers"><span>📄</span> Articles</a>
+      <a href="/admin/doctors"><span>👨‍⚕️</span> Doctors</a>
+      <a href="/admin/messages"><span>💬</span> Messages</a>
+      <a href="/admin/notifications"><span>📋</span> History</a>
+      <a href="/admin/content"><span>✍️</span> Content</a>
+      <a href="/" target="_blank"><span>🌐</span> View Website</a>
+    </nav>
+    <div class="logout-link"><a href="/admin-logout">Logout</a></div>
+  </aside>
+
+  <!-- Main -->
+  <main class="admin-main">
+    <h1 class="admin-page-title">Dashboard</h1>
+    <p class="admin-page-sub">Overview of your academic insights and doctor communication system.</p>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <a href="/admin/papers" class="quick-action-btn primary">📄 Manage Articles</a>
+      <a href="/admin/doctors" class="quick-action-btn">👨‍⚕️ Manage Doctors</a>
+      <a href="/admin/messages" class="quick-action-btn">💬 Send Message</a>
+      <a href="/academic-insights" target="_blank" class="quick-action-btn">🌐 View Public Page</a>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card accent-blue">
+        <div class="stat-icon">📄</div>
+        <div class="stat-value">{{ stats.published_articles }}</div>
+        <div class="stat-label">Published Articles</div>
+      </div>
+      <div class="stat-card accent-amber">
+        <div class="stat-icon">📝</div>
+        <div class="stat-value">{{ stats.draft_articles }}</div>
+        <div class="stat-label">Draft Articles</div>
+      </div>
+      <div class="stat-card accent-red">
+        <div class="stat-icon">📦</div>
+        <div class="stat-value">{{ stats.archived_articles }}</div>
+        <div class="stat-label">Archived Articles</div>
+      </div>
+      <div class="stat-card accent-green">
+        <div class="stat-icon">👨‍⚕️</div>
+        <div class="stat-value">{{ stats.active_doctors }}</div>
+        <div class="stat-label">Active Doctors</div>
+      </div>
+      <div class="stat-card accent-purple">
+        <div class="stat-icon">⏸️</div>
+        <div class="stat-value">{{ stats.inactive_doctors }}</div>
+        <div class="stat-label">Inactive Doctors</div>
+      </div>
+      <div class="stat-card accent-blue">
+        <div class="stat-icon">📱</div>
+        <div class="stat-value">{{ stats.total_notifications_sent }}</div>
+        <div class="stat-label">Messages Sent</div>
+      </div>
+    </div>
+
+    <!-- Recent Articles -->
+    <div class="dash-section">
+      <div class="dash-section-header">
+        <h3>Recent Articles</h3>
+        <a href="/admin/papers">View All →</a>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-body">
+          <table>
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Category</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if stats.recent_articles %}
+                {% for a in stats.recent_articles %}
+                <tr>
+                  <td style="font-weight:500;color:var(--navy-800)">{{ a.title }}</td>
+                  <td><span class="badge {{ a.status or 'draft' }}">{{ a.status or 'draft' }}</span></td>
+                  <td style="color:var(--gray-500)">{{ a.category or a.therapy_area or '—' }}</td>
+                  <td style="color:var(--gray-400);white-space:nowrap">{{ a.created_at[:10] if a.created_at else '—' }}</td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr><td colspan="4" class="empty-msg">No articles yet. Upload your first article from the Articles section.</td></tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Notifications -->
+    <div class="dash-section">
+      <div class="dash-section-header">
+        <h3>Recent Notifications</h3>
+        <a href="/admin/notifications">View All →</a>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-body">
+          <table>
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Message</th>
+                <th>Recipients</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if stats.recent_notifications %}
+                {% for n in stats.recent_notifications %}
+                <tr>
+                  <td>
+                    <span class="badge {{ 'published' if n.message_type == 'article_notification' else 'draft' }}">
+                      {{ 'Article' if n.message_type == 'article_notification' else 'Manual' }}
+                    </span>
+                  </td>
+                  <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--gray-600)">{{ n.message_body[:60] }}{% if n.message_body|length > 60 %}…{% endif %}</td>
+                  <td style="color:var(--gray-500)">{{ n.success_count }}/{{ n.recipient_count }}</td>
+                  <td><span class="badge {{ n.status }}">{{ n.status }}</span></td>
+                  <td style="color:var(--gray-400);white-space:nowrap">{{ n.created_at[:16] if n.created_at else '—' }}</td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr><td colspan="5" class="empty-msg">No notifications sent yet.</td></tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>
