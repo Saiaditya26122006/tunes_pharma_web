@@ -1,0 +1,41 @@
+{
+  "expo": {
+    "name": "Tunes Pharma",
+    "slug": "tunes-pharma-doctor",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "tunespharma",
+    "userInterfaceStyle": "light",
+    "experiments": {
+      "typedRoutes": true
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store"
+    ],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.tunespharma.doctor"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0A2463",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "package": "com.tunespharma.doctor"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "66562fcb-8409-4f3a-ab1c-608836ca3c97"
+      }
+    }
+  }
+}
