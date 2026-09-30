@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin — Notification Detail | Tunes Pharma</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { background: #f5f7fb; font-family: 'Poppins', sans-serif; }
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-sidebar {
+      width: 220px; background: var(--navy-900); flex-shrink: 0;
+      display: flex; flex-direction: column; padding: 28px 0;
+      position: sticky; top: 0; height: 100vh;
+    }
+    .admin-sidebar .brand { padding: 0 24px 28px; border-bottom: 1px solid rgba(255,255,255,.08); margin-bottom: 16px; }
+    .admin-sidebar .brand img { height: 36px; filter: brightness(0) invert(1); }
+    .admin-sidebar .brand p { color: rgba(255,255,255,.35); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; margin-top: 4px; }
+    .admin-nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 24px; color: rgba(255,255,255,.55); font-size: .85rem; font-weight: 500; transition: all .2s;
+    }
+    .admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,.07); color: white; }
+    .admin-nav a.active { border-right: 3px solid var(--blue-500); }
+    .admin-nav a span { font-size: 1rem; }
+    .admin-sidebar .logout-link { margin-top: auto; padding: 0 16px; }
+    .admin-sidebar .logout-link a {
+      display: block; text-align: center; padding: 10px; border-radius: 8px;
+      border: 1px solid rgba(220,38,38,.3); color: rgba(220,38,38,.8);
+      font-size: .82rem; font-weight: 600; transition: all .2s;
+    }
+    .admin-sidebar .logout-link a:hover { background: rgba(220,38,38,.1); color: #ef4444; }
+    .admin-main { flex: 1; padding: 40px; overflow-y: auto; }
+    .admin-page-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--navy-900); margin-bottom: 6px; }
+    .admin-page-sub { color: var(--gray-500); font-size: .88rem; margin-bottom: 32px; }
+
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .85rem; font-weight: 600; color: var(--blue-500);
+      text-decoration: none; margin-bottom: 20px;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    .detail-card {
+      background: white; border-radius: var(--radius-lg); padding: 28px;
+      border: 1px solid rgba(15,30,45,.07); box-shadow: var(--shadow-sm); margin-bottom: 28px;
+    }
+    .detail-card h3 { font-size: 1rem; font-weight: 700; color: var(--navy-800); margin-bottom: 18px; }
+
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 18px; margin-bottom: 24px; }
+    .meta-item .label { font-size: .72rem; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
+    .meta-item .value { font-size: .92rem; font-weight: 500; color: var(--navy-800); }
+
+    .status-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 12px; border-radius: var(--radius-full);
+      font-size: .72rem; font-weight: 700;
+    }
+    .status-pill.sent    { background: rgba(16,185,129,.1); color: #059669; }
+    .status-pill.partial { background: rgba(251,191,36,.1); color: #d97706; }
+    .status-pill.failed  { background: rgba(239,68,68,.1);  color: #dc2626; }
+    .status-pill.queued  { background: rgba(30,111,241,.1); color: var(--blue-500); }
+    .status-pill.delivered { background: rgba(16,185,129,.1); color: #059669; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    .msg-body {
+      background: rgba(15,30,45,.03); border-radius: 12px; padding: 20px;
+      font-size: .88rem; color: var(--navy-700); line-height: 1.8;
+      white-space: pre-wrap; word-wrap: break-word;
+    }
+
+    .logs-card {
+      background: white; border-radius: var(--radius-lg);
+      border: 1px solid rgba(15,30,45,.07); box-shadow: var(--shadow-sm); overflow: hidden;
+    }
+    .logs-card-head {
+      padding: 20px 24px; border-bottom: 1px solid rgba(15,30,45,.07);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logs-card-head h3 { font-size: 1rem; font-weight: 600; color: var(--navy-800); }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      padding: 12px 20px; text-align: left; font-size: .72rem; font-weight: 700;
+      letter-spacing: .06em; text-transform: uppercase; color: var(--gray-400);
+      border-bottom: 1px solid rgba(15,30,45,.07); background: rgba(15,30,45,.02);
+    }
+    tbody td { padding: 14px 20px; font-size: .84rem; border-bottom: 1px solid rgba(15,30,45,.05); vertical-align: middle; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: rgba(30,111,241,.02); }
+
+    .empty-row td { text-align: center; padding: 48px; color: var(--gray-400); font-size: .88rem; }
+    .error-text { font-size: .8rem; color: #dc2626; max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .not-found {
+      text-align: center; padding: 80px 24px; color: var(--gray-400);
+    }
+    .not-found h3 { font-size: 1.2rem; color: var(--navy-700); margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+
+  <aside class="admin-sidebar">
+    <div class="brand">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma">
+      <p>Admin Panel</p>
+    </div>
+    <nav class="admin-nav">
+      <a href="/admin/papers"><span>📄</span> Papers</a>
+      <a href="/admin/doctors"><span>👨‍⚕️</span> Doctors</a>
+      <a href="/admin/content"><span>✍️</span> Content</a>
+      <a href="/admin/messages"><span>💬</span> Messages</a>
+      <a href="/admin/notifications" class="active"><span>🔔</span> Notifications</a>
+      <a href="/" target="_blank"><span>🌐</span> View Website</a>
+    </nav>
+    <div class="logout-link"><a href="/admin-logout">Logout</a></div>
+  </aside>
+
+  <main class="admin-main">
+    <a href="/admin/notifications" class="back-link">← Back to History</a>
+
+    {% if message %}
+    <h1 class="admin-page-title">Notification Detail</h1>
+    <p class="admin-page-sub">Campaign ID: {{ message.id }}</p>
+
+    <div class="detail-card">
+      <h3>Campaign Overview</h3>
+      <div class="meta-grid">
+        <div class="meta-item">
+          <div class="label">Type</div>
+          <div class="value">{{ message.message_type|default('message')|replace('_',' ')|title }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="label">Status</div>
+          <div class="value">
+            {% set status = message.status|default('queued') %}
+            <span class="status-pill {{ status }}"><span class="status-dot"></span> {{ status|title }}</span>
+          </div>
+        </div>
+        <div class="meta-item">
+          <div class="label">Recipients</div>
+          <div class="value">{{ message.recipient_count|default(0) }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="label">Success</div>
+          <div class="value" style="color:#059669">{{ message.success_count|default(0) }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="label">Failed</div>
+          <div class="value" style="color:#dc2626">{{ message.fail_count|default(0) }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="label">Sent By</div>
+          <div class="value">{{ message.sent_by|default('system') }}</div>
+        </div>
+        <div class="meta-item">
+          <div class="label">Date</div>
+          <div class="value">{% if message.created_at %}{{ message.created_at[:19]|replace('T',' ') }}{% else %}—{% endif %}</div>
+        </div>
+      </div>
+
+      {% if message.message_body %}
+      <div style="margin-top:8px">
+        <div class="label" style="font-size:.72rem;font-weight:700;color:var(--gray-400);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Message Content</div>
+        <div class="msg-body">{{ message.message_body }}</div>
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="logs-card">
+      <div class="logs-card-head">
+        <h3>Delivery Logs</h3>
+        <span style="font-size:.8rem;color:var(--gray-400)">{{ delivery_logs|length }} entr{{ 'ies' if delivery_logs|length != 1 else 'y' }}</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Recipient</th>
+            <th>Number</th>
+            <th>Status</th>
+            <th>Error</th>
+            <th>Sent At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if delivery_logs %}
+            {% for log in delivery_logs %}
+            <tr>
+              <td style="font-weight:500;color:var(--navy-700)">{{ log.doctor_id|default('—') }}</td>
+              <td style="font-family:monospace;color:var(--gray-500)">{{ log.whatsapp_number|default('—') }}</td>
+              <td>
+                {% set ls = log.status|default('unknown') %}
+                <span class="status-pill {{ ls }}"><span class="status-dot"></span> {{ ls|title }}</span>
+              </td>
+              <td>
+                {% if log.error_message %}
+                <span class="error-text" title="{{ log.error_message }}">{{ log.error_message }}</span>
+                {% else %}—{% endif %}
+              </td>
+              <td style="font-size:.8rem;color:var(--gray-400);white-space:nowrap">
+                {% if log.sent_at %}{{ log.sent_at[:19]|replace('T',' ') }}{% else %}—{% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          {% else %}
+            <tr class="empty-row"><td colspan="5">No delivery logs recorded for this campaign.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+
+    {% else %}
+    <div class="not-found">
+      <h3>Notification not found</h3>
+      <p>This campaign may have been deleted or does not exist.</p>
+    </div>
+    {% endif %}
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin — Message Sent | Tunes Pharma</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { background: #f5f7fb; font-family: 'Poppins', sans-serif; }
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-sidebar {
+      width: 220px; background: var(--navy-900); flex-shrink: 0;
+      display: flex; flex-direction: column; padding: 28px 0;
+      position: sticky; top: 0; height: 100vh;
+    }
+    .admin-sidebar .brand { padding: 0 24px 28px; border-bottom: 1px solid rgba(255,255,255,.08); margin-bottom: 16px; }
+    .admin-sidebar .brand img { height: 36px; filter: brightness(0) invert(1); }
+    .admin-sidebar .brand p { color: rgba(255,255,255,.35); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; margin-top: 4px; }
+    .admin-nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 24px; color: rgba(255,255,255,.55); font-size: .85rem; font-weight: 500; transition: all .2s;
+    }
+    .admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,.07); color: white; }
+    .admin-nav a.active { border-right: 3px solid var(--blue-500); }
+    .admin-nav a span { font-size: 1rem; }
+    .admin-sidebar .logout-link { margin-top: auto; padding: 0 16px; }
+    .admin-sidebar .logout-link a {
+      display: block; text-align: center; padding: 10px; border-radius: 8px;
+      border: 1px solid rgba(220,38,38,.3); color: rgba(220,38,38,.8);
+      font-size: .82rem; font-weight: 600; transition: all .2s;
+    }
+    .admin-sidebar .logout-link a:hover { background: rgba(220,38,38,.1); color: #ef4444; }
+    .admin-main { flex: 1; padding: 40px; overflow-y: auto; max-width: 860px; }
+    .admin-page-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--navy-900); margin-bottom: 6px; }
+    .admin-page-sub { color: var(--gray-500); font-size: .88rem; margin-bottom: 32px; }
+
+    .result-card {
+      background: white; border-radius: var(--radius-lg); padding: 32px;
+      border: 1px solid rgba(15,30,45,.07); box-shadow: var(--shadow-sm); margin-bottom: 28px;
+    }
+    .result-header {
+      display: flex; align-items: center; gap: 14px; margin-bottom: 24px;
+      padding-bottom: 20px; border-bottom: 1px solid rgba(15,30,45,.07);
+    }
+    .result-icon {
+      width: 48px; height: 48px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
+    }
+    .result-icon.success { background: rgba(16,185,129,.1); }
+    .result-icon.partial { background: rgba(251,191,36,.1); }
+    .result-icon.failed  { background: rgba(239,68,68,.1); }
+    .result-title { font-size: 1.1rem; font-weight: 600; color: var(--navy-800); }
+    .result-sub { font-size: .85rem; color: var(--gray-500); }
+
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+    .stat-box {
+      padding: 18px; border-radius: 12px; text-align: center;
+      border: 1px solid rgba(15,30,45,.07);
+    }
+    .stat-box .num { font-size: 1.6rem; font-weight: 700; }
+    .stat-box .label { font-size: .75rem; color: var(--gray-400); text-transform: uppercase; letter-spacing: .06em; margin-top: 4px; }
+    .stat-box.total  .num { color: var(--navy-800); }
+    .stat-box.ok     .num { color: #059669; }
+    .stat-box.fail   .num { color: #dc2626; }
+
+    .msg-preview {
+      background: rgba(15,30,45,.03); border-radius: 12px; padding: 20px;
+      font-size: .88rem; color: var(--navy-700); line-height: 1.8;
+      white-space: pre-wrap; word-wrap: break-word;
+    }
+    .msg-preview-label { font-size: .78rem; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+
+    .action-links { display: flex; gap: 14px; margin-top: 28px; }
+    .action-links a {
+      padding: 11px 24px; border-radius: var(--radius-full);
+      font-size: .86rem; font-weight: 600; font-family: 'Poppins', sans-serif;
+      text-decoration: none; transition: all .2s;
+    }
+    .action-links .primary {
+      background: var(--navy-800); color: white;
+    }
+    .action-links .primary:hover { background: var(--blue-500); }
+    .action-links .secondary {
+      border: 1.5px solid rgba(15,30,45,.15); color: var(--gray-600); background: white;
+    }
+    .action-links .secondary:hover { border-color: var(--blue-500); color: var(--blue-500); }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+
+  <aside class="admin-sidebar">
+    <div class="brand">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma">
+      <p>Admin Panel</p>
+    </div>
+    <nav class="admin-nav">
+      <a href="/admin/papers"><span>📄</span> Papers</a>
+      <a href="/admin/doctors"><span>👨‍⚕️</span> Doctors</a>
+      <a href="/admin/content"><span>✍️</span> Content</a>
+      <a href="/admin/messages" class="active"><span>💬</span> Messages</a>
+      <a href="/admin/notifications"><span>🔔</span> Notifications</a>
+      <a href="/" target="_blank"><span>🌐</span> View Website</a>
+    </nav>
+    <div class="logout-link"><a href="/admin-logout">Logout</a></div>
+  </aside>
+
+  <main class="admin-main">
+    <h1 class="admin-page-title">Message Sent</h1>
+    <p class="admin-page-sub">Your message has been queued for delivery.</p>
+
+    <div class="result-card">
+      {% set failed = result.failed|default(0)|int %}
+      {% set total = result.total|default(0)|int %}
+      <div class="result-header">
+        <div class="result-icon {{ 'failed' if failed == total and total > 0 else ('partial' if failed > 0 else 'success') }}">
+          {{ '&#10060;' if failed == total and total > 0 else ('&#9888;' if failed > 0 else '&#10004;') }}
+        </div>
+        <div>
+          <div class="result-title">
+            {% if failed == total and total > 0 %}Delivery Failed
+            {% elif failed > 0 %}Partially Delivered
+            {% else %}Queued Successfully{% endif %}
+          </div>
+          <div class="result-sub">{{ total }} recipient{{ 's' if total != 1 else '' }} targeted</div>
+        </div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box total">
+          <div class="num">{{ total }}</div>
+          <div class="label">Total</div>
+        </div>
+        <div class="stat-box ok">
+          <div class="num">{{ result.success|default('Queued') }}</div>
+          <div class="label">Success</div>
+        </div>
+        <div class="stat-box fail">
+          <div class="num">{{ failed }}</div>
+          <div class="label">Failed</div>
+        </div>
+      </div>
+
+      <div class="msg-preview-label">Message Content</div>
+      <div class="msg-preview">{{ message_text }}</div>
+
+      <div class="action-links">
+        <a href="/admin/messages" class="primary">Send Another →</a>
+        <a href="/admin/notifications" class="secondary">View History</a>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

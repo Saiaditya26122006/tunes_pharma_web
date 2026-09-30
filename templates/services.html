@@ -13,53 +13,92 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
   <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
   <style>
-    /* Hero pill nav */
-    .svc-hero {
+    .wip-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 55%, var(--navy-700) 100%);
-      min-height: 60vh; display: flex; align-items: center;
-      padding: 140px 24px 90px; position: relative; overflow: hidden;
+      position: relative;
+      overflow: hidden;
+      padding: 140px 24px 90px;
     }
-    .svc-hero::before {
-      content: ''; position: absolute; inset: 0;
+    .wip-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
       background: radial-gradient(ellipse at 70% 40%, rgba(30,111,241,0.14) 0%, transparent 55%),
                   radial-gradient(ellipse at 15% 70%, rgba(0,180,255,0.08) 0%, transparent 45%);
     }
-    .svc-hero-inner { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; width: 100%; }
-    .svc-hero-text  { max-width: 680px; color: white; }
-    /* Service card */
-    .svc-card { padding: 32px 28px; }
-    .svc-card h3 { font-size: 1.15rem; font-weight: 600; color: var(--navy-800); margin-bottom: 10px; }
-    .svc-card p  { font-size: .88rem; color: var(--gray-500); line-height: 1.75; margin-bottom: 16px; }
-    .svc-list { list-style: none; margin-bottom: 18px; }
-    .svc-list li { display: flex; gap: 8px; align-items: flex-start; margin-bottom: 8px; font-size: .85rem; color: var(--gray-600); }
-    .svc-list li::before { content: '✓'; color: var(--blue-500); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
-    .svc-link { display: inline-flex; align-items: center; gap: 6px; color: var(--blue-500); font-size: .85rem; font-weight: 600; transition: gap .3s; }
-    .svc-card:hover .svc-link { gap: 10px; }
-    /* Detail split row */
-    .svc-detail {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
-      align-items: center; margin-bottom: 60px;
-      background: white; border-radius: var(--radius-lg);
-      padding: 48px; box-shadow: var(--shadow-md);
-      border: 1px solid rgba(15,30,45,0.06);
+    .wip-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      max-width: 600px;
     }
-    .svc-detail.flip { direction: rtl; }
-    .svc-detail.flip > * { direction: ltr; }
-    .svc-detail-icon {
-      min-height: 260px; border-radius: var(--radius-md);
-      background: linear-gradient(135deg, var(--navy-800), var(--navy-700));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 6rem; position: relative; overflow: hidden;
+    .wip-icon {
+      font-size: 4rem;
+      margin-bottom: 24px;
+      display: inline-block;
+      animation: wip-pulse 2s ease-in-out infinite;
     }
-    .svc-detail-icon::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(circle at 30% 40%, rgba(30,111,241,0.25), transparent 60%);
+    @keyframes wip-pulse {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.08); opacity: 1; }
     }
-    .svc-detail-content h3 { font-family: 'Playfair Display',serif; font-size: 1.8rem; color: var(--navy-900); margin-bottom: 14px; line-height: 1.2; }
-    .svc-detail-content p  { color: var(--gray-500); line-height: 1.85; margin-bottom: 18px; }
-    @media (max-width:768px) {
-      .svc-detail { grid-template-columns: 1fr; padding: 28px; }
-      .svc-detail.flip { direction: ltr; }
+    .wip-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+    .wip-subtitle {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.8;
+      margin-bottom: 36px;
+    }
+    .wip-bar {
+      width: 200px;
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      margin: 0 auto 28px;
+      overflow: hidden;
+      position: relative;
+    }
+    .wip-bar::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -50%;
+      width: 50%; height: 100%;
+      background: linear-gradient(90deg, transparent, var(--blue-500), transparent);
+      border-radius: 4px;
+      animation: wip-slide 1.8s ease-in-out infinite;
+    }
+    @keyframes wip-slide {
+      0% { left: -50%; }
+      100% { left: 100%; }
+    }
+    .wip-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      border-radius: 50px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .wip-back:hover {
+      background: rgba(255,255,255,0.14);
+      border-color: rgba(255,255,255,0.3);
     }
   </style>
 </head>
@@ -92,268 +131,13 @@
   </div>
 </header>
 
-<!-- ── HERO ── -->
-<section class="svc-hero">
-  <div class="svc-hero-inner">
-    <div class="svc-hero-text">
-      <div class="p-hero-badge" style="margin-bottom:22px"><span class="dot"></span>Quality · Efficacy · Affordability</div>
-      <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.6rem,5vw,4.2rem);font-weight:700;line-height:1.1;margin-bottom:20px;letter-spacing:-.02em">What we <span style="background:linear-gradient(135deg,var(--gold-light),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">offer partners</span></h1>
-      <p style="color:rgba(255,255,255,.65);font-size:1.08rem;line-height:1.85;max-width:560px;margin-bottom:36px">From branded generic prescription sales to wholesale distribution and patient education — Tunes Pharma provides end-to-end pharmaceutical services across Andhra Pradesh &amp; Telangana.</p>
-      <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <a href="/online-ordering" class="p-btn p-btn-primary">Place an Order</a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── CORE SERVICES ── -->
-<section class="p-section p-section-light">
-  <div class="p-container">
-    <div class="p-section-header center p-reveal">
-      <span class="p-section-tag">What We Do</span>
-      <h2 class="p-section-title">Our Core Services</h2>
-      <div class="p-divider center"></div>
-      <p class="p-section-subtitle">Tunes Pharma delivers branded generic prescription medicines through a field-driven, relationship-first model — serving doctors, hospitals, clinics, and pharmacies.</p>
-    </div>
-    <div class="p-grid-3">
-      <div class="svc-card p-card p-reveal p-delay-1" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">💊</div>
-        <h3>Branded Generic Sales</h3>
-        <p>We market quality, efficacious, and affordable branded generic prescription products in Cardiology, Diabetology, Nephrology, and General Medicine to doctors and specialists.</p>
-        <ul class="svc-list">
-          <li>Cardiology &amp; Diabetology focus</li>
-          <li>Nephrology &amp; General Medicine</li>
-          <li>Prescription-first approach with MR support</li>
-        </ul>
-        <a href="/products" class="svc-link">View Products <span>→</span></a>
-      </div>
-      <div class="svc-card p-card p-reveal p-delay-2" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">🏥</div>
-        <h3>Wholesale Distribution</h3>
-        <p>We supply our product portfolio to hospitals, nursing homes, clinics, and retail pharmacies through our distribution network in Andhra Pradesh &amp; Telangana.</p>
-        <ul class="svc-list">
-          <li>Hospitals &amp; nursing homes</li>
-          <li>Retail &amp; semi-wholesale pharmacies</li>
-          <li>Reliable last-mile delivery</li>
-        </ul>
-        <a href="/stockist-locator" class="svc-link">Find Stockist <span>→</span></a>
-      </div>
-      <div class="svc-card p-card p-reveal p-delay-3" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">🔧</div>
-        <h3>Custom Product Design</h3>
-        <p>We work with WHO-GMP certified manufacturing partners to develop tailored formulations — right composition, right packing, right schedule — for specific therapeutic needs.</p>
-        <ul class="svc-list">
-          <li>Custom composition &amp; packing</li>
-          <li>WHO-GMP certified manufacturers</li>
-          <li>DCGI-compliant formulations</li>
-        </ul>
-        <a href="/contact" class="svc-link">Enquire Now <span>→</span></a>
-      </div>
-      <div class="svc-card p-card p-reveal p-delay-4" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">🩺</div>
-        <h3>Doctor Engagement</h3>
-        <p>Our field team and digital portal keep healthcare professionals informed with product briefs, clinical references, and CME resources — building trust through consistent engagement.</p>
-        <ul class="svc-list">
-          <li>Field MR visits &amp; detailing</li>
-          <li>Clinical briefs &amp; prescribing guidelines</li>
-          <li>Sample request support</li>
-        </ul>
-        <a href="/contact" class="svc-link">Contact Us <span>→</span></a>
-      </div>
-      <div class="svc-card p-card p-reveal p-delay-5" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">📚</div>
-        <h3>Patient Education</h3>
-        <p>We support healthcare providers with patient-facing education materials that improve adherence, explain therapy goals, and build confidence in evidence-based treatment plans.</p>
-        <ul class="svc-list">
-          <li>Therapy adherence materials</li>
-          <li>Chronic disease awareness</li>
-          <li>Multilingual patient leaflets</li>
-        </ul>
-        <a href="/contact" class="svc-link">Learn More <span>→</span></a>
-      </div>
-      <div class="svc-card p-card p-reveal p-delay-6" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">🤖</div>
-        <h3>Pharmaintel AI</h3>
-        <p>Our AI-powered tool lets partners and doctors explore product intelligence, upload PDFs, and get instant pharmaceutical insights — available 24/7 on the web.</p>
-        <ul class="svc-list">
-          <li>Product &amp; composition queries</li>
-          <li>Pharmaceutical Q&amp;A engine</li>
-          <li>Document analysis support</li>
-        </ul>
-        <a href="/pharmaintel_ai" class="svc-link">Launch AI Tool <span>→</span></a>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── HOW WE WORK ── -->
-<section class="p-section p-section-white">
-  <div class="p-container">
-    <div class="p-section-header center p-reveal">
-      <span class="p-section-tag">Our Approach</span>
-      <h2 class="p-section-title">How We Work With Partners</h2>
-      <div class="p-divider center"></div>
-    </div>
-
-    <div class="svc-detail p-reveal">
-      <div class="svc-detail-icon">💊</div>
-      <div class="svc-detail-content">
-        <span class="p-badge p-badge-blue" style="margin-bottom:14px">Field Sales Model</span>
-        <h3>Prescription-First Sales</h3>
-        <p>Our medical representatives visit specialists and general practitioners to detail our branded generic portfolio. We build prescription confidence through clinical evidence, transparent composition data, and consistent MR presence in key markets across Andhra Pradesh &amp; Telangana.</p>
-        <ul class="svc-list">
-          <li>Dedicated MR territory coverage</li>
-          <li>Specialist focus: cardiologists, diabetologists, nephrologists</li>
-          <li>Clinical detailing with product briefs</li>
-          <li>Sample provisioning on request</li>
-        </ul>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <a href="/products"  class="p-btn p-btn-blue" style="font-size:14px;padding:11px 24px">Our Portfolio</a>
-          <a href="/contact"   class="p-btn p-btn-navy" style="font-size:14px;padding:11px 24px">Request a Visit</a>
-        </div>
-      </div>
-    </div>
-
-    <div class="svc-detail flip p-reveal">
-      <div class="svc-detail-content">
-        <span class="p-badge p-badge-blue" style="margin-bottom:14px">Distribution Network</span>
-        <h3>Reliable Supply Chain</h3>
-        <p>Through our stockist network, we ensure consistent product availability to hospitals, nursing homes, clinics, and retail pharmacies. Distributors can place orders online or through our field team, with transparent tracking and timely fulfillment.</p>
-        <ul class="svc-list">
-          <li>Active stockists in 4+ districts of Andhra Pradesh</li>
-          <li>Hospital and retail pharmacy supply</li>
-          <li>B2B online ordering for distributors</li>
-          <li>Dedicated relationship manager support</li>
-        </ul>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <a href="/online-ordering"  class="p-btn p-btn-blue" style="font-size:14px;padding:11px 24px">Place an Order</a>
-          <a href="/stockist-locator" class="p-btn p-btn-navy" style="font-size:14px;padding:11px 24px">Find a Stockist</a>
-        </div>
-      </div>
-      <div class="svc-detail-icon">🏥</div>
-    </div>
-
-    <div class="svc-detail p-reveal">
-      <div class="svc-detail-icon">🔧</div>
-      <div class="svc-detail-content">
-        <span class="p-badge p-badge-blue" style="margin-bottom:14px">Manufacturing Partnerships</span>
-        <h3>Custom Product Design</h3>
-        <p>We collaborate with WHO-GMP certified manufacturing partners to bring precisely formulated products to market. Whether it's a novel combination or a specific packing requirement, we manage the product design and regulatory process end to end.</p>
-        <ul class="svc-list">
-          <li>WHO-GMP certified third-party manufacturing</li>
-          <li>Custom composition &amp; dosage forms</li>
-          <li>Alu-Alu, strip, and liquid packing options</li>
-          <li>DCGI schedule compliance built in</li>
-        </ul>
-        <div style="display:flex;gap:12px;flex-wrap:wrap">
-          <a href="/contact" class="p-btn p-btn-blue" style="font-size:14px;padding:11px 24px">Discuss a Product</a>
-          <a href="/product-catalog" class="p-btn p-btn-navy" style="font-size:14px;padding:11px 24px">Browse Catalog</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── TARGET MARKET ── -->
-<section class="p-section p-section-light">
-  <div class="p-container">
-    <div class="p-section-header center p-reveal">
-      <span class="p-section-tag">Who We Serve</span>
-      <h2 class="p-section-title">Our Target Market</h2>
-      <div class="p-divider center"></div>
-      <p class="p-section-subtitle">Tunes Pharma serves five distinct customer segments — from individual prescribers to large institutions.</p>
-    </div>
-    <div class="p-grid-3" style="margin-top:0">
-      <div class="svc-card p-card p-reveal p-delay-1" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">🩺</div>
-        <h3>Healthcare Professionals</h3>
-        <p>Specialists and GPs in Cardiology, Diabetology, Nephrology, and General Medicine — our primary prescription base, engaged through dedicated MR visits and KOL programs.</p>
-      </div>
-      <div class="svc-card p-card p-reveal p-delay-2" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">🏥</div>
-        <h3>Hospitals &amp; Clinics</h3>
-        <p>Multi-specialty hospitals, nursing homes, and private clinics that require reliable, quality branded generic medicines at competitive prices for their formularies.</p>
-      </div>
-      <div class="svc-card p-card p-reveal p-delay-3" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">🚚</div>
-        <h3>Pharmaceutical Distributors</h3>
-        <p>Wholesalers, C&amp;F agents, and stockists across Andhra Pradesh &amp; Telangana who distribute our portfolio to the last mile — retail pharmacies and semi-wholesale counters.</p>
-      </div>
-      <div class="svc-card p-card p-reveal p-delay-4" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">💚</div>
-        <h3>Patients with Chronic Conditions</h3>
-        <p>Patients managing Diabetes, Hypertension, Neuropathy, and Gastro disorders who benefit from affordable, high-quality branded medications with consistent availability.</p>
-      </div>
-      <div class="svc-card p-card p-reveal p-delay-5" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-blue">🏢</div>
-        <h3>Institutions &amp; Corporates</h3>
-        <p>Healthcare institutions, corporate wellness programs, and organizations seeking strategic pharmaceutical supply partnerships for their employee and patient health needs.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── REVENUE MODEL ── -->
-<section class="p-section p-section-white">
-  <div class="p-container">
-    <div class="p-section-header center p-reveal">
-      <span class="p-section-tag">Business Model</span>
-      <h2 class="p-section-title">How We Generate Revenue</h2>
-      <div class="p-divider center"></div>
-      <p class="p-section-subtitle">Four complementary revenue streams that create a resilient, scalable pharmaceutical business.</p>
-    </div>
-    <div class="p-grid-2" style="margin-top:0;gap:28px">
-      <div class="svc-card p-card p-reveal p-delay-1" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-navy">💊</div>
-        <h3>Sales of Branded Pharmaceuticals</h3>
-        <p>Our primary revenue stream — prescription-driven sales of our own branded generic products to doctors, hospitals, and clinics through a dedicated field MR team.</p>
-      </div>
-      <div class="svc-card p-card p-reveal p-delay-2" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-navy">🏥</div>
-        <h3>Wholesale Distribution</h3>
-        <p>Revenue from supplying our product portfolio in bulk to hospitals, nursing homes, clinics, and retail pharmacies through our authorized stockist and distributor network.</p>
-      </div>
-      <div class="svc-card p-card p-reveal p-delay-3" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-navy">🤝</div>
-        <h3>Partnership &amp; Collaboration Agreements</h3>
-        <p>Income from strategic alliances with healthcare institutions, hospitals, and other pharmaceutical entities — expanding our reach and co-creating value across the ecosystem.</p>
-      </div>
-      <div class="svc-card p-card p-reveal p-delay-4" data-tilt>
-        <div class="p-card-accent"></div>
-        <div class="p-icon p-icon-navy">🔧</div>
-        <h3>Customized Product Sales</h3>
-        <p>Earnings from specialized, custom-designed pharmaceutical formulations — tailored composition, design, and packaging developed for specific client or market requirements.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ── CTA ── -->
-<section class="p-section p-section-sm p-section-dark" style="text-align:center;position:relative;overflow:hidden">
-  <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 60% 50%,rgba(30,111,241,0.18) 0%,transparent 60%);pointer-events:none"></div>
-  <div class="p-container" style="position:relative;z-index:1">
-    <div class="p-reveal">
-      <h2 class="p-section-title" style="margin-bottom:14px">Become a distribution partner</h2>
-      <p class="p-section-subtitle" style="margin:0 auto 32px">We are expanding our stockist and distribution network across Andhra Pradesh &amp; Telangana. If you are a distributor, wholesaler, or pharmacy chain looking to add quality branded generics to your portfolio, we would love to connect.</p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <a href="/contact" class="p-btn p-btn-primary" style="font-size:15px">Get in Touch</a>
-        <a href="/online-ordering" class="p-btn p-btn-outline" style="font-size:15px">Place an Order</a>
-      </div>
-    </div>
+<section class="wip-section">
+  <div class="wip-content">
+    <div class="wip-icon">🚧</div>
+    <h1 class="wip-title">Something Great is Coming</h1>
+    <p class="wip-subtitle">We're currently building this page to better showcase our services. Stay tuned — it'll be worth the wait.</p>
+    <div class="wip-bar"></div>
+    <a href="/" class="wip-back">← Back to Home</a>
   </div>
 </section>
 

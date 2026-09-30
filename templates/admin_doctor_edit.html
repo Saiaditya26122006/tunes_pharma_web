@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin — Edit Doctor | Tunes Pharma</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { background: #f5f7fb; font-family: 'Poppins', sans-serif; }
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-sidebar {
+      width: 220px; background: var(--navy-900); flex-shrink: 0;
+      display: flex; flex-direction: column; padding: 28px 0;
+      position: sticky; top: 0; height: 100vh;
+    }
+    .admin-sidebar .brand { padding: 0 24px 28px; border-bottom: 1px solid rgba(255,255,255,.08); margin-bottom: 16px; }
+    .admin-sidebar .brand img { height: 36px; filter: brightness(0) invert(1); }
+    .admin-sidebar .brand p { color: rgba(255,255,255,.35); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; margin-top: 4px; }
+    .admin-nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 24px; color: rgba(255,255,255,.55); font-size: .85rem; font-weight: 500; transition: all .2s;
+    }
+    .admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,.07); color: white; }
+    .admin-nav a.active { border-right: 3px solid var(--blue-500); }
+    .admin-nav a span { font-size: 1rem; }
+    .admin-sidebar .logout-link { margin-top: auto; padding: 0 16px; }
+    .admin-sidebar .logout-link a {
+      display: block; text-align: center; padding: 10px; border-radius: 8px;
+      border: 1px solid rgba(220,38,38,.3); color: rgba(220,38,38,.8);
+      font-size: .82rem; font-weight: 600; transition: all .2s;
+    }
+    .admin-sidebar .logout-link a:hover { background: rgba(220,38,38,.1); color: #ef4444; }
+    .admin-main { flex: 1; padding: 40px; overflow-y: auto; max-width: 860px; }
+    .admin-page-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--navy-900); margin-bottom: 6px; }
+    .admin-page-sub { color: var(--gray-500); font-size: .88rem; margin-bottom: 32px; }
+
+    .edit-card {
+      background: white; border-radius: var(--radius-lg); padding: 32px;
+      border: 1px solid rgba(15,30,45,.07); box-shadow: var(--shadow-sm);
+    }
+    .edit-card h3 { font-size: 1rem; font-weight: 600; color: var(--navy-800); margin-bottom: 20px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: .78rem; font-weight: 600; color: var(--navy-700); }
+    .form-group input, .form-group select {
+      padding: 10px 14px; border-radius: 10px;
+      border: 1.5px solid rgba(15,30,45,.12); font-size: .86rem;
+      font-family: 'Poppins', sans-serif; outline: none; transition: border-color .2s;
+    }
+    .form-group input:focus { border-color: var(--blue-500); }
+
+    .checkbox-group {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 0;
+    }
+    .checkbox-group input[type="checkbox"] { accent-color: var(--blue-500); width: 16px; height: 16px; }
+    .checkbox-group label { font-size: .86rem; font-weight: 500; color: var(--navy-700); cursor: pointer; }
+
+    .btn-row { display: flex; gap: 12px; margin-top: 24px; }
+    .save-btn {
+      padding: 12px 28px; border-radius: var(--radius-full);
+      background: var(--navy-800); color: white; border: none;
+      font-size: .88rem; font-weight: 600; font-family: 'Poppins', sans-serif;
+      cursor: pointer; transition: all .2s;
+    }
+    .save-btn:hover { background: var(--blue-500); transform: translateY(-1px); }
+    .cancel-btn {
+      padding: 12px 28px; border-radius: var(--radius-full);
+      border: 1.5px solid rgba(15,30,45,.15); color: var(--gray-600);
+      background: white; font-size: .88rem; font-weight: 600;
+      font-family: 'Poppins', sans-serif; cursor: pointer; transition: all .2s;
+      text-decoration: none; display: inline-flex; align-items: center;
+    }
+    .cancel-btn:hover { border-color: var(--blue-500); color: var(--blue-500); }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+
+  <aside class="admin-sidebar">
+    <div class="brand">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma">
+      <p>Admin Panel</p>
+    </div>
+    <nav class="admin-nav">
+      <a href="/admin/papers"><span>📄</span> Papers</a>
+      <a href="/admin/doctors" class="active"><span>👨‍⚕️</span> Doctors</a>
+      <a href="/admin/content"><span>✍️</span> Content</a>
+      <a href="/admin/messages"><span>💬</span> Messages</a>
+      <a href="/admin/notifications"><span>🔔</span> Notifications</a>
+      <a href="/" target="_blank"><span>🌐</span> View Website</a>
+    </nav>
+    <div class="logout-link"><a href="/admin-logout">Logout</a></div>
+  </aside>
+
+  <main class="admin-main">
+    <h1 class="admin-page-title">Edit Doctor</h1>
+    <p class="admin-page-sub">Update details for {{ doctor.name }}.</p>
+
+    <div class="edit-card">
+      <h3>Doctor Information</h3>
+      <form method="POST" action="/admin/doctors/edit/{{ doctor.id }}">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" name="name" value="{{ doctor.name or '' }}" required>
+          </div>
+          <div class="form-group">
+            <label>Specialty</label>
+            <input type="text" name="specialty" value="{{ doctor.specialty or '' }}" placeholder="e.g. Diabetologist">
+          </div>
+          <div class="form-group">
+            <label>Hospital / Clinic</label>
+            <input type="text" name="hospital" value="{{ doctor.hospital or '' }}" placeholder="City Hospital, Guntur">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" value="{{ doctor.email or '' }}" placeholder="doctor@hospital.com">
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" name="phone" value="{{ doctor.phone or '' }}" placeholder="+91 99999 00000">
+          </div>
+          <div class="form-group">
+            <label>WhatsApp Number</label>
+            <input type="tel" name="whatsapp_number" value="{{ doctor.whatsapp_number or '' }}" placeholder="+91 99999 00000">
+          </div>
+        </div>
+
+        <div class="checkbox-group">
+          <input type="checkbox" name="whatsapp_consent" id="wa_consent" {{ 'checked' if doctor.whatsapp_consent else '' }}>
+          <label for="wa_consent">WhatsApp consent granted</label>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" name="is_active" id="is_active" {{ 'checked' if doctor.is_active else '' }}>
+          <label for="is_active">Active (can log in and receive notifications)</label>
+        </div>
+
+        <div class="btn-row">
+          <button type="submit" class="save-btn">Save Changes →</button>
+          <a href="/admin/doctors" class="cancel-btn">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+</body>
+</html>

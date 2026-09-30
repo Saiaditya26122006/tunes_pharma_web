@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin — Messages | Tunes Pharma</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { background: #f5f7fb; font-family: 'Poppins', sans-serif; }
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-sidebar {
+      width: 220px; background: var(--navy-900); flex-shrink: 0;
+      display: flex; flex-direction: column; padding: 28px 0;
+      position: sticky; top: 0; height: 100vh;
+    }
+    .admin-sidebar .brand { padding: 0 24px 28px; border-bottom: 1px solid rgba(255,255,255,.08); margin-bottom: 16px; }
+    .admin-sidebar .brand img { height: 36px; filter: brightness(0) invert(1); }
+    .admin-sidebar .brand p { color: rgba(255,255,255,.35); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; margin-top: 4px; }
+    .admin-nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 24px; color: rgba(255,255,255,.55); font-size: .85rem; font-weight: 500; transition: all .2s;
+    }
+    .admin-nav a:hover, .admin-nav a.active { background: rgba(255,255,255,.07); color: white; }
+    .admin-nav a.active { border-right: 3px solid var(--blue-500); }
+    .admin-nav a span { font-size: 1rem; }
+    .admin-sidebar .logout-link { margin-top: auto; padding: 0 16px; }
+    .admin-sidebar .logout-link a {
+      display: block; text-align: center; padding: 10px; border-radius: 8px;
+      border: 1px solid rgba(220,38,38,.3); color: rgba(220,38,38,.8);
+      font-size: .82rem; font-weight: 600; transition: all .2s;
+    }
+    .admin-sidebar .logout-link a:hover { background: rgba(220,38,38,.1); color: #ef4444; }
+    .admin-main { flex: 1; padding: 40px; overflow-y: auto; max-width: 960px; }
+    .admin-page-title { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--navy-900); margin-bottom: 6px; }
+    .admin-page-sub { color: var(--gray-500); font-size: .88rem; margin-bottom: 32px; }
+
+    .msg-card {
+      background: white; border-radius: var(--radius-lg); padding: 32px;
+      border: 1px solid rgba(15,30,45,.07); box-shadow: var(--shadow-sm); margin-bottom: 28px;
+    }
+    .msg-card h3 { font-size: 1rem; font-weight: 700; color: var(--navy-800); margin-bottom: 18px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+    .form-group label { font-size: .8rem; font-weight: 600; color: var(--navy-700); }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 10px 14px; border-radius: 10px;
+      border: 1.5px solid rgba(15,30,45,.12); font-size: .88rem;
+      font-family: 'Poppins', sans-serif; outline: none; transition: border-color .2s;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--blue-500); }
+    .form-group textarea { resize: vertical; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+
+    .doctor-checklist {
+      max-height: 220px; overflow-y: auto;
+      border: 1.5px solid rgba(15,30,45,.1); border-radius: 10px;
+      padding: 8px 0; margin-bottom: 16px;
+    }
+    .doc-check {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 16px; cursor: pointer; transition: background .15s;
+    }
+    .doc-check:hover { background: rgba(30,111,241,.04); }
+    .doc-check input[type="checkbox"] { accent-color: var(--blue-500); width: 15px; height: 15px; flex-shrink: 0; }
+    .doc-name { font-size: .86rem; font-weight: 500; color: var(--navy-800); }
+    .doc-spec { font-size: .75rem; color: var(--gray-400); margin-left: auto; }
+
+    .send-btn {
+      padding: 13px 32px; border-radius: var(--radius-full);
+      background: var(--navy-800); color: white; border: none;
+      font-size: .9rem; font-weight: 600; font-family: 'Poppins', sans-serif;
+      cursor: pointer; transition: all .2s;
+    }
+    .send-btn:hover { background: var(--blue-500); transform: translateY(-1px); }
+
+    .char-count { font-size: .75rem; color: var(--gray-400); text-align: right; margin-top: 4px; }
+    .history-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .85rem; font-weight: 600; color: var(--blue-500); text-decoration: none;
+    }
+    .history-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+
+  <aside class="admin-sidebar">
+    <div class="brand">
+      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma">
+      <p>Admin Panel</p>
+    </div>
+    <nav class="admin-nav">
+      <a href="/admin/papers"><span>📄</span> Papers</a>
+      <a href="/admin/doctors"><span>👨‍⚕️</span> Doctors</a>
+      <a href="/admin/content"><span>✍️</span> Content</a>
+      <a href="/admin/messages" class="active"><span>💬</span> Messages</a>
+      <a href="/admin/notifications"><span>🔔</span> Notifications</a>
+      <a href="/" target="_blank"><span>🌐</span> View Website</a>
+    </nav>
+    <div class="logout-link"><a href="/admin-logout">Logout</a></div>
+  </aside>
+
+  <main class="admin-main">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <h1 class="admin-page-title" style="margin-bottom:0">Send Message</h1>
+      <a href="/admin/notifications" class="history-link">View History →</a>
+    </div>
+    <p class="admin-page-sub">Send a direct message to doctors via the notification engine. Choose your audience and channel.</p>
+
+    <div class="msg-card">
+      <h3>Compose Message</h3>
+      <form method="POST" action="/admin/messages/send">
+
+        <div class="form-group">
+          <label>Message *</label>
+          <textarea name="message_text" id="msgText" rows="6" required placeholder="Type your message here..."></textarea>
+          <div class="char-count" id="charCount">0 characters</div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Target Audience</label>
+            <select name="target" id="targetSelect">
+              <option value="all">All Active Doctors ({{ doctors|length }})</option>
+              <option value="specialty">By Specialty</option>
+              <option value="selected">Select Individual Doctors</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Channel</label>
+            <select name="channel">
+              <option value="multi">Multi-channel (Email + WhatsApp + Push)</option>
+              <option value="email">Email Only</option>
+              <option value="whatsapp">WhatsApp Only</option>
+              <option value="push">Push Notification Only</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="specialtySection" style="display:none" class="form-group">
+          <label>Specialty</label>
+          <select name="specialty">
+            <option value="">-- Select Specialty --</option>
+            {% for s in specialties %}
+            <option value="{{ s }}">{{ s }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div id="doctorSection" style="display:none">
+          <div class="form-group" style="margin-bottom:8px">
+            <label>Select Doctors</label>
+          </div>
+          <div class="doctor-checklist">
+            {% if doctors %}
+              {% for doc in doctors %}
+              <label class="doc-check">
+                <input type="checkbox" name="doctor_ids" value="{{ doc.id }}">
+                <span class="doc-name">{{ doc.name }}</span>
+                {% if doc.specialty %}<span class="doc-spec">{{ doc.specialty }}</span>{% endif %}
+              </label>
+              {% endfor %}
+            {% else %}
+              <div style="padding:24px;text-align:center;color:var(--gray-400);font-size:.85rem">No active doctors found.</div>
+            {% endif %}
+          </div>
+        </div>
+
+        <button type="submit" class="send-btn">Send Message →</button>
+      </form>
+    </div>
+  </main>
+</div>
+
+<script>
+(function () {
+  var targetSelect = document.getElementById('targetSelect');
+  var specSection  = document.getElementById('specialtySection');
+  var docSection   = document.getElementById('doctorSection');
+  var msgText      = document.getElementById('msgText');
+  var charCount    = document.getElementById('charCount');
+
+  targetSelect.addEventListener('change', function () {
+    specSection.style.display = targetSelect.value === 'specialty' ? '' : 'none';
+    docSection.style.display  = targetSelect.value === 'selected'  ? '' : 'none';
+  });
+
+  msgText.addEventListener('input', function () {
+    charCount.textContent = msgText.value.length + ' characters';
+  });
+})();
+</script>
+</body>
+</html>

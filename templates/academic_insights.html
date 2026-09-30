@@ -1,0 +1,152 @@
+{% set page_title = "Tunes Pharma — Academic Insights" %}
+{% set page_description = "Published research papers, clinical resources and academic insights from Tunes Pharma." %}
+{% set page_path = "/academic-insights" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  {% include 'partials/seo_head.html' %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js" defer></script>
+  <script src="{{ url_for('static', filename='js/premium.js') }}" defer></script>
+  <style>
+    .ai-hero {
+      background: linear-gradient(155deg, var(--navy-950) 0%, var(--navy-800) 55%, var(--navy-700) 100%);
+      min-height: 44vh; display: flex; align-items: center;
+      padding: 140px 24px 72px; position: relative; overflow: hidden;
+    }
+    .ai-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 40%, rgba(30,111,241,0.15) 0%, transparent 55%);
+    }
+    .ai-hero-inner { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; width: 100%; }
+    .ai-hero-text { max-width: 680px; color: white; }
+
+    .articles-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
+    .article-card {
+      background: white; border-radius: var(--radius-lg); overflow: hidden;
+      border: 1px solid rgba(15,30,45,0.07); box-shadow: var(--shadow-sm);
+      transition: all .3s var(--ease-smooth); display: flex; flex-direction: column;
+    }
+    .article-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .article-thumb {
+      height: 180px; background: linear-gradient(135deg, var(--navy-800), var(--navy-600));
+      display: flex; align-items: center; justify-content: center; overflow: hidden;
+    }
+    .article-thumb img { width: 100%; height: 100%; object-fit: cover; }
+    .article-thumb .fallback-icon { font-size: 3rem; }
+    .article-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
+    .article-meta { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+    .article-tag {
+      display: inline-block; padding: 3px 10px; border-radius: var(--radius-full);
+      font-size: .7rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+    }
+    .article-tag.diabetes   { background: rgba(239,68,68,.1); color: #dc2626; }
+    .article-tag.neuropathy { background: rgba(139,92,246,.1); color: #7c3aed; }
+    .article-tag.gastro     { background: rgba(16,185,129,.1); color: #059669; }
+    .article-tag.general    { background: rgba(30,111,241,.1); color: var(--blue-500); }
+    .article-tag.all        { background: rgba(15,30,45,.08); color: var(--navy-600); }
+    .article-tag.type-pdf   { background: rgba(239,68,68,.08); color: #dc2626; }
+    .article-tag.type-doc   { background: rgba(139,92,246,.08); color: #7c3aed; }
+    .article-tag.type-link  { background: rgba(30,111,241,.08); color: var(--blue-500); }
+    .article-body h3 { font-size: 1.05rem; font-weight: 600; color: var(--navy-800); margin-bottom: 8px; line-height: 1.4; }
+    .article-body p { font-size: .85rem; color: var(--gray-500); line-height: 1.7; margin-bottom: 16px; flex: 1; }
+    .article-footer { display: flex; align-items: center; justify-content: space-between; }
+    .article-date { font-size: .78rem; color: var(--gray-400); }
+    .article-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .85rem; font-weight: 600; color: var(--blue-500); text-decoration: none;
+      transition: gap .2s;
+    }
+    .article-link:hover { gap: 10px; }
+    .empty-state {
+      text-align: center; padding: 80px 24px; color: var(--gray-400);
+    }
+    .empty-state .icon { font-size: 3.5rem; margin-bottom: 16px; }
+    .empty-state h3 { font-size: 1.2rem; color: var(--navy-700); margin-bottom: 8px; }
+    .empty-state p { font-size: .9rem; max-width: 480px; margin: 0 auto; }
+  </style>
+</head>
+<body>
+{% include 'partials/loading.html' %}
+
+<header class="p-header" id="p-header">
+  <div class="p-header-inner">
+    <a href="/"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Tunes Pharma" class="p-logo"></a>
+    <nav class="p-nav">
+      <a href="/">{{ t.home }}</a>
+      <a href="/about">{{ t.about }}</a>
+      <div class="p-nav-drop">
+        <a href="/products" class="p-nav-drop-trigger">{{ t.products }} <span class="p-caret">▾</span></a>
+        <div class="p-nav-drop-menu">
+          <a href="/products?category=diabetes">Diabetology</a>
+          <a href="/products?category=neuropathy">Neuropathy</a>
+          <a href="/products?category=gastro">Gastroenterology</a>
+          <a href="/products?category=general">General Medicine</a>
+          <a href="/products">View All Products →</a>
+        </div>
+      </div>
+      <a href="/services">{{ t.services }}</a>
+      <a href="/research" class="active">Academic Insights</a>
+      <a href="/gallery">{{ t.gallery }}</a>
+    </nav>
+    <div class="p-header-actions">
+      <a href="/contact" class="p-contact-btn">{{ t.contact }}</a>
+    </div>
+  </div>
+</header>
+
+<section class="ai-hero">
+  <div class="ai-hero-inner">
+    <div class="ai-hero-text p-reveal">
+      <div class="p-hero-badge" style="margin-bottom:22px"><span class="dot"></span>Clinical Resources</div>
+      <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2.2rem,4vw,3.4rem);font-weight:700;line-height:1.15;margin-bottom:16px">Academic Insights</h1>
+      <p style="color:rgba(255,255,255,.65);font-size:1.05rem;line-height:1.8;max-width:560px">Published research papers, clinical evidence summaries and therapeutic resources curated by the Tunes Pharma medical affairs team.</p>
+    </div>
+  </div>
+</section>
+
+<section class="p-section p-section-light">
+  <div class="p-container">
+    {% if articles %}
+    <div class="articles-grid">
+      {% for a in articles %}
+      <div class="article-card p-reveal">
+        <div class="article-thumb">
+          {% if a.thumbnail_url %}
+            <img src="{{ a.thumbnail_url }}" alt="{{ a.title }}">
+          {% else %}
+            <span class="fallback-icon">📄</span>
+          {% endif %}
+        </div>
+        <div class="article-body">
+          <div class="article-meta">
+            <span class="article-tag {{ a.therapy_area or 'all' }}">{{ a.therapy_area or 'All Areas' }}</span>
+            <span class="article-tag type-{{ a.content_type or 'link' }}">{{ (a.content_type or 'link')|upper }}</span>
+          </div>
+          <h3>{{ a.title }}</h3>
+          <p>{{ a.description[:160] if a.description else 'A clinical resource published by Tunes Pharma.' }}{% if a.description and a.description|length > 160 %}…{% endif %}</p>
+          <div class="article-footer">
+            <span class="article-date">{% if a.published_at %}{{ a.published_at[:10] }}{% elif a.created_at %}{{ a.created_at[:10] }}{% else %}—{% endif %}</span>
+            <a href="{{ a.file_url }}" target="_blank" class="article-link">View Resource <span>→</span></a>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <div class="icon">📚</div>
+      <h3>No articles published yet</h3>
+      <p>Clinical resources and research papers will appear here once published by the Tunes Pharma team.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% include 'partials/footer.html' %}
+</body>
+</html>

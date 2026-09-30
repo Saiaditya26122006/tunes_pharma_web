@@ -233,45 +233,6 @@
         <p class="pd-composition">{{ product.composition }}</p>
         {% endif %}
 
-        {% if product.get('description') %}
-        <p class="pd-description">{{ product.description | truncate(200, killwords=False, end='…') }}</p>
-        {% endif %}
-
-        <div class="pd-meta-list">
-          {% if product.get('schedule') %}
-          <div class="pd-meta-item">
-            <div class="pd-meta-label">Schedule</div>
-            <div class="pd-meta-value">{{ product.schedule }}</div>
-          </div>
-          {% endif %}
-          {% if product.get('packing') %}
-          <div class="pd-meta-item">
-            <div class="pd-meta-label">Packing</div>
-            <div class="pd-meta-value">{{ product.packing }}</div>
-          </div>
-          {% endif %}
-          {% if product.get('mrp') %}
-          <div class="pd-meta-item">
-            <div class="pd-meta-label">MRP</div>
-            <div class="pd-meta-value">{{ product.mrp }}</div>
-          </div>
-          {% endif %}
-          <div class="pd-meta-item">
-            <div class="pd-meta-label">Certification</div>
-            <div class="pd-meta-value">WHO-GMP / DCGI</div>
-          </div>
-        </div>
-
-        <div class="pd-actions">
-          <a href="/online-ordering" class="pd-btn pd-btn-dark">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-            Order Now
-          </a>
-          {% if product.get('buy_1mg') %}
-          <a href="{{ product.buy_1mg }}" target="_blank" rel="noopener noreferrer" class="pd-btn pd-btn-1mg">Buy on 1mg</a>
-          {% endif %}
-          <a href="/contact" class="pd-btn pd-btn-outline">Request Sample</a>
-        </div>
       </div>
 
     </div>

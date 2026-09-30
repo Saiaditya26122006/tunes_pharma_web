@@ -1,0 +1,281 @@
+"""Static data dicts used by the public website routes.
+
+Extracted from the original app.py so that blueprint modules can import
+without circular-import issues.  Data is identical to the original.
+"""
+
+translations = {
+    'en': {
+        'home': 'Home',
+        'about': 'About Us',
+        'products': 'Products',
+        'services': 'Services',
+        'research': 'Research',
+        'contact': 'Contact',
+        'gallery': 'Gallery',
+        'pharmaintel_ai': 'Pharmaintel AI',
+        'welcome': 'Welcome to Tunes Therapeutics',
+        'tagline': 'Retuning Health, Redefining Lives'
+    },
+    'hi': {
+        'home': 'होम',
+        'about': 'हमारे बारे में',
+        'products': 'उत्पाद',
+        'services': 'सेवाएँ',
+        'research': 'अनुसंधान',
+        'contact': 'संपर्क करें',
+        'gallery': 'गैलरी',
+        'pharmaintel_ai': 'फार्माइंटेल AI',
+        'welcome': 'ट्यून्स थेराप्यूटिक्स में आपका स्वागत है',
+        'tagline': 'स्वास्थ्य को पुनः ट्यून करना, जीवन को पुनः परिभाषित करना'
+    }
+}
+
+products_data = {
+    "ecoglim-mv1": {
+        "name": "Ecoglim MV 1mg/500mg/0.2mg Tablet SR",
+        "description": "Ecoglim MV 1mg/500mg/0.2mg Tablet SR belongs to a category of medicines known as anti-diabetic drugs. It is a combination of medicines used to treat type 2 diabetes mellitus in adults. It helps control blood sugar levels in people with diabetes. Take it with or immediately before meals, regularly at the same time each day. Keep taking this medicine even if you feel well or your blood sugar levels are controlled — stopping without consulting your doctor may put you at risk of kidney damage, blindness, nerve problems, and loss of limbs.",
+        "image": "ecoglim-mv1.jpg",
+        "features": "Triple-action antidiabetic — controls fasting and post-prandial blood glucose through 3 distinct mechanisms",
+        "composition": "Glimepiride 1mg + Metformin 500mg + Voglibose 0.2mg",
+        "category": "Diabetes",
+        "indication": "Treatment of Type 2 Diabetes Mellitus in adults — particularly effective for controlling post-meal blood glucose spikes when single or dual therapy is not effective.",
+        "benefits": "Ecoglim MV 1mg/500mg/0.2mg Tablet SR helps control high blood glucose levels after meals and supports better overall diabetes management. It lowers the risk of serious complications of diabetes, such as kidney damage, vision problems, nerve issues, and limb loss. It also helps reduce the risk of death from cardiovascular disease in people with type 2 diabetes who already have heart disease. Regular use, along with a healthy diet and exercise, supports long-term health and helps maintain a more stable and active life.",
+        "how_it_works": "Ecoglim MV is a combination of three antidiabetic medicines: Glimepiride, Metformin, and Voglibose. Glimepiride is a sulfonylurea that increases the amount of insulin released by the pancreas to lower blood glucose. Metformin is a biguanide that lowers glucose production in the liver, delays glucose absorption from the intestines, and increases the body's sensitivity to insulin. Voglibose is an alpha-glucosidase inhibitor that prevents the breakdown of complex sugars into simple sugars (glucose), preventing blood glucose levels from rising too high after meals.",
+        "how_to_use": "Take this medicine in the dose and duration as advised by your doctor. Swallow it as a whole — do not chew, crush or break it. Ecoglim MV 1mg/500mg/0.2mg Tablet SR is to be taken on an empty stomach (with or immediately before meals). If you miss a dose, take it as soon as possible. However, if it is almost time for your next dose, skip the missed dose. Do not double the dose.",
+        "side_effects": "Constipation, Nausea, Hypoglycemia (low blood glucose level), Abdominal pain, Loss of appetite. Also reported: Vomiting, Diarrhoea, Taste changes, Headache, Edema (swelling), Blurred vision, Upper respiratory tract infection. Recognise signs of low blood sugar: sweating, dizziness, headache, and shaking. Always carry a fast-acting glucose source. Most side effects do not require medical attention and disappear as your body adjusts to the medicine.",
+        "safety_advice": "Alcohol: UNSAFE — It is unsafe to consume alcohol with this medicine. It may lower blood sugar levels and increase the chances of lactic acidosis. Pregnancy: CONSULT YOUR DOCTOR — Safety during pregnancy has not been established. Breastfeeding: CONSULT YOUR DOCTOR — May pass into breastmilk and harm the baby. Driving: CAUTION — May affect driving ability if blood sugar becomes too low or too high; monitor your blood glucose. Kidney: UNSAFE — Unsafe in patients with kidney disease and should be avoided; not recommended in severe kidney disease. Liver: CAUTION — Use with caution in liver disease; generally started with low dose in mild-to-moderate disease; not recommended in severe liver disease.",
+        "contraindications": "Do not take if you have type 1 diabetes mellitus, diabetic ketoacidosis, severe kidney or liver disease, or inflammatory bowel disease. Not suitable if you have a history of heart disease (consult doctor). Avoid in known allergy to any component. Avoid with alcohol.",
+        "drug_interactions": "Inform your doctor about all medicines you are taking. Ecoglim MV can cause hypoglycemia when used with other antidiabetic medicines or alcohol, or if you delay/miss a meal. Your doctor may check your liver function regularly — inform if you develop abdominal pain, loss of appetite, or jaundice.",
+        "quick_tips": "Can cause hypoglycemia (low blood sugar) when used with other antidiabetic medicines or alcohol — always carry a sugar source for immediate relief. Your doctor may check liver function regularly; inform if you develop abdominal pain, loss of appetite, or yellowing of eyes/skin. Individuals with severe renal or hepatic impairment should not take this medicine. Works best when used along with proper diet and exercise. Habit Forming: No.",
+        "storage": "Store below 30°C in a dry place away from direct sunlight. Keep out of reach of children.",
+        "manufacturer": "Tunes Pharma, No. 8-274, Gowtham Nagar, Ferozguda, Balanagar, Hyderabad – 500 011.",
+        "schedule": "H",
+        "packing": "10×10 Tablets (Alu-Alu)",
+        "mrp": "₹7.78/Tablet SR",
+        "therapeutic_class": "ANTI DIABETIC",
+        "buy_1mg": "https://www.1mg.com/drugs/ecoglim-mv-1mg-500mg-0.2mg-tablet-sr-725563"
+    },
+    "ecoglim-mv2": {
+        "name": "Ecoglim MV 2mg/500mg/0.2mg Tablet SR",
+        "description": "Ecoglim MV 2mg/500mg/0.2mg Tablet SR belongs to a category of medicines known as anti-diabetic drugs. It is a combination of medicines used to treat type 2 diabetes mellitus in adults. It helps control blood sugar levels in people with diabetes. Take it with or immediately before meals, regularly at the same time each day. Keep taking this medicine even if you feel well or your blood sugar levels are controlled — stopping without consulting your doctor may put you at risk of kidney damage, blindness, nerve problems, and loss of limbs.",
+        "image": "Ecoglim-MV2.jpg",
+        "features": "Triple-action antidiabetic — higher Glimepiride dose (2mg) for patients requiring stronger glycemic control",
+        "composition": "Glimepiride 2mg + Metformin 500mg + Voglibose 0.2mg",
+        "category": "Diabetes",
+        "indication": "Treatment of Type 2 Diabetes Mellitus in adults requiring stronger glycemic control — particularly effective for post-meal blood glucose management when lower doses are insufficient.",
+        "benefits": "Ecoglim MV 2mg/500mg/0.2mg Tablet SR helps control high blood glucose levels after meals and supports better overall diabetes management with a higher Glimepiride dose (2mg). It lowers the risk of serious complications of diabetes, such as kidney damage, vision problems, nerve issues, and limb loss. It also helps reduce the risk of cardiovascular mortality in patients with type 2 diabetes who already have heart disease. Regular use, combined with a healthy diet and exercise, supports long-term health and a more stable, active life.",
+        "how_it_works": "Ecoglim MV is a combination of three antidiabetic medicines: Glimepiride, Metformin, and Voglibose. Glimepiride (2mg) is a sulfonylurea that increases the amount of insulin released by the pancreas to lower blood glucose. Metformin is a biguanide that lowers glucose production in the liver, delays glucose absorption from the intestines, and increases the body's sensitivity to insulin. Voglibose is an alpha-glucosidase inhibitor that prevents the breakdown of complex sugars into simple sugars (glucose), preventing blood glucose levels from rising too high after meals.",
+        "how_to_use": "Take this medicine in the dose and duration as advised by your doctor. Swallow it as a whole — do not chew, crush or break it. Ecoglim MV 2mg/500mg/0.2mg Tablet SR is to be taken on an empty stomach (with or immediately before meals). If you miss a dose, take it as soon as possible. However, if it is almost time for your next dose, skip the missed dose. Do not double the dose.",
+        "side_effects": "Constipation, Nausea, Hypoglycemia (low blood glucose level), Abdominal pain, Loss of appetite. Also reported: Vomiting, Diarrhoea, Taste changes, Headache, Edema (swelling), Blurred vision, Upper respiratory tract infection. Recognise signs of low blood sugar: sweating, dizziness, headache, and shaking. Always carry a fast-acting glucose source. Most side effects do not require medical attention and disappear as your body adjusts.",
+        "safety_advice": "Alcohol: UNSAFE — It is unsafe to consume alcohol with this medicine. It may lower blood sugar levels and increase the chances of lactic acidosis. Pregnancy: CONSULT YOUR DOCTOR — Safety during pregnancy has not been established. Breastfeeding: CONSULT YOUR DOCTOR — May pass into breastmilk and harm the baby. Driving: CAUTION — May affect driving ability if blood sugar becomes too low or too high; monitor your blood glucose. Kidney: UNSAFE — Unsafe in patients with kidney disease and should be avoided; not recommended in severe kidney disease. Liver: CAUTION — Use with caution in liver disease; generally started with low dose in mild-to-moderate disease; not recommended in severe liver disease.",
+        "contraindications": "Do not take if you have type 1 diabetes mellitus, diabetic ketoacidosis, severe kidney or liver disease, or inflammatory bowel disease. Not suitable if you have a history of heart disease (consult doctor). Avoid in known allergy to any component. Avoid with alcohol.",
+        "drug_interactions": "Inform your doctor about all medicines you are taking. This medicine can cause hypoglycemia when used with other antidiabetic medicines or alcohol, or if you delay/miss a meal. Your doctor may check your liver function regularly — inform if you develop abdominal pain, loss of appetite, or jaundice.",
+        "quick_tips": "Can cause hypoglycemia (low blood sugar) when used with other antidiabetic medicines or alcohol — always carry a sugar source for immediate relief. Your doctor may check liver function regularly; inform if you develop abdominal pain, loss of appetite, or yellowing of eyes/skin. Individuals with severe renal or hepatic impairment should not take this medicine. Works best when used along with proper diet and exercise. Habit Forming: No.",
+        "storage": "Store below 30°C in a dry place away from direct sunlight. Keep out of reach of children.",
+        "manufacturer": "Tunes Pharma, No. 8-274, Gowtham Nagar, Ferozguda, Balanagar, Hyderabad – 500 011.",
+        "schedule": "H",
+        "packing": "10×10 Tablets (Alu-Alu)",
+        "mrp": "₹8.50/Tablet SR",
+        "therapeutic_class": "ANTI DIABETIC",
+        "buy_1mg": "https://www.1mg.com/drugs/ecoglim-mv-2mg-500mg-0.2mg-tablet-sr-725565"
+    },
+    "ecoglim-mp1": {
+        "name": "Ecoglim MP 1mg/500mg/15mg Tablet SR",
+        "description": "Ecoglim MP 1mg/500mg/15mg Tablet SR is a medicine that helps control blood sugar levels. It is used together with diet and exercise to improve blood sugar control in adults with type 2 diabetes mellitus. It helps in the proper utilisation of insulin, thereby lowering blood sugar levels. Take it with food to avoid stomach upset. Overdose may lead to low blood sugar (hypoglycemia).",
+        "image": "Ecoglim MP1.jpg",
+        "features": "Triple-action antidiabetic — improves insulin utilisation through 3 distinct mechanisms for better glycemic control",
+        "composition": "Glimepiride 1mg + Metformin 500mg + Pioglitazone 15mg",
+        "category": "Diabetes",
+        "indication": "Treatment of Type 2 Diabetes Mellitus in adults — used when single or dual therapy is not effective. Supports better use of insulin and reduces excess glucose levels in the body.",
+        "benefits": "Ecoglim MP 1mg/500mg/15mg Tablet SR helps improve blood sugar control by supporting better use of insulin and reducing excess glucose levels in the body. It helps maintain more stable sugar levels throughout the day, lowers the risk of diabetes-related complications (kidney damage, vision problems, nerve issues, limb loss), and supports overall metabolic health when used along with a proper diet and lifestyle.",
+        "how_it_works": "Ecoglim MP is a combination of three antidiabetic medicines: Glimepiride, Metformin, and Pioglitazone. Glimepiride is a sulfonylurea that increases the amount of insulin released by the pancreas to lower blood glucose. Metformin is a biguanide that lowers glucose production in the liver, reduces glucose absorption from the intestines, and increases the body's sensitivity to insulin. Pioglitazone is a thiazolidinedione that further increases insulin sensitivity by acting on PPAR-γ receptors in fat and muscle tissue. Together, they provide better blood sugar control when single or dual therapy is insufficient.",
+        "how_to_use": "Take this medicine in the dose and duration as advised by your doctor. Swallow it as a whole — do not chew, crush or break it. Ecoglim MP 1mg/500mg/15mg Tablet SR should be taken with or after food. If you miss a dose, take it as soon as possible. However, if it is almost time for your next dose, skip the missed dose. Do not double the dose.",
+        "side_effects": "Cardiac disturbances, Pain in extremity, Back pain, Chest pain, Headache, Sinus inflammation, Muscle pain, Sore throat. Also: Hypoglycemia (low blood sugar — symptoms include cold sweats, cool pale skin, tremor, anxiety, fast heart rate, dizziness, nausea). Most side effects do not require medical attention and disappear as your body adjusts. Consult your doctor if they persist.",
+        "safety_advice": "Alcohol: UNSAFE — Unsafe to consume alcohol; may lower blood sugar and increase risk of lactic acidosis. Pregnancy: UNSAFE — Highly unsafe during pregnancy; can cause serious harm including birth defects and pregnancy loss. Do not use if pregnant or planning pregnancy. Breastfeeding: UNSAFE — Unsafe during breastfeeding; data suggests the drug may cause toxicity to the baby. Driving: UNSAFE — May decrease alertness, affect vision, or cause sleepiness and dizziness; do not drive if these symptoms occur. Kidney: CAUTION — Use with caution in kidney disease; not recommended in severe kidney disease; regular monitoring of kidney function is advisable. Liver: UNSAFE — Unsafe in patients with liver disease and should be avoided; not recommended in severe liver disease.",
+        "contraindications": "Avoid in congestive heart failure, severe kidney disease, severe liver disease, swelling of the back of the eye. Do not use if pregnant or breastfeeding. Avoid alcohol. Not for type 1 diabetes or diabetic ketoacidosis. Avoid in known allergy to any component.",
+        "drug_interactions": "Inform your doctor about all prescription and non-prescription medicines, vitamins, and herbal supplements you are taking. Long-term use may cause Vitamin B12 deficiency (Metformin interferes with B12 absorption). Inform your doctor about any kidney, liver, or heart problems before starting treatment.",
+        "quick_tips": "Take it with food to lower the chance of an upset stomach. May cause hypoglycemia when used with other antidiabetic medicines, alcohol, or if you delay/miss a meal — always carry sugary food or fruit juice for immediate relief. Your doctor may check liver function regularly — inform if you develop abdominal pain, loss of appetite, or yellowing of eyes/skin. Works best along with proper diet and exercise. Habit Forming: No.",
+        "storage": "Store below 30°C in a dry place away from direct sunlight. Keep out of reach of children.",
+        "manufacturer": "Tunes Pharma, No. 8-274, Gowtham Nagar, Ferozguda, Balanagar, Hyderabad – 500 011.",
+        "schedule": "H",
+        "packing": "10×10 Tablets (Alu-Alu)",
+        "mrp": "₹3.89/Tablet SR",
+        "therapeutic_class": "ANTI DIABETIC",
+        "buy_1mg": "https://www.1mg.com/drugs/ecoglim-mp-1mg-500mg-15mg-tablet-sr-725567"
+    },
+    "ecoglim-mp2": {
+        "name": "Ecoglim MP 2mg/500mg/15mg Tablet SR",
+        "description": "Ecoglim MP 2mg/500mg/15mg Tablet SR is a medicine that helps control blood sugar levels. It is used together with diet and exercise to improve blood sugar control in adults with type 2 diabetes mellitus. It contains a higher dose of Glimepiride (2mg) for patients requiring stronger glycemic control. It helps in the proper utilisation of insulin, thereby lowering blood sugar levels. Take it with food to avoid stomach upset. Overdose may lead to low blood sugar (hypoglycemia).",
+        "image": "Ecoglim MP2.jpg",
+        "features": "Triple-action antidiabetic with higher Glimepiride dose (2mg) — for patients needing stronger insulin stimulation and glycemic control",
+        "composition": "Glimepiride 2mg + Metformin 500mg + Pioglitazone 15mg",
+        "category": "Diabetes",
+        "indication": "Treatment of Type 2 Diabetes Mellitus in adults requiring stronger glycemic control — used when the 1mg dose is insufficient or when more pronounced insulin resistance is present.",
+        "benefits": "Ecoglim MP 2mg/500mg/15mg Tablet SR helps improve blood sugar control with a higher Glimepiride dose (2mg) for stronger insulin stimulation. It maintains more stable sugar levels throughout the day, lowers the risk of diabetes-related complications (kidney damage, vision problems, nerve issues, limb loss), and supports overall metabolic health when used along with a proper diet and lifestyle.",
+        "how_it_works": "Ecoglim MP is a combination of three antidiabetic medicines: Glimepiride, Metformin, and Pioglitazone. Glimepiride (2mg) is a sulfonylurea that increases the amount of insulin released by the pancreas to lower blood glucose — at a stronger dose than the 1mg formulation. Metformin is a biguanide that lowers glucose production in the liver, reduces glucose absorption from the intestines, and increases the body's sensitivity to insulin. Pioglitazone is a thiazolidinedione that further increases insulin sensitivity by acting on PPAR-γ receptors in fat and muscle tissue. Together, they provide better blood sugar control when single or dual therapy is insufficient.",
+        "how_to_use": "Take this medicine in the dose and duration as advised by your doctor. Swallow it as a whole — do not chew, crush or break it. Ecoglim MP 2mg/500mg/15mg Tablet SR should be taken with or after food. If you miss a dose, take it as soon as possible. However, if it is almost time for your next dose, skip the missed dose. Do not double the dose.",
+        "side_effects": "Cardiac disturbances, Pain in extremity, Back pain, Chest pain, Headache, Sinus inflammation, Muscle pain, Sore throat. Also: Hypoglycemia (low blood sugar — symptoms include cold sweats, cool pale skin, tremor, anxiety, fast heart rate, dizziness, nausea). Most side effects do not require medical attention and disappear as your body adjusts. Consult your doctor if they persist.",
+        "safety_advice": "Alcohol: UNSAFE — Unsafe to consume alcohol; may lower blood sugar and increase risk of lactic acidosis. Pregnancy: UNSAFE — Highly unsafe during pregnancy; can cause serious harm including birth defects and pregnancy loss. Do not use if pregnant or planning pregnancy. Breastfeeding: UNSAFE — Unsafe during breastfeeding; data suggests the drug may cause toxicity to the baby. Driving: UNSAFE — May decrease alertness, affect vision, or cause sleepiness and dizziness; do not drive if these symptoms occur. Kidney: CAUTION — Use with caution in kidney disease; not recommended in severe kidney disease; regular monitoring of kidney function is advisable. Liver: UNSAFE — Unsafe in patients with liver disease and should be avoided; not recommended in severe liver disease.",
+        "contraindications": "Avoid in congestive heart failure, severe kidney disease, severe liver disease, swelling of the back of the eye. Do not use if pregnant or breastfeeding. Avoid alcohol. Not for type 1 diabetes or diabetic ketoacidosis. Avoid in known allergy to any component.",
+        "drug_interactions": "Inform your doctor about all prescription and non-prescription medicines, vitamins, and herbal supplements you are taking. Long-term use may cause Vitamin B12 deficiency (Metformin interferes with B12 absorption). Inform your doctor about any kidney, liver, or heart problems before starting treatment.",
+        "quick_tips": "Take it with food to lower the chance of an upset stomach. May cause hypoglycemia when used with other antidiabetic medicines, alcohol, or if you delay/miss a meal — always carry sugary food or fruit juice for immediate relief. Your doctor may check liver function regularly — inform if you develop abdominal pain, loss of appetite, or yellowing of eyes/skin. Works best along with proper diet and exercise. Habit Forming: No.",
+        "storage": "Store below 30°C in a dry place away from direct sunlight. Keep out of reach of children.",
+        "manufacturer": "Tunes Pharma, No. 8-274, Gowtham Nagar, Ferozguda, Balanagar, Hyderabad – 500 011.",
+        "schedule": "H",
+        "packing": "10×10 Tablets (Alu-Alu)",
+        "mrp": "₹4.50/Tablet SR",
+        "therapeutic_class": "ANTI DIABETIC",
+        "buy_1mg": "https://www.1mg.com/drugs/ecoglim-mp-2mg-500mg-15mg-tablet-sr-725568"
+    },
+    "nactaid": {
+        "name": "Nactaid 500mg/150mg Tablet",
+        "description": "Nactaid 500mg/150mg Tablet is a combination medicine used in the treatment of chronic kidney disease. It protects the kidneys from damage and reduces the risk of kidney failure. It can be taken with or without food in a dose and duration as advised by the doctor. Keep taking this medicine for as long as your doctor recommends — stopping early may worsen your condition.",
+        "image": "p2.jpg",
+        "features": "Dual antioxidant combination — protects kidneys from free radical damage and slows progression of chronic kidney disease",
+        "composition": "Taurine 500mg + Acetylcysteine 150mg",
+        "category": "Nephrology",
+        "indication": "Treatment of Chronic Kidney Disease (CKD). Also used to help prevent contrast-induced acute kidney injury (CI-AKI) in high-risk patients such as those with kidney problems, diabetes, high blood pressure, heart failure, older age, dehydration, or those taking kidney-harming medicines.",
+        "benefits": "Chronic kidney disease (CKD) refers to the loss of normal kidney function over a long span of time. Nactaid 500mg/150mg Tablet has antioxidant properties that help in the elimination of toxic materials such as urea from the kidneys and improve kidney function. When combined with a low or very low protein diet, it helps slow down the progression of CKD and improves quality of life. Regular use as directed by the doctor provides maximum benefit.",
+        "how_it_works": "Nactaid 500mg/150mg Tablet is a combination of two antioxidants: Taurine and Acetylcysteine. These antioxidants work by protecting the kidneys from damage by harmful chemicals (free radicals). Acetylcysteine is a precursor to glutathione — the body's primary cellular antioxidant — and helps neutralise oxidative stress in kidney tissue. Taurine supports cellular membrane stability, reduces inflammation, and provides additional antioxidant protection to renal cells.",
+        "how_to_use": "Take this medicine in the dose and duration as advised by your doctor. Swallow it as a whole — do not chew, crush or break it. Nactaid 500mg/150mg Tablet should be taken with or after food. If you miss a dose, take it as soon as possible. However, if it is almost time for your next dose, skip the missed dose. Do not double the dose.",
+        "side_effects": "Runny nose, Diarrhoea, Abdominal pain, Skin irritation, Throat irritation, Nausea, Vomiting, Rash, Fever. Most side effects do not require any medical attention and disappear as your body adjusts to the medicine. Contact your doctor if they persist or worsen.",
+        "safety_advice": "Alcohol: CAUTION — Alcohol should be used with caution while taking this medicine. Pregnancy: CONSULT YOUR DOCTOR — Not recommended during pregnancy as there is positive evidence of fetal risk based on animal studies; may still be prescribed where benefits outweigh risks. Breastfeeding: CONSULT YOUR DOCTOR — May be unsafe; limited human data suggests the drug may pass into breastmilk and harm the baby; use only if expected benefit outweighs potential risk. Driving: UNSAFE — May decrease alertness, affect vision, or cause sleepiness and dizziness; do not drive if these symptoms occur. Kidney: SAFE IF PRESCRIBED — Safe to use in patients with kidney disease; no dose adjustment recommended. Liver: CONSULT YOUR DOCTOR — Limited data available on use in liver disease.",
+        "contraindications": "Do not take if you are allergic to taurine, acetylcysteine, or any other ingredient in the medicine. Not recommended for people having a sudden, severe asthma attack — asthma patients should be closely monitored. Inform your doctor about any kidney or liver disease before starting treatment.",
+        "drug_interactions": "Let your doctor know about all other medications you are taking, as some may affect or be affected by this medicine. Inform your doctor if you are pregnant, planning to conceive, or breastfeeding.",
+        "quick_tips": "Take only as per the dose and duration prescribed by your doctor. The medicine has a characteristic smell — this is normal and does not indicate that the medicine has changed. Inform your doctor if you are pregnant, planning to conceive, or breastfeeding. Habit Forming: No.",
+        "storage": "Store below 30°C in a dry place away from direct sunlight. Keep out of reach of children.",
+        "manufacturer": "Tunes Pharma, No. 8-274, Gowtham Nagar, Ferozguda, Balanagar, Hyderabad – 500 011.",
+        "schedule": "H",
+        "packing": "10×10 Tablets (Alu-Alu)",
+        "mrp": "₹8.64/Tablet",
+        "therapeutic_class": "UROLOGY",
+        "buy_1mg": "https://www.1mg.com/drugs/nactaid-500mg-150mg-tablet-725571"
+    },
+    "resgaba-nt": {
+        "name": "Resgaba NT 75mg/10mg/1500mcg Tablet",
+        "description": "Resgaba NT 75mg/10mg/1500mcg Tablet is a combination of three medicines used to treat neuropathic pain. It works by decreasing pain by controlling calcium channel activity of the nerve cells. It also increases the level of chemical messengers in the brain that help in regulating the mood and protect nerve fibers. Resgaba NT Tablet can be taken with or without food. However, it is advised to take it at the same time each day to maintain a consistent level of medicine in the body.",
+        "image": "resgaba-nt.jpg",
+        "features": "Triple-action neuropathic pain relief — targets pain signalling, mood pathways and nerve regeneration",
+        "composition": "Pregabalin 75mg + Nortriptyline 10mg + Methylcobalamin 1500mcg",
+        "category": "Neuropathy",
+        "indication": "Treatment of Neuropathic Pain — including long-lasting (chronic) pain caused by nerve damage due to diabetes (diabetic peripheral neuropathy), shingles (post-herpetic neuralgia), or spinal cord injury.",
+        "benefits": "Resgaba NT reduces pain and its associated symptoms such as mood changes, sleep problems, and tiredness. It works by interfering with pain signals that travel through the damaged nerves and the brain. It also contains nutritional supplements (Methylcobalamin) essential for improving nerve conduction. Taking Resgaba NT regularly will improve your physical and social functioning and overall quality of life. It takes a few weeks to work so it should be taken regularly even if it does not seem to be doing any good initially.",
+        "how_it_works": "Pregabalin is an alpha 2 delta ligand which decreases pain by modulating calcium channel activity of the nerve cells. Nortriptyline is a tricyclic antidepressant which increases the levels of chemical messengers (serotonin and noradrenaline) that stop the movement of pain signals in the brain. Methylcobalamin is a form of vitamin B which helps in the production of myelin, a substance that protects nerve fibers and rejuvenates damaged nerve cells. Together, they relieve neuropathic pain (pain from damaged nerves).",
+        "how_to_use": "Take this medicine in the dose and duration as advised by your doctor. Swallow it as a whole — do not chew, crush or break it. Resgaba NT Tablet may be taken with or without food. It is advised to take it at the same time each day. If you miss a dose, take it as soon as possible. However, if it is almost time for your next dose, skip the missed dose. Do not double the dose. Do not stop taking this medicine suddenly without consulting your doctor — gradual tapering may be required.",
+        "side_effects": "Constipation, Weight gain, Dizziness, Sleepiness, Tiredness, Blurred vision, Dryness in mouth, Uncoordinated body movements, Decreased appetite, Difficulty in urination, Orthostatic hypotension (sudden lowering of blood pressure on standing), Increased heart rate, Nausea, Vomiting, Diarrhea, Headache. Most side effects do not require medical attention and disappear as the body adjusts to the medicine. Consult your doctor if they persist.",
+        "safety_advice": "Alcohol: UNSAFE — Do not drink alcohol while taking this medicine; may cause excessive drowsiness. Pregnancy: CONSULT YOUR DOCTOR — safety during pregnancy has not been established. Breastfeeding: CONSULT YOUR DOCTOR — may pass into breastmilk and harm the baby. Driving: UNSAFE — may affect alertness and ability to drive. Kidney disease: CAUTION — use with caution; dose adjustment may be needed. Liver disease: SAFE IF PRESCRIBED — dose adjustment may not be needed.",
+        "contraindications": "Inform your doctor if you suffer from kidney or liver disease. Do not take with alcohol. Inform your doctor if you are pregnant, planning pregnancy, or breastfeeding. Immediately seek medical help if you experience hallucinations, fever, sweating, shivering, fast heart rate, muscle twitching, or loss of coordination.",
+        "drug_interactions": "Inform your doctor about all other medicines you are taking as many of these may make this medicine less effective or change the way it works. Inform your doctor if you are taking any other pain-relieving medicines. Inform your doctor if you have a history of seizures.",
+        "quick_tips": "Take it at the same time each day for consistent levels. Do not drive or operate machinery until you know how this medicine affects you. Maintain a balanced diet and exercise regularly to manage potential weight gain. Along with Resgaba NT, your doctor might advise physiotherapy to get relief from pain. Habit Forming: No.",
+        "storage": "Store below 30°C in a dry place away from direct sunlight. Keep out of reach of children.",
+        "manufacturer": "Tunes Pharma, No. 8-274, Gowtham Nagar, Ferozguda, Balanagar, Hyderabad – 500 011.",
+        "schedule": "H",
+        "packing": "10×10 Tablets (Alu-Alu)",
+        "mrp": "₹12.1/Tablet",
+        "therapeutic_class": "NEURO CNS",
+        "buy_1mg": "https://www.1mg.com/drugs/resgaba-nt-75mg-10mg-1500mcg-tablet-725572"
+    },
+    "resgaba-dlx": {
+        "name": "RESGABA-DLX",
+        "description": "RESGABA-DLX combines Pregabalin and Duloxetine for dual-action management of chronic neuropathic pain. Pregabalin modulates calcium channels in hyperexcited neurons while Duloxetine (SNRI) inhibits serotonin and noradrenaline reuptake to enhance descending pain control.",
+        "image": "resgaba-dlx.jpg",
+        "features": "Pregabalin 75mg + Duloxetine 30mg",
+        "benefits": "Superior pain relief through central and peripheral sensitization blockade, mood improvement, and reduced anxiety — especially beneficial in patients with comorbid depression and chronic pain.",
+        "manufacturer": "Tunes Therapeutics Pvt. Ltd.",
+        "category": "Ortho",
+        "composition": "Pregabalin 75mg + Duloxetine 30mg",
+        "indication": "Chronic neuropathic pain, diabetic peripheral neuropathy, generalized anxiety disorder, fibromyalgia",
+        "how_to_use": "Take once or twice daily as directed. Do not crush, chew or open capsules. Do not stop abruptly — taper gradually.",
+        "side_effects": "Nausea, dizziness, dry mouth, constipation, somnolence, hyperhidrosis. Monitor for suicidal ideation in initial weeks.",
+        "storage": "Store below 30°C in a dry place away from moisture and direct sunlight.",
+        "schedule": "H",
+        "packing": "10×10 Capsules (Alu-Alu)"
+    },
+    "rabishir-dsr": {
+        "name": "Rabishir D 30mg/20mg Capsule SR",
+        "description": "Rabishir D 30mg/20mg Capsule SR is a combination medicine used to treat gastroesophageal reflux disease (acid reflux). It works by relieving symptoms of acidity such as heartburn, stomach pain, or irritation. It also neutralizes the acid and promotes easy passage of gas to reduce stomach discomfort. Take it on an empty stomach in the dose and duration advised by your doctor. Continue taking it for as long as prescribed — stopping early may cause symptoms to return or worsen.",
+        "image": "Rabishir-DSR.jpg",
+        "features": "Dual-action GI relief — reduces stomach acid (Rabeprazole) and improves gastric motility (Domperidone SR)",
+        "composition": "Domperidone 30mg + Rabeprazole 20mg",
+        "category": "Gastrointestinal",
+        "indication": "Treatment of Gastroesophageal Reflux Disease (GERD / Acid Reflux). Also used in gastric and duodenal ulcers and functional dyspepsia with nausea.",
+        "benefits": "Gastroesophageal reflux disease (GERD) is a chronic condition where excess stomach acid flows back into the esophagus. Rabishir D reduces the amount of acid your stomach makes and relieves the pain associated with heartburn and acid reflux. Lifestyle changes that help: avoid trigger foods, eat smaller more frequent meals, lose weight if overweight, avoid eating within 3–4 hours of bedtime, and avoid spicy foods, coffee, tea, and chocolate. Taking cold milk and avoiding alcohol also enhances treatment effectiveness.",
+        "how_it_works": "Rabishir D 30mg/20mg Capsule SR is a combination of two medicines: Domperidone and Rabeprazole. Domperidone is a prokinetic which works on the upper digestive tract to increase the movement of the stomach and intestines, allowing food to move more easily through the stomach — controlling nausea and preventing reflux. Rabeprazole is a proton pump inhibitor (PPI) which works by reducing the amount of acid produced in the stomach, providing relief from acid-related indigestion and heartburn.",
+        "how_to_use": "Take this medicine in the dose and duration as advised by your doctor. Swallow it as a whole — do not chew, crush or break it. Rabishir D 30mg/20mg Capsule SR is to be taken on an empty stomach, preferably one hour before a meal (ideally in the morning). If you miss a dose, take it as soon as possible. However, if it is almost time for your next dose, skip the missed dose. Do not double the dose.",
+        "side_effects": "Flatulence, Back pain, Cough, Headache, Diarrhoea, Dizziness, Inflammation of the nose, Abdominal pain, Vomiting, Insomnia (difficulty sleeping), Nausea, Constipation, Nasal congestion (stuffy nose), Fundic gland polyps. Dry mouth may also occur due to Domperidone — drink plenty of water if this happens. Most side effects are mild, temporary and disappear as your body adjusts.",
+        "safety_advice": "Alcohol: CONSULT YOUR DOCTOR — It is not known whether it is safe to consume alcohol with this medicine; avoid alcohol as it can increase drowsiness. Pregnancy: UNSAFE — Highly unsafe during pregnancy; can cause serious harm to the unborn baby including birth defects and pregnancy loss; do not use if pregnant or planning pregnancy. Breastfeeding: UNSAFE — Unsafe during breastfeeding; data suggests the drug may cause toxicity to the baby. Driving: UNSAFE — May decrease alertness, affect vision, or cause sleepiness and dizziness; do not drive if these symptoms occur. Kidney: CAUTION — Use with caution in patients with severe kidney disease; dose adjustment may be needed. Liver: UNSAFE — Unsafe in patients with liver disease; not recommended in moderate and severe liver disease.",
+        "contraindications": "Do not use if you have known hypersensitivity to rabeprazole, domperidone, or any inactive ingredients. Caution in patients with underlying kidney or liver disease. Do not use if pregnant or breastfeeding.",
+        "drug_interactions": "Inform your healthcare provider about all other medicines you are taking, as some may interact with this medicine. Avoid alcohol. Inform your doctor if you have liver or kidney problems before starting treatment.",
+        "quick_tips": "Take one hour before the meal, preferably in the morning. It is a well-tolerated medicine and provides relief for a long time. Inform your doctor if you experience watery diarrhoea, fever, or persistent stomach pain. Inform your doctor if you do not feel better after 14 days — you may have another condition that needs attention. Long-term use can cause weak bones and deficiency of minerals such as magnesium — take adequate dietary calcium and magnesium or supplements as prescribed. Habit Forming: No.",
+        "storage": "Store below 30°C in a dry place away from direct sunlight. Keep out of reach of children.",
+        "manufacturer": "Tunes Pharma, No. 8-274, Gowtham Nagar, Ferozguda, Balanagar, Hyderabad – 500 011.",
+        "schedule": "H",
+        "packing": "10×10 Capsules (Alu-Alu)",
+        "mrp": "₹8.48/Capsule SR",
+        "therapeutic_class": "GASTRO INTESTINAL",
+        "buy_1mg": "https://www.1mg.com/drugs/rabishir-d-30mg-20mg-capsule-sr-725562"
+    }
+}
+
+stockists_data = [
+    {
+        "name": "Medicare Distributors",
+        "city": "Mumbai",
+        "state": "Maharashtra",
+        "address": "123, Medical Street, Andheri East",
+        "phone": "+91 9876543210",
+        "email": "mumbai@medicare.com",
+        "pincode": "400069"
+    },
+    {
+        "name": "Health Care Suppliers",
+        "city": "Delhi",
+        "state": "Delhi",
+        "address": "456, Pharma Road, Connaught Place",
+        "phone": "+91 9876543211",
+        "email": "delhi@healthcare.com",
+        "pincode": "110001"
+    },
+    {
+        "name": "Guntur Medical Distributors",
+        "city": "Guntur",
+        "state": "Andhra Pradesh",
+        "address": "789, Hospital Road, Guntur",
+        "phone": "+91 9876543212",
+        "email": "guntur@medical.com",
+        "pincode": "522001"
+    },
+    {
+        "name": "Bangalore Pharma Hub",
+        "city": "Bangalore",
+        "state": "Karnataka",
+        "address": "321, Industrial Area, Whitefield",
+        "phone": "+91 9876543213",
+        "email": "bangalore@pharma.com",
+        "pincode": "560066"
+    },
+    {
+        "name": "Chennai Medical Supplies",
+        "city": "Chennai",
+        "state": "Tamil Nadu",
+        "address": "654, Medical College Road, T Nagar",
+        "phone": "+91 9876543214",
+        "email": "chennai@medical.com",
+        "pincode": "600017"
+    }
+]
+
+regulatory_data = {
+    "certifications": [
+        {"name": "GMP Certification", "issued_by": "DCGI", "valid_until": "2025-12-31"},
+        {"name": "ISO 9001:2015", "issued_by": "Bureau Veritas", "valid_until": "2026-06-30"},
+        {"name": "WHO-GMP", "issued_by": "WHO", "valid_until": "2025-12-31"},
+        {"name": "Schedule M License", "issued_by": "DCGI", "valid_until": "2025-12-31"}
+    ],
+    "approvals": [
+        {"product": "Ecoglim MV1", "approval_number": "DCGI/2023/12345", "date": "2023-01-15"},
+        {"product": "NACTAID", "approval_number": "DCGI/2023/12346", "date": "2023-02-20"},
+        {"product": "RESGABA Series", "approval_number": "DCGI/2023/12347", "date": "2023-03-10"}
+    ]
+}

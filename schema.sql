@@ -16,6 +16,9 @@ CREATE TABLE IF NOT EXISTS doctors (
   specialty           TEXT,
   is_active           BOOLEAN DEFAULT TRUE,
   whatsapp_consent    BOOLEAN DEFAULT FALSE,
+  email_preference    BOOLEAN DEFAULT TRUE,
+  push_preference     BOOLEAN DEFAULT TRUE,
+  sms_preference      BOOLEAN DEFAULT FALSE,
   created_at          TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -52,10 +55,29 @@ CREATE TABLE IF NOT EXISTS ai_chats (
   updated_at  TIMESTAMPTZ DEFAULT NOW()
 );
 
--- WhatsApp message history / campaign log
-CREATE TABLE IF NOT EXISTS whatsapp_messages (
+-- Push subscriptions (web push + Expo mobile tokens)
+CREATE TABLE IF NOT EXISTS push_subscriptions (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  doctor_id         UUID REFERENCES doctors(id) ON DELETE CASCADE,
+  subscription_json JSONB NOT NULL,
+  expo_token        TEXT,
+  platform          TEXT CHECK (platform IN ('ios', 'android', 'web')),
+  created_at        TIMESTAMPTZ DEFAULT NOW(),
+  updated_at        TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(doctor_id, subscription_json)
+);
+
+CREATE INDEX IF NOT EXISTS idx_push_subscriptions_doctor
+  ON push_subscriptions (doctor_id);
+
+CREATE INDEX IF NOT EXISTS idx_push_subscriptions_expo_token
+  ON push_subscriptions (expo_token) WHERE expo_token IS NOT NULL;
+
+-- Notification message history / campaign log (formerly whatsapp_messages)
+CREATE TABLE IF NOT EXISTS notification_campaigns (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   message_type    TEXT NOT NULL CHECK (message_type IN ('article_notification', 'manual_message')),
+  channel         TEXT NOT NULL CHECK (channel IN ('email', 'push', 'sms', 'whatsapp', 'multi')),
   paper_id        UUID REFERENCES papers(id) ON DELETE SET NULL,
   message_body    TEXT NOT NULL,
   recipient_count INTEGER DEFAULT 0,
@@ -68,15 +90,74 @@ CREATE TABLE IF NOT EXISTS whatsapp_messages (
 );
 
 -- Per-recipient delivery log (linked to a campaign)
-CREATE TABLE IF NOT EXISTS whatsapp_delivery_log (
+CREATE TABLE IF NOT EXISTS notification_delivery_logs (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  message_id      UUID REFERENCES whatsapp_messages(id) ON DELETE CASCADE,
+  campaign_id     UUID REFERENCES notification_campaigns(id) ON DELETE CASCADE,
   doctor_id       UUID REFERENCES doctors(id) ON DELETE SET NULL,
-  whatsapp_number TEXT,
+  channel         TEXT NOT NULL,
+  contact_info    TEXT,
   status          TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'sent', 'delivered', 'failed')),
   error_message   TEXT,
   sent_at         TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- ============================================================
+-- Doctor bookmarks
+-- ============================================================
+CREATE TABLE IF NOT EXISTS bookmarks (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  doctor_id   UUID NOT NULL REFERENCES doctors(id) ON DELETE CASCADE,
+  paper_id    UUID NOT NULL REFERENCES papers(id) ON DELETE CASCADE,
+  created_at  TIMESTAMPTZ DEFAULT NOW(),
+  UNIQUE(doctor_id, paper_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_bookmarks_doctor
+  ON bookmarks (doctor_id);
+
+CREATE INDEX IF NOT EXISTS idx_bookmarks_paper
+  ON bookmarks (paper_id);
+
+-- ============================================================
+-- Admin users (replaces shared ADMIN_PASSWORD over time)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS admin_users (
+  id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email           TEXT UNIQUE NOT NULL,
+  password_hash   TEXT NOT NULL,
+  name            TEXT NOT NULL,
+  role            TEXT DEFAULT 'admin' CHECK (role IN ('admin', 'super_admin')),
+  is_active       BOOLEAN DEFAULT TRUE,
+  last_login_at   TIMESTAMPTZ,
+  created_at      TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- ============================================================
+-- JWT refresh tokens for doctor API auth (rotation pattern)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  doctor_id   UUID NOT NULL REFERENCES doctors(id) ON DELETE CASCADE,
+  jti         TEXT UNIQUE NOT NULL,
+  revoked     BOOLEAN DEFAULT FALSE,
+  expires_at  TIMESTAMPTZ NOT NULL,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_doctor_jti
+  ON refresh_tokens (doctor_id, jti) WHERE revoked = FALSE;
+
+-- ============================================================
+-- Serverless-compatible rate limiting
+-- ============================================================
+CREATE TABLE IF NOT EXISTS rate_limits (
+  id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  key         TEXT NOT NULL,
+  created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_rate_limits_key_created
+  ON rate_limits (key, created_at);
 
 -- ============================================================
 -- Storage bucket (run ONCE — creates the 'papers' bucket)

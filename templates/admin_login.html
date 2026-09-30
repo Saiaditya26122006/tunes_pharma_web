@@ -55,6 +55,10 @@
     {% if error %}<div class="flash-error">{{ error }}</div>{% endif %}
     <form method="POST">
       <div class="p-form-group">
+        <label>Admin Email</label>
+        <input type="email" name="email" placeholder="Enter admin email" required autocomplete="username">
+      </div>
+      <div class="p-form-group">
         <label>Admin Password</label>
         <input type="password" name="password" placeholder="Enter admin password" required autocomplete="current-password">
       </div>
