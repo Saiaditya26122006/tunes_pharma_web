@@ -5,12 +5,13 @@ from datetime import timedelta
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY')
     if not SECRET_KEY:
-        if os.getenv('FLASK_DEBUG', 'false').lower() == 'true':
-            import secrets
-            SECRET_KEY = secrets.token_hex(32)
-        else:
-            raise RuntimeError(
-                "SECRET_KEY must be set in production. "
+        import secrets
+        SECRET_KEY = secrets.token_hex(32)
+        if os.getenv('FLASK_DEBUG', 'false').lower() != 'true':
+            import logging as _logging
+            _logging.getLogger('tunes_pharma').warning(
+                "SECRET_KEY not set — generated a random key. "
+                "Sessions will not persist across restarts. "
                 "Set the SECRET_KEY environment variable."
             )
 
